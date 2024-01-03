@@ -1,6 +1,6 @@
 import ort from 'onnxruntime-node';
 import sharp from 'sharp';
-import modelUrl from '$lib/server/model.onnx';
+import modelUrl from '$lib/server/model.onnx?url';
 import { writable } from 'svelte/store';
 
 type Box = [number, number, number, number, string, number];
