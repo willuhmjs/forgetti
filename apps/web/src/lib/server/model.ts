@@ -1,14 +1,17 @@
 import ort from 'onnxruntime-node';
 import sharp from 'sharp';
 import modelUrl from '$lib/server/model.onnx';
+import { writable } from 'svelte/store';
 
 type Box = [number, number, number, number, string, number];
 
+export const latestDetection = writable<Box[]>();
+
 // Detects objects in an image using YOLOv8 neural network
-export default async function detectObjects(buf: Buffer) {
+export async function detectObjects(buf: Buffer) {
 	const [input, imgWidth, imgHeight] = await prepareInput(buf);
 	const output = await runModel(input);
-	return processOutput(output, imgWidth, imgHeight);
+	latestDetection.set(processOutput(output, imgWidth, imgHeight));
 }
 
 // Converts image to tensor for YOLOv8

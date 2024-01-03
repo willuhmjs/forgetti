@@ -1,4 +1,4 @@
-import detectObjects from '$lib/server/model';
+import { detectObjects, latestDetection } from '$lib/server/model';
 import http from 'http';
 
 http.get('http://localhost:8080/stream', (res) => {
@@ -12,8 +12,9 @@ http.get('http://localhost:8080/stream', (res) => {
 		if (start !== -1 && end !== -1) {
 			const image = imageBuffer.subarray(start, end + 2);
 			imageBuffer = imageBuffer.subarray(end + 2);
-			const detection = await detectObjects(image);
-			console.log(detection);
+			await detectObjects(image);
 		}
 	});
 });
+
+latestDetection.subscribe(val => console.log(val));
