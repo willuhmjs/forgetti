@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "dev:mock": "turbo dev:mock",
     "preview": "turbo preview",
     "format": "turbo lint",
     "test": "turbo test"

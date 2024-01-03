@@ -1,0 +1,11 @@
+{
+"name": "utilities",
+  "private": true,
+  "scripts": {
+    "dev:mock": "ustreamer --blank=test.jpg"
+  },
+  "packageManager": "pnpm@8.9.0",
+  "engines": {
+    "node": ">=18"
+  }
+}

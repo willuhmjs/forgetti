@@ -8,6 +8,9 @@
     "dev": {
       "cache": false
     },
+    "dev:mock": {
+      "cache": false
+    },
     "preview": {},
     "lint": {},
     "format": {
