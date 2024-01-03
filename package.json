@@ -4,7 +4,8 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
-    "format": "turbo lint"
+    "format": "turbo lint",
+    "test": "turbo test"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
