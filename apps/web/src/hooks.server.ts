@@ -1,3 +1,4 @@
+import server from "$lib/server/ws";
 import { detectObjects, latestDetection } from '$lib/server/model';
 import http from 'http';
 
@@ -17,4 +18,9 @@ http.get('http://localhost:8080/stream', (res) => {
 	});
 });
 
-latestDetection.subscribe(val => console.log(val));
+
+server.on("connection", socket => {
+	latestDetection.subscribe((val) => {
+		socket.send(JSON.stringify(val) + Date.now());
+	})
+})

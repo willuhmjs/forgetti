@@ -1,6 +1,5 @@
 import ort from 'onnxruntime-node';
 import sharp from 'sharp';
-import modelUrl from '$lib/server/model.onnx?url';
 import { writable } from 'svelte/store';
 
 type Box = [number, number, number, number, string, number];
@@ -43,7 +42,7 @@ async function prepareInput(buf: Buffer): Promise<[number[], number, number]> {
 
 // Runs YOLOv8 model
 async function runModel(input: number[]) {
-	const model = await ort.InferenceSession.create(`.${modelUrl}`);
+	const model = await ort.InferenceSession.create(modelUrl);
 	input = new ort.Tensor(Float32Array.from(input), [1, 3, 640, 640]);
 	const outputs = await model.run({ images: input });
 	return outputs['output0'].data;
