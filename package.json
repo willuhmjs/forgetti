@@ -6,11 +6,10 @@
     "dev": "turbo dev",
     "dev:mock": "turbo dev:mock",
     "preview": "turbo preview",
-    "format": "turbo lint",
+    "format": "turbo format",
     "test": "turbo test"
   },
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "prettier": "^3.1.0",
     "turbo": "latest"
