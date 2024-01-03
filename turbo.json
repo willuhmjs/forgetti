@@ -8,6 +8,7 @@
     "dev": {
       "cache": false
     },
+    "preview": {},
     "lint": {},
     "format": {
       "outputs": ["**/*.{ts,tsx,md}"]
