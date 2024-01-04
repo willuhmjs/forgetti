@@ -21,6 +21,6 @@ http.get('http://localhost:8080/stream', (res) => {
 
 server.on("connection", socket => {
 	latestDetection.subscribe((val) => {
-		socket.send(JSON.stringify(val) + Date.now());
+		socket.send(JSON.stringify(val));
 	})
 })
