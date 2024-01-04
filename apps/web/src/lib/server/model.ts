@@ -1,17 +1,17 @@
 import ort from 'onnxruntime-node';
 import sharp from 'sharp';
 import { writable } from 'svelte/store';
-import modelUrl from "$lib/server/model.onnx";
 
 type Box = [number, number, number, number, string, number];
 
 export const latestDetection = writable<Box[]>();
 
 // Detects objects in an image using YOLOv8 neural network
-export async function detectObjects(buf: Buffer) {
+export async function detectObjects(modelString: string, buf: Buffer) {
 	const [input, imgWidth, imgHeight] = await prepareInput(buf);
-	const output = await runModel(input);
-	latestDetection.set(processOutput(output, imgWidth, imgHeight));
+	const output = await runModel(modelString, input);
+	const processed = processOutput(output, imgWidth, imgHeight);
+	latestDetection.set(processed);
 }
 
 // Converts image to tensor for YOLOv8
@@ -42,9 +42,8 @@ async function prepareInput(buf: Buffer): Promise<[number[], number, number]> {
 }
 
 // Runs YOLOv8 model
-async function runModel(input: number[]) {
-	console.log(`.${modelUrl}`)
-	const model = await ort.InferenceSession.create(`${modelUrl}`);
+async function runModel(modelUrl: string, input: number[]) {
+	const model = await ort.InferenceSession.create(modelUrl);
 	input = new ort.Tensor(Float32Array.from(input), [1, 3, 640, 640]);
 	const outputs = await model.run({ images: input });
 	return outputs['output0'].data;
