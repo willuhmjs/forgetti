@@ -26,10 +26,10 @@
                     boxes.forEach(({x1, y1, x2, y2}: Box) => {
                         ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
                         ctx.fillStyle = "#00ff00";
-                        const width = ctx.measureText("spaghetti").width;
+                        const width = ctx.measureText("failure").width;
                         ctx.fillRect(x1, y1, width + 10, 25);
                         ctx.fillStyle = "#000000";
-                        ctx.fillText("spaghetti", x1, y1 + 18);
+                        ctx.fillText("failure", x1, y1 + 18);
                     });
                 }
             }
