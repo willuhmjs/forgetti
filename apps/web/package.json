@@ -22,6 +22,8 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@types/node": "^20.10.6",
 		"@types/ws": "^8.5.10",
+		"axios": "^1.6.4",
+		"mjpeg-consumer": "^2.0.0",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.1.2",
 		"svelte": "^4.2.7",
