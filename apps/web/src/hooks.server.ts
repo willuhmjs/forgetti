@@ -1,8 +1,9 @@
-import axios from 'axios';
+import axios, { type AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
 
 import server from "$lib/server/ws";
 import { detectObjects, latestDetection } from '$lib/server/model';
+import {  } from 'axios';
 
 let counter = 0;
 
@@ -13,20 +14,25 @@ server.on("connection", socket => {
 
     const mjpegConsumer = new MjpegConsumer();
 
-    const requestConfig = {
-        url: 'http://localhost:8080/stream',
-        responseType: 'stream',
-    };
+	const requestConfig: AxiosRequestConfig = {
+		url: 'http://raspberrypi.local/webcam/stream',
+		responseType: 'stream',
+	};
 
-    axios(requestConfig).then(response => {
-        response.data.pipe(mjpegConsumer)
-            .on('data', async (frame: Buffer) => {
-                counter++;
-                if (counter % 2 === 0) {
-                    await detectObjects(frame);
-                }
-            });
-    }).catch(error => {
+	axios(requestConfig).then(response => {
+		response.data.pipe(mjpegConsumer)
+			.on('data', async (frame: Buffer) => {
+				counter++;
+				if (counter % 2 === 0) {
+					try {
+						await detectObjects(frame);
+						counter = 0;
+					} catch (e) {
+						console.error(e);
+					}
+				}
+			});
+	}).catch(error => {
         console.error(error);
     });
 });
