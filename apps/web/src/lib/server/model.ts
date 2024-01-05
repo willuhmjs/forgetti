@@ -3,18 +3,32 @@ import sharp from 'sharp';
 import { writable } from 'svelte/store';
 import type { Box, InferenceData } from "$lib/types";
 
-
 export const latestDetection = writable<InferenceData>();
 
+let model: ort.InferenceSession;
+
+// Initialize the model on import
+(async function initializeModel() {
+    const modelUrl = 'src/model.onnx'; // replace with your model path
+    model = await ort.InferenceSession.create(modelUrl);
+})();
+
 // Detects objects in an image using YOLOv8 neural network
-export async function detectObjects(modelString: string, buf: Buffer) {
-	const [input, imgWidth, imgHeight] = await prepareInput(buf);
-	const output = await runModel(modelString, input);
-	const processed = {
-		box: processOutput(output, imgWidth, imgHeight),
-		buffer: buf.toString("base64")
-	}
-	latestDetection.set(processed);
+export async function detectObjects(buf: Buffer) {
+    const [input, imgWidth, imgHeight] = await prepareInput(buf);
+    const output = await runModel(input);
+    const processed = {
+        box: processOutput(output, imgWidth, imgHeight),
+        buffer: buf.toString("base64")
+    }
+    latestDetection.set(processed);
+}
+
+// Runs YOLOv8 model
+async function runModel(input: number[]) {
+    input = new ort.Tensor(Float32Array.from(input), [1, 3, 640, 640]);
+    const outputs = await model.run({ images: input });
+    return outputs['output0'].data;
 }
 
 // Converts image to tensor for YOLOv8
@@ -44,13 +58,6 @@ async function prepareInput(buf: Buffer): Promise<[number[], number, number]> {
 	return [[...red, ...green, ...blue], imgWidth, imgHeight];
 }
 
-// Runs YOLOv8 model
-async function runModel(modelUrl: string, input: number[]) {
-	const model = await ort.InferenceSession.create(modelUrl);
-	input = new ort.Tensor(Float32Array.from(input), [1, 3, 640, 640]);
-	const outputs = await model.run({ images: input });
-	return outputs['output0'].data;
-}
 
 // Converts YOLOv8 output to array of detected objects
 function processOutput(output: any[], imgWidth: number, imgHeight: number) {

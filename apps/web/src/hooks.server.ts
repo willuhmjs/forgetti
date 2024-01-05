@@ -13,7 +13,7 @@ http.get('http://localhost:8080/stream', (res) => {
 		if (start !== -1 && end !== -1) {
 			const image = imageBuffer.subarray(start, end + 2);
 			imageBuffer = imageBuffer.subarray(end + 2);
-			await detectObjects("src/model.onnx", image);
+			await detectObjects(image);
 		}
 	});
 });
