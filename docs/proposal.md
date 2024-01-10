@@ -1,5 +1,3 @@
-# Forgetti
-
 ## Overview
 
 Fused deposition modeling (FDM) is an additive manufacturing process whereby a three-dimensional (3D) printer deposits filament onto a bed layer by layer until it creates a 3D object (Hamzah, 2019). Unfortunately, various environmental factors can result in a failure occurring during the process. The most common "spaghetti failure" happens when the printed object collapses or detaches from the print bed during the print (Prusa Research, 2021). This project aims to develop software (Forgetti) for these printers to automatically detect and respond to these failures using artificial intelligence (AI).
