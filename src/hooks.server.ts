@@ -3,7 +3,6 @@ import MjpegConsumer from 'mjpeg-consumer';
 
 import server from "$lib/server/ws";
 import { detectObjects, latestDetection } from '$lib/server/model';
-import {  } from 'axios';
 
 let counter = 0;
 let isProcessing = false;
