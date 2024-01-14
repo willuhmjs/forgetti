@@ -5,7 +5,6 @@ import server from "$lib/server/ws";
 import { detectObjects, latestDetection } from '$lib/server/model';
 
 let counter = 0;
-let isProcessing = false;
 
 server.on("connection", socket => {
     latestDetection.subscribe((val) => {
@@ -23,15 +22,12 @@ server.on("connection", socket => {
         const stream = response.data.pipe(mjpegConsumer);
         stream.on('data', async (frame: Buffer) => {
             counter++;
-            if (counter % 2 === 0 && !isProcessing) {
+            if (counter % 2 === 0) {
                 try {
-                    isProcessing = true;
                     await detectObjects(frame);
                     counter = 0;
                 } catch (e) {
                     console.error(e);
-                } finally {
-                    isProcessing = false;
                 }
             }
         });
