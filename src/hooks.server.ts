@@ -18,26 +18,28 @@ server.on("connection", socket => {
         responseType: 'stream',
     };
 
+    let processing = false;
+    const process = async (frameBuffer: Buffer) => {
+        processing = true;
+        await detectObjects(frameBuffer);
+        processing = false;
+    }
+
     axios(requestConfig).then(response => {
         const stream = response.data.pipe(mjpegConsumer);
-        let frameBuffer: Buffer | null = null;
 
         stream.on('data', (frame: Buffer) => {
-            frameBuffer = frame;
-        });
-
-        setInterval(async () => {
-            if (frameBuffer) {
+            if (frame && !processing) {
                 try {
-                    await detectObjects(frameBuffer);
-                    counter = 0;
+                    process(frame);
                 } catch (e) {
                     console.error(e);
                 }
-                frameBuffer = null;
             }
-        }, 1000); // process frame every 1000ms (1 second)
+        });
+
+            
     }).catch(error => {
         console.error(error);
-    });
+    }); 
 });
