@@ -1,4 +1,4 @@
-import axios, { type AxiosRequestConfig } from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
 
 import server from "$lib/server/ws";
@@ -13,24 +13,30 @@ server.on("connection", socket => {
 
     const mjpegConsumer = new MjpegConsumer();
 
-	const requestConfig: AxiosRequestConfig = {
-		url: 'http://localhost:8080/stream',
-		responseType: 'stream',
-	};
+    const requestConfig: AxiosRequestConfig = {
+        url: 'http://localhost:8080/stream',
+        responseType: 'stream',
+    };
 
-	axios(requestConfig).then(response => {
+    axios(requestConfig).then(response => {
         const stream = response.data.pipe(mjpegConsumer);
-        stream.on('data', async (frame: Buffer) => {
-            counter++;
-            if (counter % 2 === 0) {
+        let frameBuffer: Buffer | null = null;
+
+        stream.on('data', (frame: Buffer) => {
+            frameBuffer = frame;
+        });
+
+        setInterval(async () => {
+            if (frameBuffer) {
                 try {
-                    await detectObjects(frame);
+                    await detectObjects(frameBuffer);
                     counter = 0;
                 } catch (e) {
                     console.error(e);
                 }
+                frameBuffer = null;
             }
-        });
+        }, 1000); // process frame every 1000ms (1 second)
     }).catch(error => {
         console.error(error);
     });
