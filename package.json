@@ -12,7 +12,14 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"format": "prettier --write .",
 		"test:integration": "playwright test",
-		"test:unit": "vitest"
+		"test:unit": "vitest",
+		"vite": "^5.0.3",
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-node": "^2.0.2",
+		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/vite-plugin-svelte": "^3.0.0",
+		"svelte": "^4.2.7",
+		"svelte-check": "^3.6.0"
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.28.1",
@@ -30,14 +37,7 @@
 		"sharp": "^0.33.1",
 		"axios": "^1.6.4",
 		"mjpeg-consumer": "^2.0.0",
-		"ws": "^8.16.0",
-		"vite": "^5.0.3",
-		"@sveltejs/adapter-auto": "^3.0.0",
-		"@sveltejs/adapter-node": "^2.0.2",
-		"@sveltejs/kit": "^2.0.0",
-		"@sveltejs/vite-plugin-svelte": "^3.0.0",
-		"svelte": "^4.2.7",
-		"svelte-check": "^3.6.0"
+		"ws": "^8.16.0"
 
 	}
 }
