@@ -29,7 +29,7 @@ After=network.target
 
 [Service]
 WorkingDirectory=$WORKING_DIR
-ExecStart=/usr/bin/git pull && /usr/bin/npm install && /usr/bin/npm run build && /usr/bin/npm run preview
+ExecStart=/bin/bash -c '/usr/bin/git pull && /usr/bin/npm install && /usr/bin/npm run build && /usr/bin/npm run preview'
 Restart=always
 User=$USER
 Group=$USER
