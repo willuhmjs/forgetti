@@ -1,0 +1,5 @@
+site_name: Forgetti
+nav:
+  - Home: index.md
+  - About: about.md
+theme: material
