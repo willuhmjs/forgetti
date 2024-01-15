@@ -30,4 +30,4 @@ jobs:
           title: "Development Build"
           files: |
             LICENSE
-            build
+            build/*
