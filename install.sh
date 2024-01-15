@@ -37,7 +37,7 @@ Description=Forgetti App
 
 [Service]
 WorkingDirectory=/home/$USER/forgetti
-ExecStart=/usr/bin/pnpm run preview
+ExecStart=pnpm run preview
 Restart=always
 User=$USER
 Group=$USER
