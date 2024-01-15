@@ -1,17 +1,8 @@
-# Welcome to MkDocs
+# Welcome to Forgetti
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Forgetti is an open-source 3D print failure detection system. It is designed to run seamlessly with any printer configuration. Check out [Get Started](get_started.md) for installation instructions, or read on for more information.
 
-## Commands
+## Features
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+* Automatic AI-powered 3D print spaghetti failure detection.
+* Intuitive web interface for configuration and monitoring.

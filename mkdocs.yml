@@ -4,8 +4,9 @@ repo_name: forgetti
 site_url: https://willuhmjs.github.io/forgetti/
 nav:
   - Home: index.md
-  - About: proposal.md
   - Get Started: get_started.md
+not_in_nav: |
+  proposal.md
 theme:
   name: material
   features:
@@ -15,6 +16,7 @@ theme:
     - navigation.instant.progress
     - navigation.tracking
     - navigation.top
+    - navigation.footer
     - social
 markdown_extensions:
   - pymdownx.highlight:
@@ -27,3 +29,9 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+extra:
+  social:
+    - icon: fontawesome/brands/github 
+      link: https://github.com/willuhmjs/forgetti
+    - icon: fontawesome/brands/discord
+      link: https://discord.gg/2YmK66G
