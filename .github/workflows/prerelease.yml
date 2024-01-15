@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
             node-version: "18.x"
+            cache: "pnpm"
       - name: Install and build
         run: pnpm i && pnpm build
       - uses: "marvinpinto/action-automatic-releases@latest"
