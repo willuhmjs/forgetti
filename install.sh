@@ -5,31 +5,38 @@ command_exists() {
   command -v "$1" >/dev/null 2>&1
 }
 
-# Check if git and node.js are installed
-if ! command_exists git || ! command_exists node; then
-  sudo apt update -y && sudo apt install nodejs git -y
+# Check if git is installed
+if ! command_exists git; then
+  echo "Git is not installed. Installing..."
+  sudo apt-get update
+  sudo apt-get install -y git
 fi
 
-# Set working directory
-WORKING_DIR=/home/$USER/forgetti
+# Check if Node.js is installed
+if ! command_exists node; then
+  echo "Node.js is not installed. Installing..."
+  sudo apt-get update
+  sudo apt-get install -y nodejs
+fi
 
-# Clone the forgetti repo to the working directory
-git clone https://github.com/willuhmjs/forgetti.git $WORKING_DIR
+# Clone the repository to the user's home directory
+git clone https://github.com/willuhmjs/forgetti /home/"$USER"/forgetti
 
-# Install Node.js dependencies
-cd $WORKING_DIR
+# Navigate to the app directory
+cd /home/"$USER"/forgetti
+
+# Install dependencies and build the app
 npm install
+npm run build
 
-# Create a systemd service file
-# Create a systemd service file
+# Create a systemd service
 cat <<EOF | sudo tee /etc/systemd/system/forgetti.service
 [Unit]
 Description=Forgetti App
-After=network.target
 
 [Service]
-WorkingDirectory=$WORKING_DIR
-ExecStart=/bin/bash -c '/usr/bin/git pull && /usr/bin/npm install && /usr/bin/npm run build && /usr/bin/npm run preview'
+WorkingDirectory=/home/$USER/forgetti
+ExecStart=/usr/bin/npm run preview
 Restart=always
 User=$USER
 Group=$USER
@@ -40,9 +47,9 @@ Environment=NODE_ENV=production
 WantedBy=multi-user.target
 EOF
 
-# Reload systemd and start the forgetti service
+# Reload systemd and start the app
 sudo systemctl daemon-reload
-sudo systemctl enable forgetti
 sudo systemctl start forgetti
+sudo systemctl enable forgetti
 
-echo "Forgetti installed successfully!"
+echo "Forgetti has been installed and configured. You can start/stop the service using 'sudo systemctl start/stop forgetti'."
