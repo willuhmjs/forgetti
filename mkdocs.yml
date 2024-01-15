@@ -1,5 +1,5 @@
 site_name: Forgetti
 nav:
   - Home: index.md
-  - About: about.md
+  - Proposal: proposal.md
 theme: material
