@@ -17,6 +17,7 @@ if ! command_exists node; then
   echo "Node.js is not installed. Installing..."
   sudo apt-get update
   sudo apt-get install -y nodejs
+  sudo npm install -g pnpm
 fi
 
 # Clone the repository to the user's home directory
@@ -26,8 +27,8 @@ git clone https://github.com/willuhmjs/forgetti /home/"$USER"/forgetti
 cd /home/"$USER"/forgetti
 
 # Install dependencies and build the app
-npm install
-npm run build
+pnpm install
+pnpm run build
 
 # Create a systemd service
 cat <<EOF | sudo tee /etc/systemd/system/forgetti.service
@@ -36,7 +37,7 @@ Description=Forgetti App
 
 [Service]
 WorkingDirectory=/home/$USER/forgetti
-ExecStart=/usr/bin/npm run preview
+ExecStart=/usr/bin/pnpm run preview
 Restart=always
 User=$USER
 Group=$USER
@@ -52,4 +53,4 @@ sudo systemctl daemon-reload
 sudo systemctl start forgetti
 sudo systemctl enable forgetti
 
-echo "Forgetti has been installed and configured. You can start/stop the service using 'sudo systemctl start/stop forgetti'."
+echo "Forgetti has been installed and configured."
