@@ -27,7 +27,7 @@ Description=Forgetti App
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/bash -c 'cd $WORKING_DIR && /usr/bin/git pull && /usr/bin/npm install && /usr/bin/npm run build && /usr/bin/npm run preview'
+ExecStart=cd $WORKING_DIR && /usr/bin/git pull && /usr/bin/npm install && /usr/bin/npm run build && /usr/bin/npm run preview
 Restart=always
 User=$USER
 Group=$USER
