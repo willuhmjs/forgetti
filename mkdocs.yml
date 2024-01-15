@@ -1,4 +1,7 @@
 site_name: Forgetti
+repo_url: https://github.com/willuhmjs/forgetti
+repo_name: forgetti
+site_url: https://willuhmjs.github.io/forgetti/
 nav:
   - Home: index.md
   - About: proposal.md
@@ -7,6 +10,12 @@ theme:
   name: material
   features:
     - content.code.copy
+    - navigation.instant
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.top
+    - social
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
