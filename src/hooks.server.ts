@@ -14,7 +14,7 @@ server.on("connection", socket => {
     const mjpegConsumer = new MjpegConsumer();
 
     const requestConfig: AxiosRequestConfig = {
-        url: 'http://localhost:8080/stream',
+        url: 'http://localhost/webcam/?action=stream',
         responseType: 'stream',
     };
 
