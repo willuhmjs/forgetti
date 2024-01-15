@@ -21,7 +21,13 @@ jobs:
             node-version: "18.x"
             cache: "pnpm"
       - name: Install and build
-        run: pnpm i && pnpm build
+        run: |
+          pnpm i
+          pnpm build
+      - name: Create tar archive
+        run: tar -czf forgetti.tar.gz -C build .
+      - name: Create zip archive
+        run: zip -r forgetti.zip build
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -30,4 +36,5 @@ jobs:
           title: "Development Build"
           files: |
             LICENSE
-            build/*
+            build.tar.gz
+            build.zip
