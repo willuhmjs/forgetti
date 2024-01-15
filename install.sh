@@ -21,13 +21,15 @@ cd $WORKING_DIR
 npm install
 
 # Create a systemd service file
+# Create a systemd service file
 cat <<EOF | sudo tee /etc/systemd/system/forgetti.service
 [Unit]
 Description=Forgetti App
 After=network.target
 
 [Service]
-ExecStart=cd $WORKING_DIR && /usr/bin/git pull && /usr/bin/npm install && /usr/bin/npm run build && /usr/bin/npm run preview
+WorkingDirectory=$WORKING_DIR
+ExecStart=/usr/bin/git pull && /usr/bin/npm install && /usr/bin/npm run build && /usr/bin/npm run preview
 Restart=always
 User=$USER
 Group=$USER
