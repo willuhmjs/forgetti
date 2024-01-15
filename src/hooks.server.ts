@@ -4,8 +4,6 @@ import MjpegConsumer from 'mjpeg-consumer';
 import server from "$lib/server/ws";
 import { detectObjects, latestDetection } from '$lib/server/model';
 
-let counter = 0;
-
 server.on("connection", socket => {
     latestDetection.subscribe((val) => {
         socket.send(JSON.stringify(val));
