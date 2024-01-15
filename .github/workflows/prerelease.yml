@@ -36,5 +36,5 @@ jobs:
           title: "Development Build"
           files: |
             LICENSE
-            build.tar.gz
-            build.zip
+            forgetti.tar.gz
+            forgetti.zip
