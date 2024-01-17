@@ -1,8 +1,11 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
-
+import keyv from '$lib/server/db';
 import server from "$lib/server/ws";
+import defaultcfg from '$lib/defaultcfg';
 import { detectObjects, latestDetection } from '$lib/server/model';
+
+const config = await keyv.get("config") || defaultcfg;
 
 server.on("connection", socket => {
     latestDetection.subscribe((val) => {
@@ -12,7 +15,7 @@ server.on("connection", socket => {
     const mjpegConsumer = new MjpegConsumer();
 
     const requestConfig: AxiosRequestConfig = {
-        url: 'http://127.0.0.1/webcam/?action=stream',
+        url: config["Camera URL"],
         responseType: 'stream',
     };
 
