@@ -33,12 +33,11 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@keyv/sqlite": "^3.6.6",
-		"axios": "^1.6.4",
-		"keyv": "^4.5.4",
-		"mjpeg-consumer": "^2.0.0",
 		"onnxruntime-node": "^1.16.3",
 		"sharp": "^0.33.1",
+		"axios": "^1.6.4",
+		"mjpeg-consumer": "^2.0.0",
 		"ws": "^8.16.0"
+
 	}
 }
