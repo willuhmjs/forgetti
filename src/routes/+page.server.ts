@@ -1,8 +1,10 @@
 import { error } from '@sveltejs/kit';
 import fs from "fs";
-import config from "$config";
+import configStore from "$lib/configStore";
+import { get } from "svelte/store";
+
 export function load() {
-	return config;
+	return get(configStore);
 }
 
 export const actions = {
@@ -10,6 +12,7 @@ export const actions = {
         const raw_config = await request.formData();
         const config = Object.fromEntries([...raw_config.entries()]);
         fs.writeFileSync("./config.json", JSON.stringify(config, null, 2)); 
+        configStore.set(config);
         return true;
     }
 }
