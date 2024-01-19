@@ -4,13 +4,16 @@ import configStore from "$lib/configStore";
 import server from "$lib/server/ws";
 import { detectObjects, latestDetection } from '$lib/server/model';
 import type { Readable } from 'stream';
+import { get } from 'svelte/store';
+
+let currentCameraPromiseDirty: Symbol | null;
+let currentConfig = get(configStore);
 
 server.on("connection", socket => {
     latestDetection.subscribe((val) => {
         socket.send(JSON.stringify(val));
     });
 })
-
 
 async function startStream(config: any) {
     const trackedSymbol = currentCameraPromiseDirty;
@@ -51,9 +54,7 @@ async function startStream(config: any) {
     }
 }
 
-let currentCameraPromiseDirty: Symbol | null;
-
 configStore.subscribe(config => {
-    currentCameraPromiseDirty = Symbol(Math.random().toString());
+    if (currentConfig.CameraURL != config.CameraURL) currentCameraPromiseDirty = Symbol(Math.random().toString());
     startStream(config)
 });
