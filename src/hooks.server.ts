@@ -11,7 +11,7 @@ server.on("connection", socket => {
 })
 
 
-configStore.subscribe((config) => {
+configStore.subscribe(async (config) => {
     const mjpegConsumer = new MjpegConsumer();
 
     const requestConfig: AxiosRequestConfig = {
@@ -26,7 +26,8 @@ configStore.subscribe((config) => {
         processing = false;
     }
 
-    axios(requestConfig).then(response => {
+    try {
+        const response = await axios(requestConfig)
         const stream = response.data.pipe(mjpegConsumer);
 
         stream.on('data', (frame: Buffer) => {
@@ -38,9 +39,9 @@ configStore.subscribe((config) => {
                 }
             }
         });
+    } catch (e) {
+        console.error(e);
+    }
 
             
-    }).catch(error => {
-        console.error(error);
-    }); 
 });
