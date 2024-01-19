@@ -56,5 +56,6 @@ async function startStream(config: any) {
 
 configStore.subscribe(config => {
     if (currentConfig.CameraURL != config.CameraURL) currentCameraPromiseDirty = Symbol(Math.random().toString());
+    currentConfig = config;
     startStream(config)
 });
