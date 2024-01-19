@@ -1,3 +1,4 @@
 import { writable } from 'svelte/store';
-import currentConfig from './config.json';
-export default writable(currentConfig);
+import currentConfig from '../../config.json?raw';
+
+export default writable(JSON.parse(currentConfig));
