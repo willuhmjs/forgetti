@@ -1,3 +1,3 @@
 import { WebSocketServer } from 'ws';
 
-export default new WebSocketServer({ port: 2221 })
+export default new WebSocketServer({ port: 2221 });

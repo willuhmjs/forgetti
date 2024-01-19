@@ -31,7 +31,7 @@ markdown_extensions:
   - pymdownx.superfences
 extra:
   social:
-    - icon: fontawesome/brands/github 
+    - icon: fontawesome/brands/github
       link: https://github.com/willuhmjs/forgetti
     - icon: fontawesome/brands/discord
       link: https://discord.gg/SQJewQPDjK
