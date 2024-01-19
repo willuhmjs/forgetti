@@ -6,5 +6,5 @@ export default defineConfig({
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	},
-	assetsInclude: ['**/*.onnx']
+	assetsInclude: ['**/*.onnx', '**/*.json']
 });
