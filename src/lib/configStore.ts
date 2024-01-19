@@ -1,4 +1,8 @@
 import { writable } from 'svelte/store';
 import currentConfig from '../../config.json?raw';
 
-export default writable(JSON.parse(currentConfig));
+interface Config {
+    CameraURL: string
+}
+
+export default writable<Config>(JSON.parse(currentConfig));
