@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from 'axios';
+import axios, { type AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
 import configStore from "$lib/configStore";
 import server from "$lib/server/ws";
