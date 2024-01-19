@@ -43,6 +43,7 @@ async function startStream(config: any) {
 
             if (currentCameraPromiseDirty != trackedSymbol) {
                 stream.destroy();
+                return;
             }
         });
     } catch (e) {
@@ -50,9 +51,9 @@ async function startStream(config: any) {
     }
 }
 
-let currentCameraPromiseDirty = Symbol();
+let currentCameraPromiseDirty: Symbol | null;
 
 configStore.subscribe(config => {
-    currentCameraPromiseDirty = Symbol();
+    currentCameraPromiseDirty = Symbol(Math.random().toString());
     startStream(config)
 });
