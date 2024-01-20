@@ -6,8 +6,9 @@ import { detectObjects, latestDetection } from '$lib/server/model';
 import type { Readable } from 'stream';
 import { get } from 'svelte/store';
 
-let currentCameraPromiseDirty: Symbol | null;
+let currentCameraPromiseDirty = Symbol();
 let currentConfig = get(configStore);
+startStream(currentConfig);
 
 server.on("connection", socket => {
     latestDetection.subscribe((val) => {
@@ -55,7 +56,11 @@ async function startStream(config: any) {
 }
 
 configStore.subscribe(config => {
-    if (currentConfig.CameraURL != config.CameraURL) currentCameraPromiseDirty = Symbol(Math.random().toString());
+    // A new symbol should be generated (aka stream stopped) if either the config.Enabled property is false or the new cameraURL is different from the old cameraURL
+    // A new stream should be started if either the config.Enabled property goes from false to true OR the CameraURL value updates WHILE config.Enabled is true
+    if (!config.Enabled || currentConfig.CameraURL != config.CameraURL) currentCameraPromiseDirty = Symbol();
+    const enabledFalseToTrue = (!currentConfig.Enabled && config.Enabled)
+    const cameraURLChangedWhileEnabled = ((currentConfig.CameraURL != config.CameraURL) && config.Enabled)
+    if (enabledFalseToTrue || cameraURLChangedWhileEnabled) startStream(config)
     currentConfig = config;
-    startStream(config)
 });

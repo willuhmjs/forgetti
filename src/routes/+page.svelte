@@ -1,16 +1,32 @@
 <script lang="ts">
-	import LivePreview from '$lib/components/LivePreview.svelte';
-	export let data;
+    import LivePreview from '$lib/components/LivePreview.svelte';
+    export let data;
+
+    let formData = {...data}; // Create a copy of data
+
+    const updateConfig = () => {
+        fetch('/api/configure', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+    }
 </script>
 
 <LivePreview />
 
-<form action="?/configure" method="POST">
-	{#each Object.entries(data) as [key, value]}
-		<label>
-			<span>{key}</span>
-			<input type="text" name={key} {value} />
-		</label>
-	{/each}
-	<button type="submit">Save</button>
+<form on:submit|preventDefault={updateConfig}>
+    {#each Object.entries(formData) as [key, value], i}
+    <label>
+        <span>{key}</span>
+        {#if typeof value === 'boolean'}
+            <input type="checkbox" bind:checked={formData[key]} name={key} />
+        {:else if typeof value === 'string'}
+            <input type="text" bind:value={formData[key]} name={key} />
+        {/if}
+    </label>
+{/each}
+    <button type="submit">Save</button>
 </form>
