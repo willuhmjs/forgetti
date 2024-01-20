@@ -1,8 +1,9 @@
 <script lang="ts">
     import LivePreview from '$lib/components/LivePreview.svelte';
+    import type { Config } from "$lib/types";
     export let data;
 
-    let formData = {...data}; // Create a copy of data
+    let formData: Config = {...data}; // Create a copy of data
 
     const updateConfig = () => {
         fetch('/api/configure', {
