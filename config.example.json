@@ -1,4 +1,5 @@
 {
 	"Enabled": true,
-	"CameraURL": "http://127.0.0.1/webcam?action=stream"
+	"CameraURL": "http://127.0.0.1/webcam?action=stream",
+	"ConfidenceThreshold": 50
 }

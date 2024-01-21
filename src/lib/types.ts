@@ -15,4 +15,5 @@ export interface InferenceData {
 export interface Config {
     Enabled: boolean
     CameraURL: string,
+	ConfidenceThreshold: number
 }

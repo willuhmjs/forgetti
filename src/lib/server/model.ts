@@ -1,7 +1,11 @@
 import ort from 'onnxruntime-node';
 import sharp from 'sharp';
-import { writable } from 'svelte/store';
+import { writable, get } from 'svelte/store';
 import type { Box, InferenceData } from '$lib/types';
+import configStore from '$lib/configStore';
+
+let currentConfig = get(configStore);
+configStore.subscribe(c => currentConfig = c);
 
 export const latestDetection = writable<InferenceData>();
 
@@ -66,7 +70,7 @@ function processOutput(output: any[], imgWidth: number, imgHeight: number) {
 			.map((col) => [col, output[8400 * (col + 4) + index]])
 			.reduce((accumulator, item) => (item[1] > accumulator[1] ? item : accumulator), [0, 0]);
 
-		if (prob < 0.5) continue;
+		if (Math.round(prob*100) < currentConfig.ConfidenceThreshold) continue;
 
 		const xc = output[index];
 		const yc = output[8400 + index];

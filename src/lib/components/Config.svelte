@@ -18,12 +18,14 @@ const updateConfig = () => {
     <form on:submit|preventDefault={updateConfig}>
         {#each Object.entries(formData) as [key, value], i}
         <label>
-            <span>{key}</span>
+            <span>{key} {key === 'ConfidenceThreshold' ? `(${formData[key]}%)` : ''}</span>
             <br>
             {#if typeof value === 'boolean'}
                 <input type="checkbox" bind:checked={formData[key]} name={key} />
             {:else if typeof value === 'string'}
                 <input type="text" bind:value={formData[key]} name={key} />
+            {:else if typeof value === 'number'}
+                <input type="range" min="1" max="100" bind:value={formData[key]} name={key} />
             {/if}
         </label>
         <br>
