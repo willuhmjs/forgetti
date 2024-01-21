@@ -23,13 +23,13 @@
 					ctx.strokeStyle = '#00FF00';
 					ctx.lineWidth = 3;
 					ctx.font = '18px serif';
-					boxes.forEach(({ x1, y1, x2, y2 }: Box) => {
+					boxes.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 						ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
 						ctx.fillStyle = '#00ff00';
-						const width = ctx.measureText('failure').width;
+						const width = ctx.measureText(`failure ${prob}%`).width;
 						ctx.fillRect(x1, y1, width + 10, 25);
 						ctx.fillStyle = '#000000';
-						ctx.fillText('failure', x1, y1 + 18);
+						ctx.fillText(`failure ${prob}%`, x1, y1 + 18);
 					});
 				}
 			}

@@ -16,6 +16,10 @@ server.on("connection", socket => {
     });
 })
 
+latestDetection.subscribe((val) => {
+    if (val?.box?.length) console.log(val.box)
+});
+
 async function startStream(config: any) {
     const trackedSymbol = currentCameraPromiseDirty;
     const mjpegConsumer = new MjpegConsumer();

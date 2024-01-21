@@ -1,33 +1,18 @@
 <script lang="ts">
+	import Config from '$lib/components/Config.svelte';
     import LivePreview from '$lib/components/LivePreview.svelte';
-    import type { Config } from "$lib/types";
+	import Window from '$lib/components/Window.svelte';
+	import { faCog, faVideoCamera } from '@fortawesome/free-solid-svg-icons';
     export let data;
 
-    let formData: Config = {...data}; // Create a copy of data
-
-    const updateConfig = () => {
-        fetch('/api/configure', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(formData)
-        });
-    }
+   
 </script>
 
-<LivePreview />
+<Window title="Camera" icon={faVideoCamera}>
+    <LivePreview />
+</Window>
 
-<form on:submit|preventDefault={updateConfig}>
-    {#each Object.entries(formData) as [key, value], i}
-    <label>
-        <span>{key}</span>
-        {#if typeof value === 'boolean'}
-            <input type="checkbox" bind:checked={formData[key]} name={key} />
-        {:else if typeof value === 'string'}
-            <input type="text" bind:value={formData[key]} name={key} />
-        {/if}
-    </label>
-{/each}
-    <button type="submit">Save</button>
-</form>
+<Window title="Configuration" icon={faCog}>
+    <Config {data} />
+</Window>
+
