@@ -37,4 +37,6 @@
 	});
 </script>
 
+<div style="margin-bottom: -4px">
 <canvas bind:this={canvas} />
+</div>
