@@ -20,12 +20,12 @@
 				const ctx = canvas.getContext('2d');
 				if (ctx) {
 					ctx.drawImage(img, 0, 0);
-					ctx.strokeStyle = '#00FF00';
+					ctx.strokeStyle = '#f97316';
 					ctx.lineWidth = 3;
-					ctx.font = '18px serif';
+					ctx.font = '18px sans-serif';
 					boxes.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 						ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-						ctx.fillStyle = '#00ff00';
+						ctx.fillStyle = '#f97316';
 						const width = ctx.measureText(`failure ${prob}%`).width;
 						ctx.fillRect(x1, y1, width + 10, 25);
 						ctx.fillStyle = '#000000';
