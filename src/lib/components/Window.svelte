@@ -33,7 +33,7 @@
         border-top-left-radius: 15px;
         border-top-right-radius: 15px;
         background-color: #fff;
-        font-size: 1rem;
+        font-size: 12px;
         background-color: #18181b;
 
     }
@@ -57,12 +57,12 @@
 
     .title-button {
         all: unset;
-        font-size: 2rem; 
-        
+        font-size: 1.4rem; 
+        margin-left: 10px;
     }
 
     .title-icon {
-        margin-right: 1rem;
+        margin-right: 13px;
         color: #f97316;
     }
 </style>

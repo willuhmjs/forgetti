@@ -14,7 +14,7 @@ const updateConfig = () => {
 }
 </script>
 
-<div style="width: 640px;">
+<div>
     <form on:submit|preventDefault={updateConfig}>
         {#each Object.entries(formData) as [key, value], i}
         <label>
