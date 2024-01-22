@@ -17,7 +17,7 @@ export const POST: RequestHandler = async ({request}) => {
                     console.error(`stderr: ${stderr}`);
                 });
             } else {
-                exec('shutdown -h now', (error, stdout, stderr) => {
+                exec('sudo shutdown -h now', (error, stdout, stderr) => {
                     if (error) {
                         console.error(`exec error: ${error}`);
                         return;
@@ -38,7 +38,7 @@ export const POST: RequestHandler = async ({request}) => {
                     console.error(`stderr: ${stderr}`);
                 });
             } else {
-                exec('shutdown -r now', (error, stdout, stderr) => {
+                exec('sudo shutdown -r now', (error, stdout, stderr) => {
                     if (error) {
                         console.error(`exec error: ${error}`);
                         return;
