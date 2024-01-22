@@ -26,6 +26,16 @@
     };
 
     const openPowerWindow = () => {
+        fetch('/api/command', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                "command": "shutdown"
+            })
+        
+        })
     };
 </script>
 
