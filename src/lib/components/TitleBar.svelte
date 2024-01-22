@@ -1,6 +1,21 @@
 <script lang="ts">
     import Fa from "svelte-fa";
-    import { type IconDefinition, faPowerOff, faSync, faPalette } from "@fortawesome/free-solid-svg-icons";
+    import { faPowerOff, faSync, faPalette } from "@fortawesome/free-solid-svg-icons";
+
+    const cycleThemeColor = () => {
+        const colors = ["#f97316", "#ff0000", "#00ff00", "#0000ff"];
+        const root = document.documentElement;
+        const currentColor = root.style.getPropertyValue("--brand");
+        const index = colors.indexOf(currentColor);
+        const nextColor = colors[(index + 1) % colors.length];
+        root.style.setProperty("--brand", nextColor);
+    };
+
+    const requestUpdate = () => {
+    };
+
+    const openPowerWindow = () => {
+    };
 </script>
 
 <div class="titlebar">
@@ -45,6 +60,10 @@
 
     .buttons #power {
         color: var(--power);
+    }
+
+    .buttons #color {
+        color: var(--brand);
     }
 
 </style>
