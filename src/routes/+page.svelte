@@ -8,7 +8,7 @@
     export let data;
 
     onMount(() => {
-        document.documentElement.style.setProperty('--brand', data.BrandColor);
+        document.documentElement.style.setProperty('--brand', data.Hidden.BrandColor);
     });
 </script>
 

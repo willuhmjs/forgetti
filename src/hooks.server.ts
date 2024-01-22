@@ -25,7 +25,7 @@ async function startStream(config: any) {
     const mjpegConsumer = new MjpegConsumer();
 
     const requestConfig: AxiosRequestConfig = {
-        url: config['CameraURL'],
+        url: config.General.CameraURL,
         responseType: 'stream',
     };
 
@@ -62,9 +62,9 @@ async function startStream(config: any) {
 configStore.subscribe(config => {
     // A new symbol should be generated (aka stream stopped) if either the config.Enabled property is false or the new cameraURL is different from the old cameraURL
     // A new stream should be started if either the config.Enabled property goes from false to true OR the CameraURL value updates WHILE config.Enabled is true
-    if (!config.Enabled || currentConfig.CameraURL != config.CameraURL) currentCameraPromiseDirty = Symbol();
-    const enabledFalseToTrue = (!currentConfig.Enabled && config.Enabled)
-    const cameraURLChangedWhileEnabled = ((currentConfig.CameraURL != config.CameraURL) && config.Enabled)
+    if (!config.General.Enabled || currentConfig.General.CameraURL != config.General.CameraURL) currentCameraPromiseDirty = Symbol();
+    const enabledFalseToTrue = (!currentConfig.General.Enabled && config.General.Enabled)
+    const cameraURLChangedWhileEnabled = ((currentConfig.General.CameraURL != config.General.CameraURL) && config.General.Enabled)
     if (enabledFalseToTrue || cameraURLChangedWhileEnabled) startStream(config)
     currentConfig = config;
 });

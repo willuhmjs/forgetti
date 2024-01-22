@@ -70,7 +70,7 @@ function processOutput(output: any[], imgWidth: number, imgHeight: number) {
 			.map((col) => [col, output[8400 * (col + 4) + index]])
 			.reduce((accumulator, item) => (item[1] > accumulator[1] ? item : accumulator), [0, 0]);
 
-		if (Math.round(prob*100) < currentConfig.ConfidenceThreshold) continue;
+		if (Math.round(prob*100) < currentConfig.General.ConfidenceThreshold) continue;
 
 		const xc = output[index];
 		const yc = output[8400 + index];
