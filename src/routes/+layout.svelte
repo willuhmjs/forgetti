@@ -11,9 +11,10 @@
     }
 
     :global(:root) {
-        --brand: #f97316;
-        --brand-dark: #e86a0d; 
-        --foreground: #18181b;
-        --background: #27272a;
-    }
+    --brand: #f97316;
+    --brand-dark: #e86a0d; 
+    --foreground: #18181b;
+    --background: #27272a;
+    --power: #F90016;
+}
 </style>
