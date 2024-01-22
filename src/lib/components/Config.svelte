@@ -22,7 +22,13 @@
                         {#each Object.entries(formData["General"]) as [key, value] (key)}
                             <label for="{key}">
                             <p>{key}</p>
-                            <input id="{key}" bind:value={formData["General"][key]} />
+                            {#if typeof value === 'boolean'}
+                                <input type="checkbox" id="{key}" bind:checked={formData["General"][key]} />
+                            {:else if typeof value === 'number'}
+                                <input type="number" id="{key}" bind:value={formData["General"][key]} />
+                            {:else}
+                                <input id="{key}" bind:value={formData["General"][key]} />
+                            {/if}
                         </label>
                         {/each}
                     </fieldset>
