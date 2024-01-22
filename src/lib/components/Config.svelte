@@ -17,19 +17,15 @@
 <div>
     <form on:submit|preventDefault={updateConfig}>
         {#if formData && typeof formData === 'object'}
-            {#each Object.entries(formData) as [category, values] (category)}
-                {#if category !== 'Hidden' && values && typeof values === 'object'}
                     <fieldset>
-                        <legend>{category}</legend>
-                        {#each Object.entries(values) as [key, value] (key)}
+                        <legend>General</legend>
+                        {#each Object.entries(formData["General"]) as [key, value] (key)}
                             <label for="{key}">
                             <p>{key}</p>
-                            <input id="{key}" bind:value={formData[category][key]} />
+                            <input id="{key}" bind:value={formData["General"][key]} />
                         </label>
                         {/each}
                     </fieldset>
-                {/if}
-            {/each}
         {/if}
         <button type="submit">Save</button>
     </form>

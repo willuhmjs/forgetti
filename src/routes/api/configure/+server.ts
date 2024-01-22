@@ -3,21 +3,15 @@ import type { RequestHandler } from './$types';
 import fs from 'fs';
 import configStore from '$lib/configStore';
 
-export const POST: RequestHandler = async ({ request }) => {
-	const config = await request.json();
-	fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
-	configStore.set(config);
-	return json({
-		success: true
-	})
-}
-
-export const PUT: RequestHandler = async ({request}) => {
-	const { category, key, value } = await request.json();
+export const POST: RequestHandler = async ({request}) => {
+	const data = await request.json();
 	const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-	config[category][key] = value;
-	fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
-	configStore.set(config);
+	const newConfig = {
+		...config,
+		...data
+	}
+	fs.writeFileSync('./config.json', JSON.stringify(newConfig, null, 2));
+	configStore.set(newConfig);
 	return json({
 		success: true
 	})

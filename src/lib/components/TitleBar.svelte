@@ -9,14 +9,14 @@
     const cycleThemeColor = () => {
         color = colors[(colors.indexOf(color) + 1) % colors.length];
         fetch('/api/configure', {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                category: "Hidden",
-                key: "BrandColor",
-                value: color
+                "Hidden": {
+                    "BrandColor": color
+                }
             })
         });
         document.documentElement.style.setProperty("--brand", color);
