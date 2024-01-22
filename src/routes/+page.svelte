@@ -1,21 +1,16 @@
 <script>
+    import { onMount } from 'svelte';
     import Config from '$lib/components/Config.svelte';
     import LivePreview from '$lib/components/LivePreview.svelte';
 	import TitleBar from '$lib/components/TitleBar.svelte';
     import Window from '$lib/components/Window.svelte';
     import { faCog, faVideoCamera } from '@fortawesome/free-solid-svg-icons';
     export let data;
-</script>
 
-<style>
-    .window-container {
-        display: flex;
-        gap: 10px;
-        flex-wrap: wrap;
-        align-items: flex-start; 
-        padding: 10px;
-    }
-</style>
+    onMount(() => {
+        document.documentElement.style.setProperty('--brand', data.BrandColor);
+    });
+</script>
 
 <div class="desktop">
     <TitleBar />
@@ -29,3 +24,29 @@
         </Window>
     </div>
 </div>
+
+<style>
+    :global(body) {
+        font-family: sans-serif;
+        background-color: var(--background);
+        color: #f9fafb;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    :global(:root) {
+    --brand-dark: #e86a0d; 
+    --foreground: #18181b;
+    --background: #27272a;
+    --power: #F90016;
+}
+
+.window-container {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        align-items: flex-start; 
+        padding: 10px;
+    }
+</style>
