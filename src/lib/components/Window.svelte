@@ -69,7 +69,7 @@
 
     .title-button:hover {
         cursor: pointer;
-        background-color: var(--brand-dark);   
+        filter: brightness(0.85);
 
     }
 

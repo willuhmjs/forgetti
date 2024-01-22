@@ -36,7 +36,6 @@
     }
 
     :global(:root) {
-    --brand-dark: #e86a0d; 
     --foreground: #18181b;
     --background: #27272a;
     --power: #F90016;

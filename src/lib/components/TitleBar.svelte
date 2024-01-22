@@ -67,6 +67,7 @@
 
     .buttons button:hover {
         cursor: pointer;
+        filter: brightness(0.85);
     }
 
     .buttons #power {
