@@ -4,7 +4,6 @@
     let formData: Config = {...data}; // Create a copy of data
 
     const updateConfig = () => {
-        console.log(formData);
         fetch('/api/configure', {
             method: 'POST',
             headers: {

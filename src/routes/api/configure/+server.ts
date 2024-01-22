@@ -11,3 +11,14 @@ export const POST: RequestHandler = async ({ request }) => {
 		success: true
 	})
 }
+
+export const PUT: RequestHandler = async ({request}) => {
+	const { category, key, value } = await request.json();
+	const config = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+	config[category][key] = value;
+	fs.writeFileSync('./config.json', JSON.stringify(config, null, 2));
+	configStore.set(config);
+	return json({
+		success: true
+	})
+}

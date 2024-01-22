@@ -1,14 +1,25 @@
 <script lang="ts">
     import Fa from "svelte-fa";
     import { faPowerOff, faSync, faPalette } from "@fortawesome/free-solid-svg-icons";
+	import type { Config } from "$lib/types";
+    export let data: Config;
+    const colors = ["#f97316", "#ff0000", "#00ff00", "#0000ff"];
+    let color = data.Hidden.BrandColor;
 
     const cycleThemeColor = () => {
-        const colors = ["#f97316", "#ff0000", "#00ff00", "#0000ff"];
-        const root = document.documentElement;
-        const currentColor = root.style.getPropertyValue("--brand");
-        const index = colors.indexOf(currentColor);
-        const nextColor = colors[(index + 1) % colors.length];
-        root.style.setProperty("--brand", nextColor);
+        color = colors[(colors.indexOf(color) + 1) % colors.length];
+        fetch('/api/configure', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                category: "Hidden",
+                key: "BrandColor",
+                value: color
+            })
+        });
+        document.documentElement.style.setProperty("--brand", color);
     };
 
     const requestUpdate = () => {

@@ -13,7 +13,7 @@
 </script>
 
 <div class="desktop">
-    <TitleBar />
+    <TitleBar {data} />
     <div class="window-container">
         <Window title="Camera" icon={faVideoCamera}>
             <LivePreview />
