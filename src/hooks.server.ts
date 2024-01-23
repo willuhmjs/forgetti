@@ -1,5 +1,6 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
+import si from "systeminformation";
 import configStore from '$lib/configStore';
 import server from '$lib/server/ws';
 import { detectObjects, latestDetection } from '$lib/server/model';
@@ -12,8 +13,26 @@ startStream(currentConfig);
 
 server.on('connection', (socket) => {
 	latestDetection.subscribe((val) => {
-		socket.send(JSON.stringify(val));
+		socket.send(JSON.stringify({purpose: "inference", ...val}));
 	});
+
+	// send os data to client
+	setInterval(async () => {
+		const osData = {
+			OS: await si.osInfo(),
+			Load: await si.currentLoad(),
+			Mem: await si.mem(),
+			Temp: await si.cpuTemperature(),
+			Network: await si.networkInterfaces().then(interfaces => 
+				interfaces.map(iface => ({
+					iface: iface.iface,
+					ip4: iface.ip4,
+					stats: si.networkStats(iface.iface)
+				}))
+			)
+		};
+		console.log(osData);
+	}, 1000)
 });
 
 latestDetection.subscribe((val) => {

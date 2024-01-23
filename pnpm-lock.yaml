@@ -23,6 +23,9 @@ dependencies:
   svelte-fa:
     specifier: ^4.0.2
     version: 4.0.2(svelte@4.2.8)
+  systeminformation:
+    specifier: ^5.21.24
+    version: 5.21.24
   ws:
     specifier: ^8.16.0
     version: 8.16.0
@@ -2034,6 +2037,13 @@ packages:
       locate-character: 3.0.0
       magic-string: 0.30.5
       periscopic: 3.1.0
+
+  /systeminformation@5.21.24:
+    resolution: {integrity: sha512-xQada8ByGGFoRXJaUptGgddn3i7IjtSdqNdCKzB8xkzsM7pHnfLYBWxkPdGzhZ0Z/l+W1yo+aZQZ74d2isj8kw==}
+    engines: {node: '>=8.0.0'}
+    os: [darwin, linux, win32, freebsd, openbsd, netbsd, sunos, android]
+    hasBin: true
+    dev: false
 
   /tiny-glob@0.2.9:
     resolution: {integrity: sha512-g/55ssRPUjShh+xkfx9UPDXqhckHEsHr4Vd9zX55oSdGZc/MD0m3sferOkwWtp98bv+kcVfEHtRJgBVJzelrzg==}
