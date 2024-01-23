@@ -101,15 +101,14 @@
     }
 
     .power-menu {
-    position: absolute; /* To position it relative to the parent element */
-    top: 50px; /* Position it below the button */
-    right: 0; /* Align it to the right */
-    background-color: var(--foreground); /* Background color */
-    min-width: 160px; /* Minimum width */
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Shadow for 3D effect */
-    z-index: 1; /* To make sure it appears above other elements */
-}
-
+    position: absolute;
+    top: 50px; 
+    right: 0; 
+    background-color: var(--foreground);
+    min-width: 160px; 
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+    z-index: 1; 
+    }
 .power-menu button {
     color: inherit;
     padding: 12px 16px;
