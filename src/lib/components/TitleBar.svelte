@@ -1,10 +1,11 @@
 <script lang="ts">
     import Fa from "svelte-fa";
-    import { faPowerOff, faSync, faPalette } from "@fortawesome/free-solid-svg-icons";
+    import { faPowerOff, faSync, faPalette, faRotateRight } from "@fortawesome/free-solid-svg-icons";
 	import type { Config } from "$lib/types";
     export let data: Config;
     const colors = ["#f97316", "#ff0000", "#00ff00", "#0000ff"];
     let color = data.Hidden.BrandColor;
+    let powerMenu: HTMLDivElement;
 
     const cycleThemeColor = () => {
         color = colors[(colors.indexOf(color) + 1) % colors.length];
@@ -26,17 +27,19 @@
     };
 
     const openPowerWindow = () => {
+        powerMenu!.style.display = powerMenu!.style.display === "none" ? "block" : "none";
+    };
+
+    const execCommand = (command: "shutdown" | "restart") => {
         fetch('/api/command', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                "command": "shutdown"
-            })
+            body: JSON.stringify({ command })
         
         })
-    };
+    }
 </script>
 
 <div class="titlebar">
@@ -51,6 +54,10 @@
         <button id="power" on:click={openPowerWindow}>
             <Fa icon={faPowerOff}/>
         </button>
+    </div>
+    <div class="power-menu" bind:this={powerMenu}>
+        <button on:click={() => execCommand("shutdown")}><Fa icon={faPowerOff} class="pm-icon"/>Shutdown</button>
+        <button on:click={() => execCommand("restart")}><Fa icon={faRotateRight} class="pm-icon"/>Restart</button>
     </div>
 </div>
 
@@ -88,4 +95,35 @@
         color: var(--brand);
     }
 
+    .power-menu {
+    display: none; /* Initially hidden */
+    position: absolute; /* To position it relative to the parent element */
+    top: 50px; /* Position it below the button */
+    right: 0; /* Align it to the right */
+    background-color: var(--foreground); /* Background color */
+    min-width: 160px; /* Minimum width */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); /* Shadow for 3D effect */
+    z-index: 1; /* To make sure it appears above other elements */
+}
+
+.power-menu button {
+    color: inherit;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: none;
+}
+
+.power-menu button:hover {
+    background-color: var(--brand);
+    cursor: pointer;
+}
+
+:global(.pm-icon) {
+    margin-right: 0.5rem;
+}
+   
 </style>
