@@ -16,7 +16,7 @@
 	<TitleBar {data} />
 	<div class="window-container">
 		<Window title="Camera" icon={faVideoCamera}>
-			<LivePreview />
+			<LivePreview {data} />
 		</Window>
 
 		<Window title="Configuration" icon={faCog}>
