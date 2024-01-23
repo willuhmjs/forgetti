@@ -30,8 +30,7 @@
 	.window {
 		width: fit-content;
 		border: none;
-		border-top-left-radius: 15px;
-		border-top-right-radius: 15px;
+		border-radius: 15px;
 		background-color: #fff;
 		font-size: 12px;
 		background-color: var(--foreground);
