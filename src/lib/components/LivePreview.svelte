@@ -6,7 +6,9 @@
 
 	onMount(() => {
 		let img = new Image();
-		const socket = new WebSocket(`${location.protocol.includes("https") ? "wss" : "ws"}://${location.hostname}:2221`);
+		const socket = new WebSocket(
+			`${location.protocol.includes('https') ? 'wss' : 'ws'}://${location.hostname}:2221`
+		);
 		socket.onmessage = ({ data }) => {
 			const { box, buffer } = JSON.parse(data);
 			img.src = `data:image/jpeg;base64,${buffer}`;
@@ -38,5 +40,5 @@
 </script>
 
 <div style="margin-bottom: -4px">
-<canvas bind:this={canvas} />
+	<canvas bind:this={canvas} />
 </div>
