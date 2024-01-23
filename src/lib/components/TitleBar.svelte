@@ -2,10 +2,15 @@
     import Fa from "svelte-fa";
     import { faPowerOff, faSync, faPalette, faRotateRight } from "@fortawesome/free-solid-svg-icons";
 	import type { Config } from "$lib/types";
+	import { onMount } from "svelte";
     export let data: Config;
     const colors = ["#f97316", "#ff0000", "#00ff00", "#0000ff"];
     let color = data.Hidden.BrandColor;
     let powerMenu: HTMLDivElement;
+
+    onMount(() => {
+        powerMenu.style.display = "none";
+    });
 
     const cycleThemeColor = () => {
         color = colors[(colors.indexOf(color) + 1) % colors.length];
@@ -27,7 +32,7 @@
     };
 
     const openPowerWindow = () => {
-        powerMenu!.style.display = powerMenu!.style.display === "none" ? "block" : "none";
+        if (powerMenu) powerMenu.style.display = powerMenu!.style.display === "none" ? "block" : "none";
     };
 
     const execCommand = (command: "shutdown" | "restart") => {
@@ -96,7 +101,6 @@
     }
 
     .power-menu {
-    display: none; /* Initially hidden */
     position: absolute; /* To position it relative to the parent element */
     top: 50px; /* Position it below the button */
     right: 0; /* Align it to the right */
