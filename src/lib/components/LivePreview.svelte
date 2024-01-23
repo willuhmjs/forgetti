@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Box, Config } from '$lib/types';
+	import { transform } from "cloud-url-resolver";
 	export let data: Config;
 	let canvas: HTMLCanvasElement;
 
 	onMount(() => {
 		let img = new Image();
 		const socket = new WebSocket(
-			`${location.protocol.includes('https') ? 'wss' : 'ws'}://${location.hostname}:2221`
+			transform(2221, "ws")
 		);
 		socket.onmessage = ({ data }) => {
 			const { box, buffer } = JSON.parse(data);
