@@ -23,7 +23,7 @@
                             <label for="{key}">
                             <p>{key}</p>
                             {#if typeof value === 'boolean'}
-                                <input type="checkbox" id="{key}" bind:checked={formData["General"][key]} required />
+                                <input type="checkbox" id="{key}" bind:checked={formData["General"][key]} />
                             {:else if !isNaN(Number(value))}
                                 <input type="range" id="{key}" bind:value={formData["General"][key]} min="1" max="100" required />
                                 {formData["General"][key]}
