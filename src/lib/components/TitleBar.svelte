@@ -68,6 +68,7 @@
 
 <style>
     .titlebar {
+        position: relative;
         max-width: 100%;
         background-color: var(--foreground);
         padding: 1rem;
@@ -76,7 +77,6 @@
         justify-content: space-between;
         font-size: 18px;
         box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
-
     }
 
     .title {
@@ -102,13 +102,14 @@
     }
 
     .power-menu {
-    position: absolute;
-    top: 50px; 
-    right: 0; 
-    background-color: var(--foreground);
-    min-width: 160px; 
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
-    z-index: 1; 
+        position: absolute;
+        top: 100%;
+        right: 0; 
+        background-color: var(--foreground);
+        min-width: 160px; 
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); 
+        z-index: 1; 
+        border-bottom-left-radius: 15px;
     }
 .power-menu button {
     color: inherit;
@@ -119,6 +120,10 @@
     text-align: left;
     border: none;
     background: none;
+}
+
+.power-menu button:last-child {
+    border-bottom-left-radius: 15px;
 }
 
 .power-menu button:hover {
