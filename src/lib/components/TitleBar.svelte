@@ -77,8 +77,8 @@
 		margin: 0;
 		display: flex;
 		justify-content: space-between;
-		font-size: 18px;
 		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+		font-size: 18px;
 	}
 
 	.title {
@@ -115,13 +115,14 @@
 	}
 	.power-menu button {
 		color: inherit;
-		padding: 12px 16px;
+		padding: 0.75rem 1rem;
 		text-decoration: none;
 		display: block;
 		width: 100%;
 		text-align: left;
 		border: none;
 		background: none;
+		font-size: 15px;
 	}
 
 	.power-menu button:last-child {
