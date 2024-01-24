@@ -17,22 +17,31 @@ server.on('connection', (socket) => {
 	});
 
 	// send os data to client
-	setInterval(async () => {
-		const osData = {
-			OS: await si.osInfo(),
-			Load: await si.currentLoad(),
-			Mem: await si.mem(),
-			Temp: await si.cpuTemperature(),
-			Network: await si.networkInterfaces().then(interfaces => 
-				interfaces.map(iface => ({
-					iface: iface.iface,
-					ip4: iface.ip4,
-					stats: si.networkStats(iface.iface)
-				}))
-			)
-		};
-		console.log(osData);
-	}, 1000)
+		
+		setInterval(async () => {
+			const osInfo = await si.osInfo();
+			const loadPercent = (await si.currentLoad()).currentLoad;
+			const mem = await si.mem(); // .used / .total * 100
+			const cpuTemp = await si.cpuTemperature(); // .main + .max
+			const netStats = (await si.networkStats())[0]
+			socket.send(JSON.stringify({
+				purpose: "system",
+				distro: osInfo.distro,
+				platform: osInfo.platform,
+				release: osInfo.release,
+				memPercent: (mem.used / mem.total) * 100,
+				cpuTemp: cpuTemp.main,
+				cpuTempMax: cpuTemp.max,
+				netiface: netStats.iface,
+				netRX: netStats.rx_bytes,
+				netTX: netStats.tx_bytes,
+				loadPercent,
+			}));	
+		}, 1000)
+		
+		// distro + release (codename) | (Microsoft Windows 10 Home 10.0.19045) or (Ubuntu 22.04.3 LTS) 
+		// platform + kernel | (Windows 10.0.19045) or (linux 5.15.133)
+		// 
 });
 
 latestDetection.subscribe((val) => {

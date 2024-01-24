@@ -11,9 +11,12 @@
 			transform(2221, "ws")
 		);
 		socket.onmessage = ({ data }) => {
-			const { box, buffer } = JSON.parse(data);
-			img.src = `data:image/jpeg;base64,${buffer}`;
-			img.onload = () => drawCanvas(box);
+			const json_data = JSON.parse(data);
+				if (json_data.purpose === "inference") {
+				const { box, buffer } = JSON.parse(data);
+				img.src = `data:image/jpeg;base64,${buffer}`;
+				img.onload = () => drawCanvas(box);
+			}
 		};
 
 		function drawCanvas(boxes: any[]) {
