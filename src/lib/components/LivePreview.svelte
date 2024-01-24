@@ -1,23 +1,21 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Box, Config } from '$lib/types';
-	import { transform } from "cloud-url-resolver";
+	import socketStore from "$lib/wsStore";
 	export let data: Config;
 	let canvas: HTMLCanvasElement;
 
 	onMount(() => {
 		let img = new Image();
-		const socket = new WebSocket(
-			transform(2221, "ws")
-		);
-		socket.onmessage = ({ data }) => {
-			const json_data = JSON.parse(data);
-				if (json_data.purpose === "inference") {
-				const { box, buffer } = JSON.parse(data);
+		
+		socketStore.subscribe((data) => {
+			if (data?.purpose === "inference") {
+				const { box, buffer } = data;
 				img.src = `data:image/jpeg;base64,${buffer}`;
 				img.onload = () => drawCanvas(box);
 			}
-		};
+		})
+
 
 		function drawCanvas(boxes: any[]) {
 			if (canvas) {

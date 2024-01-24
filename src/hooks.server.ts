@@ -37,11 +37,7 @@ server.on('connection', (socket) => {
 				netTX: netStats.tx_bytes,
 				loadPercent,
 			}));	
-		}, 1000)
-		
-		// distro + release (codename) | (Microsoft Windows 10 Home 10.0.19045) or (Ubuntu 22.04.3 LTS) 
-		// platform + kernel | (Windows 10.0.19045) or (linux 5.15.133)
-		// 
+		}, 1000) 
 });
 
 latestDetection.subscribe((val) => {

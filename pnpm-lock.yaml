@@ -12,8 +12,8 @@ dependencies:
     specifier: ^1.6.4
     version: 1.6.5
   cloud-url-resolver:
-    specifier: ^1.2.0
-    version: 1.2.0
+    specifier: ^1.3.0
+    version: 1.3.0
   mjpeg-consumer:
     specifier: ^2.0.0
     version: 2.0.0
@@ -1026,8 +1026,8 @@ packages:
       fsevents: 2.3.3
     dev: true
 
-  /cloud-url-resolver@1.2.0:
-    resolution: {integrity: sha512-z+/J+11ABm0/kOOZsRYee8i15PELD2HTu52BWm/sOELZQUchFz5BzqofXGNH/oFjCSfsvRQYwh6ucn4AT8W0HA==}
+  /cloud-url-resolver@1.3.0:
+    resolution: {integrity: sha512-+uFQAyKp8fd/EskR55ufCUWNxiAfdHdMGRsxfF4ggs942syfb3GqQFqXNFKirHdLr67W1kA/Podmbci2bmRhmg==}
     dev: false
 
   /code-red@1.0.4:

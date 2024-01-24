@@ -21,3 +21,17 @@ export interface Config {
 		BrandColor: string;
 	};
 }
+
+export interface SystemInfo {
+	purpose: "system";
+	distro: string;
+	platform: string;
+	release: string;
+	memPercent: number;
+	cpuTemp: number;
+	cpuTempMax: number;
+	netiface: string;
+	netRX: number;
+	netTX: number;
+	loadPercent: number;
+}
