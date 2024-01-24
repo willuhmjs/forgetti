@@ -3,7 +3,7 @@
     import socketStore from "$lib/wsStore";
     import type { SystemInfo } from '$lib/types';
     import Fa from "svelte-fa";
-    import { faRotateRight } from '@fortawesome/free-solid-svg-icons';
+    import { faSync } from '@fortawesome/free-solid-svg-icons';
     let socketData: SystemInfo;
 
     onMount(() => {
@@ -14,9 +14,11 @@
 		})
     })
 </script>
-
+<div>
 {#if socketData}
-    {JSON.stringify(socketData)}
+    <p>{socketData.distro} {socketData.release} ({socketData.codename})</p>
+    <p>{socketData.platform} {socketData.kernel}</p>
 {:else}
-    <Fa icon={faRotateRight} spin />
+    <Fa icon={faSync} spin />
 {/if}
+</div>

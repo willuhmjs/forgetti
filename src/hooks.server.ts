@@ -29,6 +29,8 @@ server.on('connection', (socket) => {
 				distro: osInfo.distro,
 				platform: osInfo.platform,
 				release: osInfo.release,
+				codename: osInfo.codename,
+				kernel: osInfo.kernel,
 				memPercent: (mem.used / mem.total) * 100,
 				cpuTemp: cpuTemp.main,
 				cpuTempMax: cpuTemp.max,

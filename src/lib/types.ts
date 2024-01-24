@@ -27,6 +27,8 @@ export interface SystemInfo {
 	distro: string;
 	platform: string;
 	release: string;
+	codename: string;
+	kernel: string;
 	memPercent: number;
 	cpuTemp: number;
 	cpuTempMax: number;
