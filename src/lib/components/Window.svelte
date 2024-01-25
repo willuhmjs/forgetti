@@ -21,8 +21,10 @@
 			{/if}
 		</button>
 	</div>
-	<div class="content" style={minimized ? 'visibility: hidden; height: 0;' : ''}>
-		<slot />
+	<div class="content" >
+		{#if !minimized}
+			<slot />
+		{/if}
 	</div>
 </div>
 

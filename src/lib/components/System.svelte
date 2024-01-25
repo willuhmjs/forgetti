@@ -4,7 +4,7 @@
 	import CircularBar from './CircularBar.svelte';
     import type { SystemInfo } from '$lib/types';
     import Fa from "svelte-fa";
-    import { faSync, faQuestionCircle, type IconDefinition, faServer, faTemperatureLow, faTemperatureHigh } from '@fortawesome/free-solid-svg-icons';
+    import { faSync, faQuestionCircle, type IconDefinition, faServer, faTemperatureLow, faTemperatureHigh, faWifi, faUpload, faDownload } from '@fortawesome/free-solid-svg-icons';
     import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons';
 
     let socketData: SystemInfo;
@@ -33,12 +33,32 @@
 </script>
 <div>
 {#if socketData}
-    <CircularBar bind:value={socketData.memPercent} color="var(--brand)" trackColor="var(--background)" textColor="#fff"/>
-    <CircularBar bind:value={socketData.loadPercent} color="var(--brand)" trackColor="var(--background)" textColor="#fff"/>
-    <p><Fa icon={platformIcon} /> {socketData.distro} {socketData.release} ({socketData.codename})</p>
-    <p><Fa icon={faServer} />{socketData.platform} {socketData.kernel}</p>
-    <p><Fa icon={socketData.cpuTemp > 60 ? faTemperatureHigh : faTemperatureLow}/>{socketData.cpuTemp}</p>
+    <div class="circularBarContainer">
+        <CircularBar bind:value={socketData.memPercent} color="var(--brand)" trackColor="var(--background)" textColor="#fff"/>
+    </div>
+    <div class="circularBarContainer">
+        <CircularBar bind:value={socketData.loadPercent} color="var(--brand)" trackColor="var(--background)" textColor="#fff"/>
+    </div>
+    <p class="spec"><span class="icon"><Fa icon={platformIcon} /></span>{socketData.distro} {socketData.release} ({socketData.codename})</p>
+    <p class="spec"><span class="icon"><Fa icon={faServer} /></span>{socketData.platform} {socketData.kernel}</p>
+    <p class="spec"><span class="icon"><Fa icon={socketData.cpuTemp > 60 ? faTemperatureHigh : faTemperatureLow}/></span>{socketData.cpuTemp}</p>
+    <p class="spec"><span class="icon"><Fa icon={faWifi}/></span>{socketData.netTX} <Fa icon={faUpload}/> / {socketData.netRX} <Fa icon={faDownload} /></p>
 {:else}
     <Fa icon={faSync} spin />
 {/if}
 </div>
+
+<style>
+    .spec {
+        font-size: 1rem;
+    }
+
+    .spec .icon {
+        margin-right: 0.5rem;        
+    }
+
+    .circularBarContainer {
+        width: 75px;
+        height: 75px;
+    }
+</style>
