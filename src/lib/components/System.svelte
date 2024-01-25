@@ -27,6 +27,18 @@
 		});
 	});
 
+	function convertToLargestUnit(kilobytes: number) {
+		let units = ['KB', 'MB', 'GB', 'TB', 'PB'];
+		let index = 0;
+
+		while (kilobytes >= 1024 && index < units.length - 1) {
+			kilobytes /= 1024;
+			index++;
+		}
+
+		return `${kilobytes.toFixed(2)} ${units[index]}`;
+	}
+
 	let platformIcon: IconDefinition = faQuestionCircle;
 
 	$: {
@@ -56,11 +68,11 @@
 		<p class="spec">
 			<span class="icon"
 				><Fa icon={socketData.cpuTemp > 60 ? faTemperatureHigh : faTemperatureLow} /></span
-			>{socketData.cpuTemp}
+			>{socketData.cpuTemp}°C
 		</p>
 		<p class="spec">
-			<span class="icon"><Fa icon={faWifi} /></span>{socketData.netTX}
-			<Fa icon={faUpload} /> / {socketData.netRX}
+			<span class="icon"><Fa icon={faWifi} /></span>{convertToLargestUnit(socketData.netTX)}
+			<Fa icon={faUpload} /> / {convertToLargestUnit(socketData.netRX)}
 			<Fa icon={faDownload} />
 		</p>
     </div>

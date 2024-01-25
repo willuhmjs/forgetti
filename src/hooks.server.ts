@@ -35,8 +35,8 @@ server.on('connection', (socket) => {
 				memPercent: Math.round((mem.used / mem.total) * 100),
 				cpuTemp: Math.round(cpuTemp.main) || 0,
 				netiface: netStats.iface,
-				netRX: (netStats.rx_bytes / 1e6).toFixed(2),
-				netTX: (netStats.tx_bytes / 1e6).toFixed(2),
+				netRX: (netStats.rx_bytes / 1000),
+				netTX: (netStats.tx_bytes / 1000),
 				loadPercent: Math.round(loadPercent)
 			})
 		);
