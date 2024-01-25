@@ -1,21 +1,20 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Box, Config } from '$lib/types';
-	import socketStore from "$lib/wsStore";
+	import socketStore from '$lib/wsStore';
 	export let data: Config;
 	let canvas: HTMLCanvasElement;
 
 	onMount(() => {
 		let img = new Image();
-		
+
 		socketStore.subscribe((data) => {
-			if (data?.purpose === "inference") {
+			if (data?.purpose === 'inference') {
 				const { box, buffer } = data;
 				img.src = `data:image/jpeg;base64,${buffer}`;
 				img.onload = () => drawCanvas(box);
 			}
-		})
-
+		});
 
 		function drawCanvas(boxes: any[]) {
 			if (canvas) {

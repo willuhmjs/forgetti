@@ -21,7 +21,7 @@
 			{/if}
 		</button>
 	</div>
-	<div class="content" >
+	<div class="content">
 		{#if !minimized}
 			<slot />
 		{/if}

@@ -1,6 +1,6 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
-import si from "systeminformation";
+import si from 'systeminformation';
 import configStore from '$lib/configStore';
 import server from '$lib/server/ws';
 import { detectObjects, latestDetection } from '$lib/server/model';
@@ -13,19 +13,20 @@ startStream(currentConfig);
 
 server.on('connection', (socket) => {
 	latestDetection.subscribe((val) => {
-		socket.send(JSON.stringify({purpose: "inference", ...val}));
+		socket.send(JSON.stringify({ purpose: 'inference', ...val }));
 	});
 
 	// send os data to client
-		
-		setInterval(async () => {
-			const osInfo = await si.osInfo();
-			const loadPercent = (await si.currentLoad()).currentLoad;
-			const mem = await si.mem(); // .used / .total * 100
-			const cpuTemp = await si.cpuTemperature(); // .main + .max
-			const netStats = (await si.networkStats())[0]
-			socket.send(JSON.stringify({
-				purpose: "system",
+
+	setInterval(async () => {
+		const osInfo = await si.osInfo();
+		const loadPercent = (await si.currentLoad()).currentLoad;
+		const mem = await si.mem(); // .used / .total * 100
+		const cpuTemp = await si.cpuTemperature(); // .main + .max
+		const netStats = (await si.networkStats())[0];
+		socket.send(
+			JSON.stringify({
+				purpose: 'system',
 				distro: osInfo.distro,
 				platform: osInfo.platform,
 				release: osInfo.release,
@@ -36,9 +37,10 @@ server.on('connection', (socket) => {
 				netiface: netStats.iface,
 				netRX: (netStats.rx_bytes / 1e6).toFixed(2),
 				netTX: (netStats.tx_bytes / 1e6).toFixed(2),
-				loadPrecent: Math.round(loadPercent),
-			}));	
-		}, 1000) 
+				loadPrecent: Math.round(loadPercent)
+			})
+		);
+	}, 1000);
 });
 
 latestDetection.subscribe((val) => {

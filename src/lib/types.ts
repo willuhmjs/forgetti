@@ -23,7 +23,7 @@ export interface Config {
 }
 
 export interface SystemInfo {
-	purpose: "system";
+	purpose: 'system';
 	distro: string;
 	platform: string;
 	release: string;
