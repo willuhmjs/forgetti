@@ -33,11 +33,11 @@ server.on('connection', (socket) => {
 				codename: osInfo.codename,
 				kernel: osInfo.kernel,
 				memPercent: Math.round((mem.used / mem.total) * 100),
-				cpuTemp: cpuTemp.main || 0,
+				cpuTemp: Math.round(cpuTemp.main) || 0,
 				netiface: netStats.iface,
 				netRX: (netStats.rx_bytes / 1e6).toFixed(2),
 				netTX: (netStats.tx_bytes / 1e6).toFixed(2),
-				loadPrecent: Math.round(loadPercent)
+				loadPercent: Math.round(loadPercent)
 			})
 		);
 	}, 1000);
