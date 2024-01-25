@@ -33,7 +33,6 @@ server.on('connection', (socket) => {
 				kernel: osInfo.kernel,
 				memPercent: (mem.used / mem.total) * 100,
 				cpuTemp: cpuTemp.main || 0,
-				cpuTempMax: cpuTemp.max || 1,
 				netiface: netStats.iface,
 				netRX: netStats.rx_bytes,
 				netTX: netStats.tx_bytes,

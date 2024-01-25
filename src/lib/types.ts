@@ -31,7 +31,6 @@ export interface SystemInfo {
 	kernel: string;
 	memPercent: number;
 	cpuTemp: number;
-	cpuTempMax: number;
 	netiface: string;
 	netRX: number;
 	netTX: number;
