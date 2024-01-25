@@ -42,24 +42,9 @@
 	}
 </script>
 
-<div>
+<div class="systemContainer">
 	{#if socketData}
-		<div class="circularBarContainer">
-			<CircularBar
-				bind:value={socketData.memPercent}
-				color="var(--brand)"
-				trackColor="var(--background)"
-				textColor="#fff"
-			/>
-		</div>
-		<div class="circularBarContainer">
-			<CircularBar
-				bind:value={socketData.loadPercent}
-				color="var(--brand)"
-				trackColor="var(--background)"
-				textColor="#fff"
-			/>
-		</div>
+        <div>
 		<p class="spec">
 			<span class="icon"><Fa icon={platformIcon} /></span>{socketData.distro}
 			{socketData.release} ({socketData.codename})
@@ -78,6 +63,33 @@
 			<Fa icon={faUpload} /> / {socketData.netRX}
 			<Fa icon={faDownload} />
 		</p>
+    </div>
+    <div class="circularBarContainer">
+		<div class="circularBarWrapper">
+
+        <div class="circularBarSubContainer">
+			<CircularBar
+				bind:value={socketData.memPercent}
+				color="var(--brand)"
+				trackColor="var(--background)"
+				textColor="#fff"
+			/>
+		</div>
+		<p>MEM</p>
+	</div>
+		<div class="circularBarWrapper">
+			<div class="circularBarSubContainer">
+			<CircularBar
+				bind:value={socketData.loadPercent}
+				color="var(--brand)"
+				trackColor="var(--background)"
+				textColor="#fff"
+			/>
+		</div>
+		<p>CPU</p>
+
+		</div>
+    </div>
 	{:else}
 		<Fa icon={faSync} spin />
 	{/if}
@@ -92,8 +104,28 @@
 		margin-right: 0.5rem;
 	}
 
-	.circularBarContainer {
+	.circularBarWrapper {
+        text-align: center;
+		margin: auto;
+	}
+
+    .systemContainer {
+        display: flex;
+        padding: 0 1rem;
+        gap: 2rem;
+        justify-content: space-between;
+        align-items: middle;
+}
+
+	.circularBarSubContainer {
 		width: 75px;
 		height: 75px;
 	}
+
+    .circularBarContainer {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+
 </style>
