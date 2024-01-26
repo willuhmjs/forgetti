@@ -8,6 +8,10 @@
 	let color = data.Hidden.BrandColor;
 	let powerMenu: HTMLDivElement;
 
+	onMount(() => {
+		powerMenu.style.display = 'none';
+	});
+
 	const cycleThemeColor = () => {
 		color = colors[(colors.indexOf(color) + 1) % colors.length];
 		fetch('/api/configure', {
@@ -24,13 +28,8 @@
 		document.documentElement.style.setProperty('--brand', color);
 	};
 
-	$: updateRequested = false;
-	const requestUpdate =  () => {
-		fetch('/api/update', {
-			method: 'POST'
-		}).then(async (response) => {
-			if ((await response.json()).success) updateRequested = true;
-		})
+	const requestUpdate = () => {
+		
 	};
 
 	const openPowerWindow = () => {
@@ -44,7 +43,7 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ command })
-		})
+		});
 	};
 </script>
 
@@ -55,7 +54,7 @@
 			<Fa icon={faPalette} />
 		</button>
 		<button id="update" on:click={requestUpdate}>
-			<Fa icon={faSync} spin={updateRequested} color={updateRequested ? "yellow" : ""}/>
+			<Fa icon={faSync} />
 		</button>
 		<button id="power" on:click={openPowerWindow}>
 			<Fa icon={faPowerOff} />
@@ -115,7 +114,6 @@
 		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 		z-index: 1;
 		border-bottom-left-radius: 15px;
-		display: none;
 	}
 	.power-menu button {
 		color: inherit;
