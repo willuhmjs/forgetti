@@ -26,7 +26,7 @@ git clone https://github.com/willuhmjs/forgetti /home/"$USER"/forgetti
 cd /home/"$USER"/forgetti
 
 # Install dependencies and build the app
-npm install
+npm ci
 npm run build
 
 # Create a systemd service
