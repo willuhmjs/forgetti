@@ -1,6 +1,5 @@
 <script>
     export let value = 0;
-    export let info = '';
     export let color;
     export let trackColor;
     export let textColor;
@@ -12,7 +11,7 @@
     let circle, hidCircle;
     let rootEle;
     let rootWidth, rootHeight;
-    let textLarge, textSmall, percent;
+    let textLarge, percent;
     let max = 100;
     let discRadius = 80;
 
@@ -64,9 +63,6 @@
 
             // Font sizes
             textLarge.style.fontSize = Math.max(radius / 2, 12) + 'px';
-            if (info) {
-                textSmall.style.fontSize = Math.max(radius / 6, 6) + 'px';
-            }
             percent.style.fontSize = Math.max(radius / 6, 10) + 'px';
         }
     }
@@ -80,10 +76,6 @@
         </svg>
         <div class="info">
             <b bind:this={textLarge}>{newValue}</b><b bind:this={percent}>%</b>
-            {#if info}
-                <br />
-                <div bind:this={textSmall}>{info}</div>
-            {/if}
         </div>
     </div>
 </section>
@@ -138,11 +130,5 @@
         top: 50%;
         transform: translate(-50%, -50%);
         white-space: pre-line;
-    }
-
-    .info > div {
-        font-weight: normal;
-        width: 90%;
-        margin: auto;
     }
 </style>
