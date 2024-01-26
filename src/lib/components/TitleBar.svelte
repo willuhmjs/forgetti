@@ -2,15 +2,10 @@
 	import Fa from 'svelte-fa';
 	import { faPowerOff, faSync, faPalette, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 	import type { Config } from '$lib/types';
-	import { onMount } from 'svelte';
 	export let data: Config;
 	const colors = ['#f97316', '#ff0000', '#00ff00', '#0000ff'];
 	let color = data.Hidden.BrandColor;
 	let powerMenu: HTMLDivElement;
-
-	onMount(() => {
-		powerMenu.style.display = 'none';
-	});
 
 	const cycleThemeColor = () => {
 		color = colors[(colors.indexOf(color) + 1) % colors.length];
@@ -28,8 +23,13 @@
 		document.documentElement.style.setProperty('--brand', color);
 	};
 
-	const requestUpdate = () => {
-		
+	$: updateRequested = false;
+	const requestUpdate =  () => {
+		fetch('/api/update', {
+			method: 'POST'
+		}).then(async (response) => {
+			if ((await response.json()).success) updateRequested = true;
+		})
 	};
 
 	const openPowerWindow = () => {
@@ -54,7 +54,7 @@
 			<Fa icon={faPalette} />
 		</button>
 		<button id="update" on:click={requestUpdate}>
-			<Fa icon={faSync} />
+			<Fa icon={faSync} spin={updateRequested} color={updateRequested ? "yellow" : ""}/>
 		</button>
 		<button id="power" on:click={openPowerWindow}>
 			<Fa icon={faPowerOff} />
@@ -114,6 +114,7 @@
 		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
 		z-index: 1;
 		border-bottom-left-radius: 15px;
+		display: none;
 	}
 	.power-menu button {
 		color: inherit;
