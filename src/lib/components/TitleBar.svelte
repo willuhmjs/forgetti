@@ -28,14 +28,16 @@
 		document.documentElement.style.setProperty('--brand', color);
 	};
 
-	const requestUpdate = () => {};
+	const requestUpdate = () => {
+		
+	};
 
 	const openPowerWindow = () => {
 		if (powerMenu) powerMenu.style.display = powerMenu!.style.display === 'none' ? 'block' : 'none';
 	};
 
 	const execCommand = (command: 'shutdown' | 'restart') => {
-		fetch('/api/command', {
+		fetch('/api/power', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
