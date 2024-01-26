@@ -17,7 +17,6 @@ if ! command_exists node; then
   echo "Node.js is not installed. Installing..."
   sudo apt update && sudo apt upgrade -y
   sudo apt install -y nodejs
-  sudo npm install -g pnpm
 fi
 
 # Clone the repository to the user's home directory
@@ -27,8 +26,8 @@ git clone https://github.com/willuhmjs/forgetti /home/"$USER"/forgetti
 cd /home/"$USER"/forgetti
 
 # Install dependencies and build the app
-pnpm install
-pnpm run build
+npm install
+npm run build
 
 # Create a systemd service
 cat <<EOF | sudo tee /etc/systemd/system/forgetti.service
@@ -37,7 +36,7 @@ Description=Forgetti App
 
 [Service]
 WorkingDirectory=/home/$USER/forgetti
-ExecStart=pnpm run preview
+ExecStart=npm run preview
 Restart=always
 User=$USER
 Group=$USER
