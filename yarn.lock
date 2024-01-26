@@ -10,11 +10,6 @@
     "@jridgewell/gen-mapping" "^0.3.0"
     "@jridgewell/trace-mapping" "^0.3.9"
 
-"@esbuild/linux-arm64@0.19.11":
-  version "0.19.11"
-  resolved "https://registry.npmjs.org/@esbuild/linux-arm64/-/linux-arm64-0.19.11.tgz"
-  integrity sha512-LneLg3ypEeveBSMuoa0kwMpCGmpu8XQUh+mL8XXwoYZ6Be2qBnVtcDI5azSvh7vioMDhoJFZzp9GWp9IWpYoUg==
-
 "@esbuild/linux-x64@0.19.11":
   version "0.19.11"
   resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.19.11.tgz"
@@ -39,32 +34,15 @@
   dependencies:
     "@fortawesome/fontawesome-common-types" "6.5.1"
 
-"@img/sharp-libvips-linux-arm64@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@img/sharp-libvips-linux-arm64/-/sharp-libvips-linux-arm64-1.0.1.tgz"
-  integrity sha512-bnGG+MJjdX70mAQcSLxgeJco11G+MxTz+ebxlz8Y3dxyeb3Nkl7LgLI0mXupoO+u1wRNx/iRj5yHtzA4sde1yA==
-
 "@img/sharp-libvips-linux-x64@1.0.1":
   version "1.0.1"
   resolved "https://registry.npmjs.org/@img/sharp-libvips-linux-x64/-/sharp-libvips-linux-x64-1.0.1.tgz"
   integrity sha512-3NR1mxFsaSgMMzz1bAnnKbSAI+lHXVTqAHgc1bgzjHuXjo4hlscpUxc0vFSAPKI3yuzdzcZOkq7nDPrP2F8Jgw==
 
-"@img/sharp-libvips-linuxmusl-arm64@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/@img/sharp-libvips-linuxmusl-arm64/-/sharp-libvips-linuxmusl-arm64-1.0.1.tgz"
-  integrity sha512-5aBRcjHDG/T6jwC3Edl3lP8nl9U2Yo8+oTl5drd1dh9Z1EBfzUKAJFUDTDisDjUwc7N4AjnPGfCA3jl3hY8uDg==
-
 "@img/sharp-libvips-linuxmusl-x64@1.0.1":
   version "1.0.1"
   resolved "https://registry.npmjs.org/@img/sharp-libvips-linuxmusl-x64/-/sharp-libvips-linuxmusl-x64-1.0.1.tgz"
   integrity sha512-dcT7inI9DBFK6ovfeWRe3hG30h51cBAP5JXlZfx6pzc/Mnf9HFCQDLtYf4MCBjxaaTfjCCjkBxcy3XzOAo5txw==
-
-"@img/sharp-linux-arm64@0.33.2":
-  version "0.33.2"
-  resolved "https://registry.npmjs.org/@img/sharp-linux-arm64/-/sharp-linux-arm64-0.33.2.tgz"
-  integrity sha512-pz0NNo882vVfqJ0yNInuG9YH71smP4gRSdeL09ukC2YLE6ZyZePAlWKEHgAzJGTiOh8Qkaov6mMIMlEhmLdKew==
-  optionalDependencies:
-    "@img/sharp-libvips-linux-arm64" "1.0.1"
 
 "@img/sharp-linux-x64@0.33.2":
   version "0.33.2"
@@ -72,13 +50,6 @@
   integrity sha512-xUT82H5IbXewKkeF5aiooajoO1tQV4PnKfS/OZtb5DDdxS/FCI/uXTVZ35GQ97RZXsycojz/AJ0asoz6p2/H/A==
   optionalDependencies:
     "@img/sharp-libvips-linux-x64" "1.0.1"
-
-"@img/sharp-linuxmusl-arm64@0.33.2":
-  version "0.33.2"
-  resolved "https://registry.npmjs.org/@img/sharp-linuxmusl-arm64/-/sharp-linuxmusl-arm64-0.33.2.tgz"
-  integrity sha512-F+0z8JCu/UnMzg8IYW1TMeiViIWBVg7IWP6nE0p5S5EPQxlLd76c8jYemG21X99UzFwgkRo5yz2DS+zbrnxZeA==
-  optionalDependencies:
-    "@img/sharp-libvips-linuxmusl-arm64" "1.0.1"
 
 "@img/sharp-linuxmusl-x64@0.33.2":
   version "0.33.2"
@@ -198,16 +169,6 @@
     "@types/estree" "^1.0.0"
     estree-walker "^2.0.2"
     picomatch "^2.3.1"
-
-"@rollup/rollup-linux-arm64-gnu@4.9.5":
-  version "4.9.5"
-  resolved "https://registry.npmjs.org/@rollup/rollup-linux-arm64-gnu/-/rollup-linux-arm64-gnu-4.9.5.tgz"
-  integrity sha512-dkRscpM+RrR2Ee3eOQmRWFjmV/payHEOrjyq1VZegRUa5OrZJ2MAxBNs05bZuY0YCtpqETDy1Ix4i/hRqX98cA==
-
-"@rollup/rollup-linux-arm64-musl@4.9.5":
-  version "4.9.5"
-  resolved "https://registry.npmjs.org/@rollup/rollup-linux-arm64-musl/-/rollup-linux-arm64-musl-4.9.5.tgz"
-  integrity sha512-QaKFVOzzST2xzY4MAmiDmURagWLFh+zZtttuEnuNn19AiZ0T3fhPyjPPGwLNdiDT82ZE91hnfJsUiDwF9DClIQ==
 
 "@rollup/rollup-linux-x64-gnu@4.9.5":
   version "4.9.5"
