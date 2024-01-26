@@ -1,6 +1,6 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vitest/config';
-
+import "sharp";
 export default defineConfig({
 	plugins: [sveltekit()],
 	test: {
