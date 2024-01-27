@@ -22,6 +22,7 @@ function execCommand(command: string): Promise<string> {
                 reject(new Error(`Command execution failed with stderr: ${stderr}`));
                 return;
             }
+            console.log(stdout);
             resolve(stdout);
         });
     });
