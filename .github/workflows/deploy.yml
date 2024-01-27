@@ -1,22 +1,37 @@
-name: ci
-on:
+name: Deploy to GitHub Pages
+'on':
   push:
-    branches:
-      - main
-  workflow_dispatch:
-permissions:
-  contents: write
+    branches: main
 jobs:
-  deploy:
+  build_site:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v4
         with:
           python-version: 3.x
       - run: pip install mkdocs-material
-      - run: mkdocs build
-      - uses: actions/upload-pages-artifact@v1
+      - name: build
+        env:
+          BASE_PATH: '/${{ github.event.repository.name }}'
+        run: |
+          mkdocs build
+      - name: Upload Artifacts
+        uses: actions/upload-pages-artifact@v2
         with:
-          name: site
-          path: site
+          path: site/
+  deploy:
+    needs: build_site
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: '${{ steps.deployment.outputs.page_url }}'
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v2
