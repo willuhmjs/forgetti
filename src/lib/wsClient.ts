@@ -1,9 +1,12 @@
 import { readable } from 'svelte/store';
 import { transform } from 'cloud-url-resolver';
 import type { SystemInfo } from './types';
+import { onMount } from 'svelte';
 
-export default readable<SystemInfo | any>(null, (set) => {
-	const socket = new WebSocket(transform(2221, 'ws'));
+let socket: WebSocket;
+
+export const socketStore = readable<SystemInfo | any>(null, (set) => {
+	socket = new WebSocket(transform(2221, 'ws'));
 
 	socket.addEventListener('message', function (event) {
 		const data = JSON.parse(event.data);
@@ -14,3 +17,7 @@ export default readable<SystemInfo | any>(null, (set) => {
 		socket.close();
 	};
 });
+
+export const send = (message: any) => {
+	socket.send(message)
+}

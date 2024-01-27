@@ -2,14 +2,32 @@ import axios, { type AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
 import si from 'systeminformation';
 import configStore from '$lib/configStore';
-import server from '$lib/server/ws';
+import server from '$lib/server/wsServer';
 import { detectObjects, latestDetection } from '$lib/server/model';
 import type { Readable } from 'stream';
 import { get } from 'svelte/store';
+import { exec } from 'child_process';
 
 let currentCameraPromiseDirty = Symbol();
 let currentConfig = get(configStore);
 startStream(currentConfig);
+
+function execCommand(command: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                reject(`Command execution failed: ${error.message}`);
+                return;
+            }
+            if (stderr) {
+                reject(`Command execution failed with stderr: ${stderr}`);
+                return;
+            }
+            console.log(stdout);
+            resolve(stdout);
+        });
+    });
+}
 
 server.on('connection', (socket) => {
 	latestDetection.subscribe((val) => {
@@ -41,6 +59,32 @@ server.on('connection', (socket) => {
 			})
 		);
 	}, 1000);
+
+	const commands = ["git pull", "pnpm install", "pnpm build", "sudo systemctl restart forgetti"]
+	socket.on("message", async (data) => {
+		const jsonData = JSON.parse(data.toString());
+		if (jsonData.purpose === "update") {
+			for (const command of commands) {
+			try {
+					const output = await execCommand(command);
+					socket.send(JSON.stringify({
+						purpose: "logs",
+						message: output,
+						command: command,
+						type: "success"
+					}))
+				} catch (error) {
+					socket.send(JSON.stringify({
+						purpose: "logs",
+						message: error,
+						command: command,
+						type: "error"
+					}))
+				}
+				}
+		}
+		
+	})
 });
 
 latestDetection.subscribe((val) => {
@@ -97,3 +141,5 @@ configStore.subscribe((config) => {
 	if (enabledFalseToTrue || cameraURLChangedWhileEnabled) startStream(config);
 	currentConfig = config;
 });
+
+

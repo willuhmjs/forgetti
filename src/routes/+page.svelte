@@ -5,6 +5,7 @@
 	import TitleBar from '$lib/components/TitleBar.svelte';
 	import System from '$lib/components/System.svelte';
 	import Window from '$lib/components/Window.svelte';
+	import Logs from "$lib/components/Logs.svelte";
 	import { faCog, faVideoCamera, faServer } from '@fortawesome/free-solid-svg-icons';
 	export let data;
 
@@ -26,6 +27,10 @@
 
 		<Window title="System" icon={faServer}>
 			<System />
+		</Window>
+
+		<Window title="Logs" icon={faServer}>
+			<Logs />
 		</Window>
 	</div>
 </div>

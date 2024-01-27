@@ -1,9 +1,11 @@
 <script lang="ts">
 	import Fa from 'svelte-fa';
+	import { send } from '$lib/wsClient';
 	import { faPowerOff, faSync, faPalette, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 	import type { Config } from '$lib/types';
 	export let data: Config;
 	import toast, { Toaster } from "svelte-french-toast";
+	import { onMount } from 'svelte';
 	const colors = ['#f97316', '#ff0000', '#00ff00', '#0000ff'];
 	let color = data.Hidden.BrandColor;
 	let powerMenu: HTMLDivElement;
@@ -25,7 +27,11 @@
 	};
 
 	$: updateRequested = false;
-	const requestUpdate =  () => {
+	const requestUpdate = () => {
+		updateRequested = true;
+		send(JSON.stringify({ purpose: 'update' }));
+	}
+	/*const requestUpdate =  () => {
 		updateRequested = true;
 		fetch('/api/update', {
 			method: 'POST'
@@ -54,7 +60,7 @@
 			}
 		}
 		})
-	};
+	};*/
 
 	const openPowerWindow = () => {
 		if (powerMenu) powerMenu.style.display = powerMenu!.style.display === 'none' ? 'block' : 'none';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import socketStore from '$lib/wsStore';
+	import { socketStore } from '$lib/wsClient';
 	import CircularBar from './CircularBar.svelte';
 	import type { SystemInfo } from '$lib/types';
 	import Fa from 'svelte-fa';

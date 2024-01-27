@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { Box, Config } from '$lib/types';
-	import socketStore from '$lib/wsStore';
+	import { socketStore } from '$lib/wsClient';
 	export let data: Config;
 	let canvas: HTMLCanvasElement;
 
