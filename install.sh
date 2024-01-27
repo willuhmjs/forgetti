@@ -17,6 +17,10 @@ if ! command_exists node; then
   echo "Node.js is not installed. Installing..."
   sudo apt update && sudo apt upgrade -y
   sudo apt install -y nodejs
+fi
+
+if ! command_exists pnpm; then
+  echo "pnpm is not installed. Installing..."
   sudo npm install -g pnpm
 fi
 
