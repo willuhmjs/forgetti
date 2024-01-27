@@ -5,6 +5,7 @@ site_url: https://willuhmjs.github.io/forgetti/
 nav:
   - Home: index.md
   - Get Started: get_started.md
+  - Updating: updating.md
 not_in_nav: |
   proposal.md
 theme:
