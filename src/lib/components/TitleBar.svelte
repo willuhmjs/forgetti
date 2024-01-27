@@ -60,14 +60,24 @@
 		if (powerMenu) powerMenu.style.display = powerMenu!.style.display === 'none' ? 'block' : 'none';
 	};
 
-	const execCommand = (command: 'shutdown' | 'restart') => {
+	const execCommand = (command: 'Shutdown' | 'Restart') => {
 		fetch('/api/power', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ command })
-		});
+		}).then(async response => {
+			const json = await response.json();
+			toast.success(json.message, {
+				duration: 5000,
+				position: 'bottom-right',
+				style: [
+						"background-color: var(--foreground);",
+						"color: white",
+				].join("")
+			})
+		})
 	};
 </script>
 
@@ -85,10 +95,10 @@
 		</button>
 	</div>
 	<div class="power-menu" bind:this={powerMenu}>
-		<button on:click={() => execCommand('shutdown')}
+		<button on:click={() => execCommand('Shutdown')}
 			><Fa icon={faPowerOff} class="pm-icon" />Shutdown</button
 		>
-		<button on:click={() => execCommand('restart')}
+		<button on:click={() => execCommand('Restart')}
 			><Fa icon={faRotateRight} class="pm-icon" />Restart</button
 		>
 	</div>

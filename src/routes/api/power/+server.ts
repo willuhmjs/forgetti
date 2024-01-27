@@ -1,12 +1,11 @@
 import { json } from '@sveltejs/kit';
 import { exec } from 'child_process';
 import type { RequestHandler } from './$types';
-import os from 'os'; // import os module
-
+import os from 'os';
 export const POST: RequestHandler = async ({ request }) => {
 	const { command } = await request.json();
 	switch (command) {
-		case 'shutdown':
+		case 'Shutdown':
 			if (os.platform() === 'win32') {
 				exec('shutdown /s /t 0', (error, stdout, stderr) => {
 					if (error) {
@@ -27,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
 				});
 			}
 			break;
-		case 'restart':
+		case 'Restart':
 			if (os.platform() === 'win32') {
 				exec('shutdown /r /t 0', (error, stdout, stderr) => {
 					if (error) {
@@ -50,6 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			break;
 	}
 	return json({
-		success: true
+		success: true,
+		message: `${command} signal recieved!`
 	});
 };
