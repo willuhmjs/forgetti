@@ -9,16 +9,31 @@ export const POST: RequestHandler = async ({ request }) => {
 
 };
 
-async function update() {
-    exec("git pull && pnpm install && pnpm build && sudo systemctl restart forgetti", (error, stdout, stderr) => {
-        if (error) {
-            console.log(`error: ${error.message}`);
-            return;
-        }
-        if (stderr) {
-            console.log(`stderr: ${stderr}`);
-            return;
-        }
-        console.log(`stdout: ${stdout}`);
+
+function execCommand(command: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+        exec(command, (error, stdout, stderr) => {
+            if (error) {
+                console.log(`error: ${error.message}`);
+                reject(error);
+                return;
+            }
+            if (stderr) {
+                console.log(`stderr: ${stderr}`);
+            }
+            console.log(`stdout: ${stdout}`);
+            resolve();
+        });
     });
+}
+
+async function update() {
+    try {
+        await execCommand("git pull");
+        await execCommand("pnpm install");
+        await execCommand("pnpm build");
+        await execCommand("sudo systemctl restart forgetti");
+    } catch (error) {
+        console.error(`Execution error: ${error}`);
+    }
 }
