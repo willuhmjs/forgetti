@@ -16,11 +16,13 @@ function execCommand(command: string): Promise<string> {
     return new Promise((resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
             if (error) {
-                reject(`Command execution failed: ${error.message}`);
+				console.log(error.message);
+                reject(error.message);
                 return;
             }
             if (stderr) {
-                reject(`Command execution failed with stderr: ${stderr}`);
+				console.log(stderr);
+                reject(stderr);
                 return;
             }
             console.log(stdout);
