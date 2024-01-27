@@ -3,20 +3,23 @@ import type { RequestHandler } from './$types';
 import { exec } from "child_process";
 
 export const POST: RequestHandler = async ({ request }): Promise<Response> => {
-    return update().then(message => {
-		return json(message);
-	});
+    try {
+        const message = await update();
+        return json(message);
+    } catch (error) {
+        return json({ success: false, message: error.message });
+    }
 };
 
 function execCommand(command: string): Promise<string> {
     return new Promise((resolve, reject) => {
         exec(command, (error, stdout, stderr) => {
             if (error) {
-                reject(error);
+                reject(new Error(`Command execution failed: ${error.message}`));
                 return;
             }
             if (stderr) {
-                reject(new Error(stderr));
+                reject(new Error(`Command execution failed with stderr: ${stderr}`));
                 return;
             }
             resolve(stdout);
@@ -24,21 +27,18 @@ function execCommand(command: string): Promise<string> {
     });
 }
 
-async function update(): Promise<{ success: true, message: string }> {
-    return new Promise(async (resolve, reject) => {
+async function update(): Promise<{ success: boolean, message: string }> {
     try {
         const pullOutput = await execCommand("git pull");
         if (!pullOutput.includes("Already up to date.")) { 
             await execCommand("pnpm install");
             await execCommand("pnpm build");
-            execCommand("sudo systemctl restart forgetti");
-			resolve({ success: true, message: "Reloading application..." })
+            await execCommand("sudo systemctl restart forgetti");
+            return { success: true, message: "Reloading application..." };
         } else {
-			resolve({ success: true, message: "Already up to date!" });
-		}
+            return { success: true, message: "Already up to date!" };
+        }
     } catch (error) {
-        console.error(error);
-		reject(error);
+        throw new Error(`Update failed: ${error.message}`);
     }
-});
 }

@@ -3,6 +3,7 @@
 	import { faPowerOff, faSync, faPalette, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 	import type { Config } from '$lib/types';
 	export let data: Config;
+	import toast, { Toaster } from "svelte-french-toast";
 	const colors = ['#f97316', '#ff0000', '#00ff00', '#0000ff'];
 	let color = data.Hidden.BrandColor;
 	let powerMenu: HTMLDivElement;
@@ -30,10 +31,20 @@
 			method: 'POST'
 		}).then(async (response) => {
 			const resData = await response.json(); 
-			if (resData.success) updateRequested = false;
+			updateRequested = false;
 			if (resData.message) {
-				alert(resData.message);
+				if (resData.success) {
+					toast.success(resData.message, {
+						duration: 5000,
+						position: 'bottom-right',
+					})
+			} else {
+				toast.error(resData.message, {
+					duration: 5000,
+					position: 'bottom-right',
+				})
 			}
+		}
 		})
 	};
 
@@ -74,7 +85,7 @@
 		>
 	</div>
 </div>
-
+<Toaster />
 <style>
 	.titlebar {
 		position: relative;
