@@ -29,15 +29,11 @@ function execCommand(command: string): Promise<string> {
 
 async function update(): Promise<{ success: boolean, message: string }> {
     try {
-        const pullOutput = await execCommand("git pull");
-        if (!pullOutput.includes("Already up to date.")) { 
-            await execCommand("pnpm install");
-            await execCommand("pnpm build");
-            await execCommand("sudo systemctl restart forgetti");
-            return { success: true, message: "Reloading application..." };
-        } else {
-            return { success: true, message: "Already up to date!" };
-        }
+        const pullOutput = await execCommand("git pull -q");
+        await execCommand("pnpm install");
+        await execCommand("pnpm build");
+        await execCommand("sudo systemctl restart forgetti");
+        return { success: true, message: "Reloading application..." };
     } catch (error) {
         throw new Error(`Update failed: ${error.message}`);
     }
