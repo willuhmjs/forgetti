@@ -25,10 +25,15 @@
 
 	$: updateRequested = false;
 	const requestUpdate =  () => {
+		updateRequested = true;
 		fetch('/api/update', {
 			method: 'POST'
 		}).then(async (response) => {
-			if ((await response.json()).success) updateRequested = true;
+			const resData = await response.json(); 
+			if (resData.success) updateRequested = false;
+			if (resData.message) {
+				alert(resData.message);
+			}
 		})
 	};
 
