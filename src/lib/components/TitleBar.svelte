@@ -37,11 +37,19 @@
 					toast.success(resData.message, {
 						duration: 5000,
 						position: 'bottom-right',
+						style: [
+							"background-color: var(--foreground);",
+							"color: white",
+						].join("")
 					})
 			} else {
 				toast.error(resData.message, {
 					duration: 5000,
 					position: 'bottom-right',
+					style: [
+							"background-color: var(--foreground);",
+							"color: white",
+					].join("")
 				})
 			}
 		}
@@ -70,7 +78,7 @@
 			<Fa icon={faPalette} />
 		</button>
 		<button id="update" on:click={requestUpdate}>
-			<Fa icon={faSync} spin={updateRequested} color={updateRequested ? "yellow" : ""}/>
+			<Fa icon={faSync} spin={updateRequested} color={updateRequested ? "var(--yellow)" : ""}/>
 		</button>
 		<button id="power" on:click={openPowerWindow}>
 			<Fa icon={faPowerOff} />
@@ -114,7 +122,7 @@
 	}
 
 	.buttons #power {
-		color: var(--power);
+		color: var(--red);
 	}
 
 	.buttons #color {
