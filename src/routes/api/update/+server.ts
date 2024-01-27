@@ -29,7 +29,7 @@ function execCommand(command: string): Promise<string> {
 
 async function update(): Promise<{ success: boolean, message: string }> {
     try {
-        const pullOutput = await execCommand("git pull -q");
+        await execCommand("git pull -q");
         await execCommand("pnpm install");
         await execCommand("pnpm build");
         await execCommand("sudo systemctl restart forgetti");
