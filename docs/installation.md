@@ -1,5 +1,3 @@
-## Installation
-
 This section outlines the installation process for Forgetti on a Raspberry Pi running Raspberry Pi OS. If you are not using a Debian-based distribution, please see the [Manual Installation](#manual-installation) section for more information.
 
 ### Script Installation

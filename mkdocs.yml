@@ -4,8 +4,9 @@ repo_name: forgetti
 site_url: https://willuhmjs.github.io/forgetti/
 nav:
   - Home: index.md
-  - Get Started: get_started.md
-  - Updating: updating.md
+  - Setup:
+    - Installation: installation.md
+    - Updates: updates.md
 not_in_nav: |
   proposal.md
 theme:
@@ -16,6 +17,7 @@ theme:
     - navigation.instant
     - navigation.instant.progress
     - navigation.tracking
+    - navigation.sections
     - navigation.top
     - navigation.footer
     - social
