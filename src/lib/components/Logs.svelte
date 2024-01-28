@@ -1,15 +1,19 @@
 <script>
     import { socketStore } from "$lib/wsClient";
     import { onMount } from "svelte";
+    import toast from "svelte-french-toast";
     let logs = [{
         purpose: "success",
         message: "Logs initialized",
         command: "meta",
         type: "success"
     }];
+
+    const toastableLogs = "Already up to date."
     onMount(() => {
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'logs') {
+                if (toastableLogs.includes(data.message)) toast(data.message);
 				logs = [...logs, data];
 			}
 		});

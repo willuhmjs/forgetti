@@ -4,8 +4,7 @@
 	import { faPowerOff, faSync, faPalette, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 	import type { Config } from '$lib/types';
 	export let data: Config;
-	import toast, { Toaster } from "svelte-french-toast";
-	import { onMount } from 'svelte';
+	import toast from "svelte-french-toast";
 	const colors = ['#f97316', '#ff0000', '#00ff00', '#0000ff'];
 	let color = data.Hidden.BrandColor;
 	let powerMenu: HTMLDivElement;
@@ -31,36 +30,7 @@
 		updateRequested = true;
 		send(JSON.stringify({ purpose: 'update' }));
 	}
-	/*const requestUpdate =  () => {
-		updateRequested = true;
-		fetch('/api/update', {
-			method: 'POST'
-		}).then(async (response) => {
-			const resData = await response.json(); 
-			updateRequested = false;
-			if (resData.message) {
-				if (resData.success) {
-					toast.success(resData.message, {
-						duration: 5000,
-						position: 'bottom-right',
-						style: [
-							"background-color: var(--foreground);",
-							"color: white",
-						].join("")
-					})
-			} else {
-				toast.error(resData.message, {
-					duration: 5000,
-					position: 'bottom-right',
-					style: [
-							"background-color: var(--foreground);",
-							"color: white",
-					].join("")
-				})
-			}
-		}
-		})
-	};*/
+
 
 	const openPowerWindow = () => {
 		if (powerMenu) powerMenu.style.display = powerMenu!.style.display === 'none' ? 'block' : 'none';
@@ -109,7 +79,6 @@
 		>
 	</div>
 </div>
-<Toaster />
 <style>
 	.titlebar {
 		position: relative;

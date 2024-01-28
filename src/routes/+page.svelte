@@ -6,9 +6,11 @@
 	import System from '$lib/components/System.svelte';
 	import Window from '$lib/components/Window.svelte';
 	import Logs from "$lib/components/Logs.svelte";
+	import { Toaster } from "svelte-french-toast";
 	import { faCog, faVideoCamera, faServer } from '@fortawesome/free-solid-svg-icons';
 	export let data;
 
+	
 	onMount(() => {
 		document.documentElement.style.setProperty('--brand', data.Hidden.BrandColor);
 	});
@@ -34,7 +36,7 @@
 		</Window>
 	</div>
 </div>
-
+<Toaster />
 <style>
 	:global(body) {
 		font-family: sans-serif;
