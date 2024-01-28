@@ -9,12 +9,17 @@
         type: "success"
     }];
 
-    const toastableLogs = "Already up to date."
+    const toastableLogs = [/Up to date/i]
     onMount(() => {
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'logs') {
                 console.log(data.message, toastableLogs);
-                if (toastableLogs.includes(data.message)) toast(data.message);
+                for (const log of toastableLogs) {
+                    if (log.test(data.message)) {
+                        toast(data.message);
+                        break;
+                    }
+                }
 				logs = [...logs, data];
 			}
 		});
