@@ -75,7 +75,7 @@ server.on('connection', (socket) => {
 						command: command,
 						type: "success"
 					}))
-					if (message.includes("Already up to date.") && command.includes("git pull")) return;
+					if (output.includes("Already up to date.") && command.includes("git pull")) return;
 				} catch (error) {
 					socket.send(JSON.stringify({
 						purpose: "logs",
