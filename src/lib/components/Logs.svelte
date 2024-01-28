@@ -13,6 +13,7 @@
     onMount(() => {
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'logs') {
+                console.log(data.message, toastableLogs);
                 if (toastableLogs.includes(data.message)) toast(data.message);
 				logs = [...logs, data];
 			}
