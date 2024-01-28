@@ -9,16 +9,18 @@
         type: "success"
     }];
 
-    const toastableLogs = [/Up to date/i]
     onMount(() => {
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'logs') {
-                console.log(data.message, toastableLogs);
-                for (const log of toastableLogs) {
-                    if (log.test(data.message)) {
-                        toast(data.message);
-                        break;
-                    }
+                if (data.toastable) {
+                    toast(data.message, {
+                        duration: 5000,
+                        position: 'bottom-right',
+                        style: [
+                            "background-color: var(--foreground);",
+                            "color: white",
+                        ].join("")
+                    })
                 }
 				logs = [...logs, data];
 			}

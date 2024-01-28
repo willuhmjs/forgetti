@@ -63,6 +63,7 @@ server.on('connection', (socket) => {
 	}, 1000);
 
 	const commands = ["git pull", "pnpm install", "pnpm build", "sudo systemctl restart forgetti"]
+	const toastableLogs = ["Current branch main is up to date.", "Already up to date."];
 	socket.on("message", async (data) => {
 		const jsonData = JSON.parse(data.toString());
 		if (jsonData.purpose === "update") {
@@ -73,7 +74,8 @@ server.on('connection', (socket) => {
 						purpose: "logs",
 						message: output,
 						command: command,
-						type: "success"
+						type: "success",
+						toastable: toastableLogs.includes(output)
 					}))
 					if (output.includes("Already up to date.") && command.includes("git pull")) return;
 				} catch (error) {
