@@ -63,22 +63,29 @@ server.on('connection', (socket) => {
 	}, 1000);
 
 	const commands = ["git pull", "pnpm install", "pnpm build", "sudo systemctl restart forgetti"]
-	const toastableLogs = ["Current branch main is up to date.", "Already up to date."];
+	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 	socket.on("message", async (data) => {
 		const jsonData = JSON.parse(data.toString());
 		if (jsonData.purpose === "update") {
 			for (const command of commands) {
 			try {
-					const output = await execCommand(command);
-					socket.send(JSON.stringify({
-						purpose: "logs",
-						message: output,
-						command: command,
-						type: "success",
-						toastable: toastableLogs.includes(output)
-					}))
-					if (toastableLogs.includes(output)) return;
-				} catch (error) {
+				const output = await execCommand(command);
+				let matchesToastable = false;
+				for (const toastable of toastableLogs) {
+					if (toastable.test(output)) {
+						matchesToastable = true;
+						break;
+					}
+				}
+				socket.send(JSON.stringify({
+					purpose: "logs",
+					message: output,
+					command: command,
+					type: "success",
+					toastable: matchesToastable
+				}));
+				if (matchesToastable) break;
+			} catch (error) {
 					socket.send(JSON.stringify({
 						purpose: "logs",
 						message: error,
