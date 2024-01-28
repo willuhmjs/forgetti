@@ -77,7 +77,7 @@ server.on('connection', (socket) => {
 						type: "success",
 						toastable: toastableLogs.includes(output)
 					}))
-					if (output.includes("Already up to date.") && command.includes("git pull")) return;
+					if (toastableLogs.includes(output)) return;
 				} catch (error) {
 					socket.send(JSON.stringify({
 						purpose: "logs",
