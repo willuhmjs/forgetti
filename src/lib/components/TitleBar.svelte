@@ -3,8 +3,10 @@
 	import { send } from '$lib/wsClient';
 	import { faPowerOff, faSync, faPalette, faRotateRight } from '@fortawesome/free-solid-svg-icons';
 	import type { Config } from '$lib/types';
-	export let data: Config;
 	import toast from "svelte-french-toast";
+	import { socketStore } from '$lib/wsClient';
+	import { onMount } from 'svelte';
+	export let data: Config;
 	const colors = ['#f97316', '#ff0000', '#00ff00', '#0000ff'];
 	let color = data.Hidden.BrandColor;
 	let powerMenu: HTMLDivElement;
@@ -55,6 +57,16 @@
 			})
 		})
 	};
+
+	onMount(() => {
+		socketStore.subscribe((data) => {
+			if (data?.purpose === 'logs') {
+                if (data.toastable) {
+                   updateRequested = false;
+                }
+			}
+		});
+	});
 </script>
 
 <div class="titlebar">
