@@ -5,7 +5,7 @@ import { onMount } from 'svelte';
 
 let socket: WebSocket;
 
-export const socketStore = readable<SystemResponsePacket | InferenceResponsePacket>(null, (set) => {
+export const socketStore = readable<SystemResponsePacket | InferenceResponsePacket>(undefined, (set) => {
 	socket = new WebSocket(transform(2221, 'ws'));
 
 	socket.addEventListener('message', function (event) {
