@@ -1,10 +1,6 @@
 {
-	"General": {
-		"Enabled": false,
-		"CameraURL": "http://127.0.0.1/webcam?action=stream",
-		"ConfidenceThreshold": 50
-	},
-	"Hidden": {
-		"BrandColor": "#f97316"
-	}
+	"Enabled": false,
+	"CameraURL": "http://127.0.0.1/webcam?action=stream",
+	"ConfidenceThreshold": 50,
+	"BrandColor": "#f97316"
 }

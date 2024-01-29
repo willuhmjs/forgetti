@@ -9,7 +9,7 @@
 	export let data: Config;
 	let liveData: Config = { ...data };
 	const colors = ['#f97316', '#ff0000', '#00ff00', '#0000ff'];
-	let color = data.Hidden.BrandColor;
+	let color = data.BrandColor;
 	let powerMenu: HTMLDivElement;
 
 
@@ -38,9 +38,7 @@
 	const cycleThemeColor = () => {
 		color = colors[(colors.indexOf(color) + 1) % colors.length];
 		updateConfig({
-				Hidden: {
-					BrandColor: color
-				}
+				BrandColor: color
 			})
 		document.documentElement.style.setProperty('--brand', color);
 	};
@@ -108,8 +106,8 @@
 		<button id="power" on:click={openPowerWindow}>
 			<Fa icon={faPowerOff} />
 		</button>
-		<button on:click={() => updateConfig({ General: { ...liveData.General, Enabled: !liveData.General.Enabled}})}>
-			<Fa icon={liveData.General.Enabled ? faStop : faPlay} />
+		<button on:click={() => updateConfig({ Enabled: !liveData.Enabled })}>
+			<Fa icon={liveData.Enabled ? faStop : faPlay} />
 		</button>
 	</div>
 	<div class="power-menu" bind:this={powerMenu}>

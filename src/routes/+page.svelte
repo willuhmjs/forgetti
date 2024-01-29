@@ -1,18 +1,17 @@
 <script>
 	import { onMount } from 'svelte';
-	import Config from '$lib/components/Config.svelte';
 	import LivePreview from '$lib/components/LivePreview.svelte';
 	import TitleBar from '$lib/components/TitleBar.svelte';
 	import System from '$lib/components/System.svelte';
 	import Window from '$lib/components/Window.svelte';
 	import Logs from "$lib/components/Logs.svelte";
 	import { Toaster } from "svelte-french-toast";
-	import { faCog, faVideoCamera, faServer } from '@fortawesome/free-solid-svg-icons';
+	import { faVideoCamera, faServer } from '@fortawesome/free-solid-svg-icons';
 	export let data;
 
 	
 	onMount(() => {
-		document.documentElement.style.setProperty('--brand', data.Hidden.BrandColor);
+		document.documentElement.style.setProperty('--brand', data.BrandColor);
 	});
 </script>
 
@@ -21,10 +20,6 @@
 	<div class="window-container">
 		<Window title="Camera" icon={faVideoCamera}>
 			<LivePreview {data} />
-		</Window>
-
-		<Window title="Configuration" icon={faCog}>
-			<Config {data} />
 		</Window>
 
 		<Window title="System" icon={faServer}>

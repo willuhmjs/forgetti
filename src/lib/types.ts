@@ -12,14 +12,10 @@ export interface InferenceData {
 }
 
 export interface Config {
-	General: {
 		Enabled: boolean;
 		CameraURL: string;
 		ConfidenceThreshold: number;
-	};
-	Hidden: {
 		BrandColor: string;
-	};
 }
 
 export interface SystemInfo {

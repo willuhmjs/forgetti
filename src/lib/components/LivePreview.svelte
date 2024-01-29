@@ -23,12 +23,12 @@
 				const ctx = canvas.getContext('2d');
 				if (ctx) {
 					ctx.drawImage(img, 0, 0);
-					ctx.strokeStyle = data.Hidden.BrandColor;
+					ctx.strokeStyle = data.BrandColor;
 					ctx.lineWidth = 3;
 					ctx.font = '18px sans-serif';
 					boxes.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 						ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-						ctx.fillStyle = data.Hidden.BrandColor;
+						ctx.fillStyle = data.BrandColor;
 						const width = ctx.measureText(`failure ${prob}%`).width;
 						ctx.fillRect(x1, y1, width + 10, 25);
 						ctx.fillStyle = '#000000';
