@@ -1,17 +1,19 @@
 <script lang="ts">
 	import Fa from 'svelte-fa';
 	import { send } from '$lib/wsClient';
-	import { faPowerOff, faSync, faPalette, faRotateRight, faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
+	import { faPowerOff, faSync, faPalette, faRotateRight, faPlay, faStop, faCogs, faFileLines, faHome } from '@fortawesome/free-solid-svg-icons';
 	import type { Config } from '$lib/types';
 	import toast from "svelte-french-toast";
 	import { socketStore } from '$lib/wsClient';
 	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 	export let data: Config;
 	let liveData: Config = { ...data };
 	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
 	let color = data.BrandColor;
 	let powerMenu: HTMLDivElement;
 
+	$: slug = $page.url.pathname;
 
 	const updateConfig = async (config: Partial<Config>) => {
 		send(JSON.stringify({ purpose: 'configUpdate', config }));
@@ -83,6 +85,17 @@
 <div class="titlebar">
 	<h3 class="title">Forgetti</h3>
 	<div class="buttons">
+		<a href="/">
+			<Fa icon={faHome} fw={true} color={slug === "/" ? liveData.BrandColor : ""}/>
+		</a>
+		<a href="/configure">
+			<Fa icon={faCogs} fw={true} color={slug === "/configure" ? liveData.BrandColor : ""} />
+		</a>
+		<a href="/logs">
+			<Fa icon={faFileLines} fw={true} color={slug === "/logs" ? liveData.BrandColor : ""} />
+		</a>
+	</div>
+	<div class="buttons">
 		<button on:click={() => updateConfig({ Enabled: !liveData.Enabled })}>
 			<Fa icon={liveData.Enabled ? faStop : faPlay} color={liveData.Enabled ? "var(--red)" : "var(--green)"}/>
 		</button>
@@ -90,7 +103,7 @@
 			<Fa icon={faPalette} />
 		</button>
 		<button id="update" on:click={requestUpdate}>
-			<Fa icon={faSync} spin={updateRequested} color={updateRequested ? "var(--yellow)" : ""}/>
+			<Fa icon={faSync} spin={updateRequested} color="var(--yellow)"/>
 		</button>
 		<button id="power" on:click={openPowerWindow}>
 			<Fa icon={faPowerOff} />
@@ -122,12 +135,16 @@
 		margin: 0;
 	}
 
-	.buttons button {
-		all: unset;
-		margin-left: 1rem;
+	.buttons {
+		display: flex;
+		gap: 1rem;
 	}
 
-	.buttons button:hover {
+	.buttons button, .buttons a {
+		all: unset;
+	}
+
+	.buttons button:hover, .buttons a:hover {
 		cursor: pointer;
 		filter: brightness(0.85);
 	}

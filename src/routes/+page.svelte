@@ -1,57 +1,27 @@
 <script>
 	import { onMount } from 'svelte';
 	import LivePreview from '$lib/components/LivePreview.svelte';
-	import TitleBar from '$lib/components/TitleBar.svelte';
 	import System from '$lib/components/System.svelte';
 	import Window from '$lib/components/Window.svelte';
-	import Logs from "$lib/components/Logs.svelte";
-	import { Toaster } from "svelte-french-toast";
 	import { faVideoCamera, faServer } from '@fortawesome/free-solid-svg-icons';
 	export let data;
-
 	
 	onMount(() => {
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
 	});
 </script>
 
-<div class="desktop">
-	<TitleBar {data} />
-	<div class="window-container">
-		<Window title="Camera" icon={faVideoCamera}>
-			<LivePreview {data} />
-		</Window>
+<div class="window-container">
+	<Window title="Camera" icon={faVideoCamera}>
+		<LivePreview {data} />
+	</Window>
 
-		<Window title="System" icon={faServer}>
-			<System />
-		</Window>
-
-		<Window title="Logs" icon={faServer}>
-			<Logs />
-		</Window>
-	</div>
+	<Window title="System" icon={faServer}>
+		<System />
+	</Window>
 </div>
-<Toaster />
+
 <style>
-	:global(body) {
-		font-family: sans-serif;
-		background-color: var(--background);
-		color: #f9fafb;
-		margin: 0;
-		padding: 0;
-		box-sizing: border-box;
-	}
-
-	:global(:root) {
-		--foreground: #18181b;
-		--background: #27272a;
-		--red: #ef4444;
-		--green: #22c55e;
-		--yellow: #eab308;
-		--orange: #f97316;
-		--blue: #3b82f6;
-	}
-
 	.window-container {
 		display: flex;
 		gap: 10px;
