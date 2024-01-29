@@ -14,25 +14,7 @@
 
 
 	const updateConfig = async (config: Partial<Config>) => {
-		const res = await fetch('/api/configure', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify(config)
-		});
-		const json = await res.json();
-		if (!json.success && json.message) toast.error(json.message, {
-			duration: 5000,
-			position: 'bottom-right',
-			style: [
-				"background-color: var(--foreground);",
-				"color: white",
-			].join(""),
-		});
-		if (json.success) {
-			liveData = { ...liveData, ...config };
-		}
+		send(JSON.stringify({ purpose: 'configUpdate', config }));
 	};
 
 	const cycleThemeColor = () => {
@@ -76,7 +58,7 @@
 
 	onMount(() => {
 		socketStore.subscribe((data) => {
-			if (data?.purpose === 'appUpdate') {
+			if (data.purpose === 'appUpdate' || data.purpose === 'configUpdate') {
                 if (data.toastable) {
                    updateRequested = false;
 					toast[data.type](data.message, {
@@ -89,6 +71,9 @@
 						
 					})
                 }
+			}
+			if (data.purpose === 'configUpdate' && data.config) {
+				liveData = { ...liveData, ...data.config };
 			}
 		});
 	});

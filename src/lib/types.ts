@@ -1,3 +1,5 @@
+type ResponseType = "error" | "success";
+
 export interface Box {
 	x1: number;
 	y1: number;
@@ -42,11 +44,24 @@ export interface AppUpdateResponsePacket {
 	purpose: "appUpdate",
 	message: string,
 	command: string,
-	type: "error" | "success",
+	type: ResponseType
 	toastable: boolean
+}
+
+export interface ConfigUpdateResponsePacket {
+	message: string,
+	type: ResponseType
+	toastable: boolean,
+	purpose: "configUpdate",
+	config?: Config
 }
 
 // request packets
 export interface AppUpdateRequestPacket {
 	purpose: "appUpdate"
+}
+
+export interface ConfigUpdateRequestPacket {
+	purpose: "configUpdate",
+	config: Partial<Config>
 }
