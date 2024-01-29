@@ -1,11 +1,10 @@
 import { readable } from 'svelte/store';
 import { transform } from 'cloud-url-resolver';
-import type { SystemResponsePacket, InferenceResponsePacket } from './types';
-import { onMount } from 'svelte';
+import type { SystemResponsePacket, InferenceResponsePacket, AppUpdateResponsePacket } from './types';
 
 let socket: WebSocket;
 
-export const socketStore = readable<SystemResponsePacket | InferenceResponsePacket>(undefined, (set) => {
+export const socketStore = readable<SystemResponsePacket | InferenceResponsePacket | AppUpdateResponsePacket>(undefined, (set) => {
 	socket = new WebSocket(transform(2221, 'ws'));
 
 	socket.addEventListener('message', function (event) {

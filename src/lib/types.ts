@@ -37,3 +37,16 @@ export interface SystemResponsePacket {
 export interface InferenceResponsePacket extends InferenceData {
 	purpose: 'inference'
 }
+
+export interface AppUpdateResponsePacket {
+	purpose: "appUpdate",
+	message: string,
+	command: string,
+	type: "error" | "success",
+	toastable: boolean
+}
+
+// request packets
+export interface AppUpdateRequestPacket {
+	purpose: "appUpdate"
+}

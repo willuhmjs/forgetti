@@ -7,6 +7,7 @@ import { detectObjects, latestDetection } from '$lib/server/model';
 import type { Readable } from 'stream';
 import { get } from 'svelte/store';
 import { exec } from 'child_process';
+import type { AppUpdateResponsePacket } from '$lib/types';
 
 let currentCameraPromiseDirty = Symbol();
 let currentConfig = get(configStore);
@@ -65,8 +66,8 @@ server.on('connection', (socket) => {
 	const commands = ["git pull", "pnpm install", "pnpm build", "sudo systemctl restart forgetti"]
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 	socket.on("message", async (data) => {
-		const jsonData = JSON.parse(data.toString());
-		if (jsonData.purpose === "update") {
+		const requestPacket = JSON.parse(data.toString());
+		if (requestPacket.purpose === "appUpdate") {
 			for (const command of commands) {
 			try {
 				const output = await execCommand(command);
@@ -78,20 +79,21 @@ server.on('connection', (socket) => {
 					}
 				}
 				socket.send(JSON.stringify({
-					purpose: "logs",
+					purpose: "appUpdate",
 					message: output,
 					command: command,
 					type: "success",
 					toastable: matchesToastable
-				}));
+				} as AppUpdateResponsePacket));
 				if (matchesToastable) break;
 			} catch (error) {
 					socket.send(JSON.stringify({
-						purpose: "logs",
+						purpose: "appUpdate",
 						message: error,
 						command: command,
-						type: "error"
-					}))
+						type: "error",
+						toastable: false
+					} as AppUpdateResponsePacket ))
 				}
 				}
 		}

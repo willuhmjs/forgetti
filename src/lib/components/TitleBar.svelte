@@ -76,10 +76,10 @@
 
 	onMount(() => {
 		socketStore.subscribe((data) => {
-			if (data?.purpose === 'logs') {
+			if (data?.purpose === 'appUpdate') {
                 if (data.toastable) {
                    updateRequested = false;
-					toast[data.success ? "success" : "error"](data.message, {
+					toast[data.type](data.message, {
 						duration: 5000,
 						position: 'bottom-right',
 						style: [

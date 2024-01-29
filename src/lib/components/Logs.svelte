@@ -1,7 +1,7 @@
 <script>
     import { socketStore } from "$lib/wsClient";
     import { onMount } from "svelte";
-    let logs = [{
+    let appUpdate = [{
         purpose: "success",
         message: "Logs initialized",
         command: "meta",
@@ -10,15 +10,15 @@
 
     onMount(() => {
 		socketStore.subscribe((data) => {
-			if (data?.purpose === 'logs') {
-				logs = [...logs, data];
+			if (data?.purpose === 'appUpdate') {
+				appUpdate = [...appUpdate, data];
 			}
 		});
 	});
 </script>
 
-<div class="logs">
-    {#each logs as update}
+<div class="appUpdate">
+    {#each appUpdate as update}
         <p class="update {update.type}">
             {update.command}: {update.message}
         </p>
@@ -26,7 +26,7 @@
 </div>
 
 <style>
-    .logs {
+    .appUpdate {
         display: flex;
         flex-direction: column;
         gap: 10px;
