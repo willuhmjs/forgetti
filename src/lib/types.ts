@@ -18,7 +18,8 @@ export interface Config {
 		BrandColor: string;
 }
 
-export interface SystemInfo {
+// response packets
+export interface SystemResponsePacket {
 	purpose: 'system';
 	distro: string;
 	platform: string;
@@ -31,4 +32,8 @@ export interface SystemInfo {
 	netRX: number;
 	netTX: number;
 	loadPercent: number;
+}
+
+export interface InferenceResponsePacket extends InferenceData {
+	purpose: 'inference'
 }

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { socketStore } from '$lib/wsClient';
 	import CircularBar from './CircularBar.svelte';
-	import type { SystemInfo } from '$lib/types';
+	import type { SystemResponsePacket } from '$lib/types';
 	import Fa from 'svelte-fa';
 	import {
 		faSync,
@@ -17,7 +17,7 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons';
 
-	let socketData: SystemInfo;
+	let socketData: SystemResponsePacket;
 
 	onMount(() => {
 		socketStore.subscribe((data) => {
