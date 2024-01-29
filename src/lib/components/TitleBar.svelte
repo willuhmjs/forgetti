@@ -63,6 +63,15 @@
 			if (data?.purpose === 'logs') {
                 if (data.toastable) {
                    updateRequested = false;
+					toast[data.success ? "success" : "error"](data.message, {
+						duration: 5000,
+						position: 'bottom-right',
+						style: [
+							"background-color: var(--foreground);",
+							"color: white",
+						].join(""),
+						
+					})
                 }
 			}
 		});

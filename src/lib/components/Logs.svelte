@@ -12,16 +12,6 @@
     onMount(() => {
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'logs') {
-                if (data.toastable) {
-                    toast(data.message, {
-                        duration: 5000,
-                        position: 'bottom-right',
-                        style: [
-                            "background-color: var(--foreground);",
-                            "color: white",
-                        ].join("")
-                    })
-                }
 				logs = [...logs, data];
 			}
 		});
