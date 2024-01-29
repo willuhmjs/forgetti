@@ -58,6 +58,7 @@
 
 	onMount(() => {
 		socketStore.subscribe((data) => {
+			if (!data) return;
 			if (data.purpose === 'appUpdate' || data.purpose === 'configUpdate') {
                 if (data.toastable) {
                    updateRequested = false;
