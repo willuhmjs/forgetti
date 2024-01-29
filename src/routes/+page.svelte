@@ -45,9 +45,11 @@
 	:global(:root) {
 		--foreground: #18181b;
 		--background: #27272a;
-		--red: #f90016;
-		--green: green;
-		--yellow: yellow;
+		--red: #ef4444;
+		--green: #22c55e;
+		--yellow: #eab308;
+		--orange: #f97316;
+		--blue: #3b82f6;
 	}
 
 	.window-container {

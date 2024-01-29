@@ -8,7 +8,7 @@
 	import { onMount } from 'svelte';
 	export let data: Config;
 	let liveData: Config = { ...data };
-	const colors = ['#f97316', '#ff0000', '#00ff00', '#0000ff'];
+	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
 	let color = data.BrandColor;
 	let powerMenu: HTMLDivElement;
 
