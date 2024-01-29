@@ -19,13 +19,17 @@ let model: ort.InferenceSession;
 
 // Detects objects in an image using YOLOv8 neural network
 export async function detectObjects(buf: Buffer) {
-	const [input, imgWidth, imgHeight] = await prepareInput(buf);
-	const output = await runModel(input);
-	const processed = {
-		box: processOutput(output, imgWidth, imgHeight),
-		buffer: buf.toString('base64')
-	};
-	latestDetection.set(processed);
+	try {
+		const [input, imgWidth, imgHeight] = await prepareInput(buf);
+		const output = await runModel(input);
+		const processed = {
+			box: processOutput(output, imgWidth, imgHeight),
+			buffer: buf.toString('base64')
+		};
+		latestDetection.set(processed);
+	} catch (e) {
+		console.error(e);
+	}
 }
 
 // Runs YOLOv8 model
