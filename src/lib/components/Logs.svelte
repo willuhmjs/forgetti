@@ -1,7 +1,6 @@
 <script>
     import { socketStore } from "$lib/wsClient";
     import { onMount } from "svelte";
-    import toast from "svelte-french-toast";
     let logs = [{
         purpose: "success",
         message: "Logs initialized",
@@ -36,9 +35,6 @@
         height: 100%;
         overflow-y: auto;
         
-    }
-
-    .update {
     }
 
     .success {

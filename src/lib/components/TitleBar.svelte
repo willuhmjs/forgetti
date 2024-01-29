@@ -1,29 +1,47 @@
 <script lang="ts">
 	import Fa from 'svelte-fa';
 	import { send } from '$lib/wsClient';
-	import { faPowerOff, faSync, faPalette, faRotateRight } from '@fortawesome/free-solid-svg-icons';
+	import { faPowerOff, faSync, faPalette, faRotateRight, faPlay, faStop } from '@fortawesome/free-solid-svg-icons';
 	import type { Config } from '$lib/types';
 	import toast from "svelte-french-toast";
 	import { socketStore } from '$lib/wsClient';
 	import { onMount } from 'svelte';
 	export let data: Config;
+	let liveData: Config = { ...data };
 	const colors = ['#f97316', '#ff0000', '#00ff00', '#0000ff'];
 	let color = data.Hidden.BrandColor;
 	let powerMenu: HTMLDivElement;
 
-	const cycleThemeColor = () => {
-		color = colors[(colors.indexOf(color) + 1) % colors.length];
-		fetch('/api/configure', {
+
+	const updateConfig = async (config: Partial<Config>) => {
+		const res = await fetch('/api/configure', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({
+			body: JSON.stringify(config)
+		});
+		const json = await res.json();
+		if (!json.success && json.message) toast.error(json.message, {
+			duration: 5000,
+			position: 'bottom-right',
+			style: [
+				"background-color: var(--foreground);",
+				"color: white",
+			].join(""),
+		});
+		if (json.success) {
+			liveData = { ...liveData, ...config };
+		}
+	};
+
+	const cycleThemeColor = () => {
+		color = colors[(colors.indexOf(color) + 1) % colors.length];
+		updateConfig({
 				Hidden: {
 					BrandColor: color
 				}
 			})
-		});
 		document.documentElement.style.setProperty('--brand', color);
 	};
 
@@ -89,6 +107,9 @@
 		</button>
 		<button id="power" on:click={openPowerWindow}>
 			<Fa icon={faPowerOff} />
+		</button>
+		<button on:click={() => updateConfig({ General: { ...liveData.General, Enabled: !liveData.General.Enabled}})}>
+			<Fa icon={liveData.General.Enabled ? faStop : faPlay} />
 		</button>
 	</div>
 	<div class="power-menu" bind:this={powerMenu}>
