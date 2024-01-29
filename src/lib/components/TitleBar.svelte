@@ -83,6 +83,9 @@
 <div class="titlebar">
 	<h3 class="title">Forgetti</h3>
 	<div class="buttons">
+		<button on:click={() => updateConfig({ Enabled: !liveData.Enabled })}>
+			<Fa icon={liveData.Enabled ? faStop : faPlay} color={liveData.Enabled ? "var(--red)" : "var(--green)"}/>
+		</button>
 		<button id="color" on:click={cycleThemeColor}>
 			<Fa icon={faPalette} />
 		</button>
@@ -91,9 +94,6 @@
 		</button>
 		<button id="power" on:click={openPowerWindow}>
 			<Fa icon={faPowerOff} />
-		</button>
-		<button on:click={() => updateConfig({ Enabled: !liveData.Enabled })}>
-			<Fa icon={liveData.Enabled ? faStop : faPlay} />
 		</button>
 	</div>
 	<div class="power-menu" bind:this={powerMenu}>
