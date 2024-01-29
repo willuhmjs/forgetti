@@ -109,7 +109,7 @@
 
 <style>
 	.spec {
-		font-size: 1rem;
+		font-size: 0.9rem;
 	}
 
 	.spec .icon {
