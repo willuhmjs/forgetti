@@ -7,6 +7,7 @@ import { detectObjects, latestDetection } from '$lib/server/model';
 import type { Readable } from 'stream';
 import { get } from 'svelte/store';
 import { exec } from 'child_process';
+import { dev } from '$app/environment';
 import fs from 'fs';
 import type { AppUpdateRequestPacket, AppUpdateResponsePacket, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 
@@ -70,6 +71,13 @@ server.on('connection', (socket) => {
 	socket.on("message", async (data) => {
 		const requestPacket: AppUpdateRequestPacket | ConfigUpdateRequestPacket = JSON.parse(data.toString());
 		if (requestPacket.purpose === "appUpdate") {
+			if (dev) return socket.send(JSON.stringify({
+				purpose: "appUpdate",
+				message: "Cannot update while in developer mode!",
+				command: "meta",
+				type: "error",
+				toastable: true
+			} as AppUpdateResponsePacket))
 			for (const command of commands) {
 			try {
 				const output = await execCommand(command);
