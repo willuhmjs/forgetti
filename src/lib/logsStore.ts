@@ -4,7 +4,7 @@ import { socketStore } from "$lib/wsClient";
 
 const logsStore = writable<AppUpdateResponsePacket[]>([{
     purpose: "appUpdate",
-    message: "Logs initialized",
+    message: "Logs initialized.",
     command: "meta",
     type: "success",
     toastable: false
