@@ -73,10 +73,12 @@ server.on('connection', (socket) => {
 			try {
 				const output = await execCommand(command);
 				let matchesToastable = false;
-				for (const toastable of toastableLogs) {
-					if (toastable.test(output)) {
-						matchesToastable = true;
-						break;
+				if (command === "git pull") {
+					for (const toastable of toastableLogs) {
+						if (toastable.test(output)) {
+							matchesToastable = true;
+							break;
+						}
 					}
 				}
 				socket.send(JSON.stringify({
