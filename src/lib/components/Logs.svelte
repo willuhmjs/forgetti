@@ -1,9 +1,16 @@
-<script>
+<script lang="ts">
     import logsStore from "$lib/logsStore";
+    import type { AppUpdateResponsePacket } from "$lib/types";
+	import { get } from "svelte/store";
+
+    let logs: AppUpdateResponsePacket[] = get(logsStore);
+    logsStore.subscribe((value) => {
+        logs = value;
+   });
 </script>
 
 <div class="appUpdate">
-    {#each $logsStore as update}
+    {#each logs as update}
         <p class="update {update.type}">
             <span>{update.command}: {update.message}</span>
             <span>{new Date().toLocaleTimeString()}</span>
