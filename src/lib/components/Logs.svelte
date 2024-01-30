@@ -6,7 +6,7 @@
     {#each $logsStore as update}
         <p class="update {update.type}">
             <span>{update.command}: {update.message}</span>
-            <span>{new Date().toLocaleTimeString()}</span>
+            <span>{update.time}</span>
         </p>
     {/each}
 </div>

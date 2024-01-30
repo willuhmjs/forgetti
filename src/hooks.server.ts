@@ -76,7 +76,8 @@ server.on('connection', (socket) => {
 				message: "Cannot update while in developer mode!",
 				command: "meta",
 				type: "error",
-				toastable: true
+				toastable: true,
+				time: new Date().toLocaleTimeString()
 			} as AppUpdateResponsePacket))
 			for (const command of commands) {
 			try {
@@ -95,7 +96,8 @@ server.on('connection', (socket) => {
 					message: output,
 					command: command,
 					type: "success",
-					toastable: matchesToastable
+					toastable: matchesToastable,
+					time: new Date().toLocaleTimeString()
 				} as AppUpdateResponsePacket));
 				if (matchesToastable) break;
 			} catch (error) {
@@ -104,7 +106,8 @@ server.on('connection', (socket) => {
 						message: error,
 						command: command,
 						type: "error",
-						toastable: false
+						toastable: false,
+						time: new Date().toLocaleTimeString()
 					} as AppUpdateResponsePacket ))
 				}
 				}

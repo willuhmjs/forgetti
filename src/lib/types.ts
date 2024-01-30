@@ -45,7 +45,8 @@ export interface AppUpdateResponsePacket {
 	message: string,
 	command: string,
 	type: ResponseType
-	toastable: boolean
+	toastable: boolean,
+	time: string
 }
 
 export interface ConfigUpdateResponsePacket {
