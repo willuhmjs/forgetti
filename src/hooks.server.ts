@@ -65,7 +65,6 @@ server.on('connection', (socket) => {
 		);
 	}, 1000);
 
-	const configToastBlacklist = ['BrandColor', 'Enabled']
 	const commands = ["git pull", "pnpm install", "pnpm build", "sudo systemctl restart forgetti"]
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 	socket.on("message", async (data) => {
@@ -121,17 +120,9 @@ server.on('connection', (socket) => {
 				};
 				fs.writeFileSync('./config.json', JSON.stringify(newConfig, null, 2));
 				configStore.set(newConfig);
-				let toastable = true;
-				for (const value of configToastBlacklist) {
-					if (currentConfig[value] !== newConfig[value]) {
-						toastable = false;
-						break;
-					}
-				}
 				socket.send(JSON.stringify({
 					message: "Configuration updated successfully!",
 					type: "success",
-					toastable: toastable,
 					purpose: "configUpdate",
 					config: newConfig
 				} as ConfigUpdateResponsePacket ))
@@ -139,7 +130,6 @@ server.on('connection', (socket) => {
 				socket.send(JSON.stringify({
 					message: error.message || error,
 					type: "error",
-					toastable: true,
 					purpose: "configUpdate"
 				} as ConfigUpdateResponsePacket ))
 			}

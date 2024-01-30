@@ -14,10 +14,30 @@
 	let powerMenu: HTMLDivElement;
 
 	$: slug = $page.url.pathname;
+	let currentConfigPromiseResolve: (reason: string) => void, currentConfigPromiseReject: (reason: string) => void;
 
 	const updateConfig = async (config: Partial<Config>) => {
-		send(JSON.stringify({ purpose: 'configUpdate', config }));
+		return new Promise((resolve, reject) => {
+			currentConfigPromiseReject = reject;
+			currentConfigPromiseResolve = resolve;
+			send(JSON.stringify({ purpose: 'configUpdate', config }));
+		});
 	};
+
+	const updateConfigToastable = async (config: Partial<Config>) => {
+		toast.promise(updateConfig(config), {
+			loading: 'Loading',
+			success: (data) => `${data}`,
+			error: (err) => `${err.toString()}`,
+		}, {
+			duration: 5000,
+			position: 'bottom-right',
+			style: [
+				"background-color: var(--foreground);",
+				"color: white",
+			].join(""),
+		})
+	}
 
 	const cycleThemeColor = () => {
 		color = colors[(colors.indexOf(color) + 1) % colors.length];
@@ -61,22 +81,25 @@
 	onMount(() => {
 		socketStore.subscribe((data) => {
 			if (!data) return;
-			if (data.purpose === 'appUpdate' || data.purpose === 'configUpdate') {
-                if (data.toastable) {
-                   updateRequested = false;
-					toast[data.type](data.message, {
-						duration: 5000,
-						position: 'bottom-right',
-						style: [
-							"background-color: var(--foreground);",
-							"color: white",
-						].join(""),
-						
-					})
-                }
+			if (data.purpose === 'appUpdate' && data.toastable) {
+                updateRequested = false;
+				toast[data.type](data.message, {
+					duration: 5000,
+					position: 'bottom-right',
+					style: [
+						"background-color: var(--foreground);",
+						"color: white",
+					].join(""),
+					
+				})
 			}
 			if (data.purpose === 'configUpdate' && data.config) {
 				liveData = { ...liveData, ...data.config };
+				if (data.type === "success") {
+					currentConfigPromiseResolve(data.message);
+				} else {
+					currentConfigPromiseReject(data.message);
+				}
 			}
 		});
 	});
@@ -96,7 +119,7 @@
 		</a>
 	</div>
 	<div class="buttons">
-		<button on:click={() => updateConfig({ Enabled: !liveData.Enabled })}>
+		<button on:click={() => updateConfigToastable({ Enabled: !liveData.Enabled })}>
 			<Fa icon={liveData.Enabled ? faStop : faPlay} color={liveData.Enabled ? "var(--red)" : "var(--green)"}/>
 		</button>
 		<button id="color" on:click={cycleThemeColor}>

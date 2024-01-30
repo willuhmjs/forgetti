@@ -52,7 +52,6 @@ export interface AppUpdateResponsePacket {
 export interface ConfigUpdateResponsePacket {
 	message: string,
 	type: ResponseType
-	toastable: boolean,
 	purpose: "configUpdate",
 	config?: Config
 }
