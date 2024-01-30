@@ -15,9 +15,9 @@
     .appUpdate {
         display: flex;
         flex-direction: column;
-        gap: 10px;
         margin: 10px;
         overflow-y: auto;
+        gap: 10px;
     }
 
     .update {
@@ -26,6 +26,7 @@
         font-size: 14px;
         display: flex;
         justify-content: space-between; 
+        margin: 0;
     }
 
     .success {
