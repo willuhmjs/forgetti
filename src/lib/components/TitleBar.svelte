@@ -2,7 +2,7 @@
 	import Fa from 'svelte-fa';
 	import { send } from '$lib/wsClient';
 	import { faPowerOff, faSync, faPalette, faRotateRight, faPlay, faStop, faCogs, faFileLines, faHome } from '@fortawesome/free-solid-svg-icons';
-	import type { Config } from '$lib/types';
+	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 	import toast from "svelte-french-toast";
 	import { socketStore } from '$lib/wsClient';
 	import { onMount } from 'svelte';
@@ -14,14 +14,29 @@
 	let powerMenu: HTMLDivElement;
 
 	$: slug = $page.url.pathname;
-	let currentConfigPromiseResolve: (reason: string) => void, currentConfigPromiseReject: (reason: string) => void;
 
 	const updateConfig = async (config: Partial<Config>) => {
 		return new Promise((resolve, reject) => {
-			currentConfigPromiseReject = reject;
-			currentConfigPromiseResolve = resolve;
-			send(JSON.stringify({ purpose: 'configUpdate', config }));
+			fetch('/api/update_config', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					purpose: "configUpdate",
+					config
+				} as ConfigUpdateRequestPacket)
+			}).then(async response => {
+				const data = await response.json() as ConfigUpdateResponsePacket;
+				if (data.type === "success") {
+					liveData = { ...liveData, ...data.config };
+					resolve(data.message);
+				} else {
+					reject(data.message);
+				}
+			});
 		});
+
 	};
 
 	const updateConfigToastable = async (config: Partial<Config>) => {
@@ -93,14 +108,6 @@
 					
 				})
 			}
-			if (data.purpose === 'configUpdate' && data.config) {
-				liveData = { ...liveData, ...data.config };
-				if (data.type === "success") {
-					currentConfigPromiseResolve(data.message);
-				} else {
-					currentConfigPromiseReject(data.message);
-				}
-			}
 		});
 	});
 </script>
@@ -109,13 +116,13 @@
 	<h3 class="title">Forgetti</h3>
 	<div class="buttons">
 		<a href="/">
-			<Fa icon={faHome} fw={true} color={slug === "/" ? liveData.BrandColor : ""}/>
+			<Fa icon={faHome} fw={true} color={slug === "/" ? "var(--brand)" : ""}/>
 		</a>
 		<a href="/configure">
-			<Fa icon={faCogs} fw={true} color={slug === "/configure" ? liveData.BrandColor : ""} />
+			<Fa icon={faCogs} fw={true} color={slug === "/configure" ? "var(--brand)" : ""} />
 		</a>
 		<a href="/logs">
-			<Fa icon={faFileLines} fw={true} color={slug === "/logs" ? liveData.BrandColor : ""} />
+			<Fa icon={faFileLines} fw={true} color={slug === "/logs" ? "var(--brand)" : ""} />
 		</a>
 	</div>
 	<div class="buttons">

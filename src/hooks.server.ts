@@ -8,8 +8,7 @@ import type { Readable } from 'stream';
 import { get } from 'svelte/store';
 import { exec } from 'child_process';
 import { dev } from '$app/environment';
-import fs from 'fs';
-import type { AppUpdateRequestPacket, AppUpdateResponsePacket, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
+import type { AppUpdateRequestPacket, AppUpdateResponsePacket } from '$lib/types';
 
 let currentCameraPromiseDirty = Symbol();
 let currentConfig = get(configStore);
@@ -68,7 +67,7 @@ server.on('connection', (socket) => {
 	const commands = ["git pull", "pnpm install", "pnpm build", "sudo systemctl restart forgetti"]
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 	socket.on("message", async (data) => {
-		const requestPacket: AppUpdateRequestPacket | ConfigUpdateRequestPacket = JSON.parse(data.toString());
+		const requestPacket: AppUpdateRequestPacket = JSON.parse(data.toString());
 		if (requestPacket.purpose === "appUpdate") {
 			if (dev) return socket.send(JSON.stringify({
 				purpose: "appUpdate",
@@ -110,31 +109,7 @@ server.on('connection', (socket) => {
 					} as AppUpdateResponsePacket ))
 				}
 				}
-		} else if (requestPacket.purpose === "configUpdate") {
-			try {
-				const currentConfig = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
-
-				const newConfig = {
-					...currentConfig,
-					...requestPacket.config,
-				};
-				fs.writeFileSync('./config.json', JSON.stringify(newConfig, null, 2));
-				configStore.set(newConfig);
-				socket.send(JSON.stringify({
-					message: "Configuration updated successfully!",
-					type: "success",
-					purpose: "configUpdate",
-					config: newConfig
-				} as ConfigUpdateResponsePacket ))
-			} catch (error: any) {
-				socket.send(JSON.stringify({
-					message: error.message || error,
-					type: "error",
-					purpose: "configUpdate"
-				} as ConfigUpdateResponsePacket ))
-			}
-		}
-		
+		} 
 	})
 });
 
