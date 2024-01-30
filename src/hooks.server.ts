@@ -1,7 +1,7 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
 import si from 'systeminformation';
-import configStore from '$lib/configStore';
+import configStore from '$lib/server/configStore';
 import server from '$lib/server/wsServer';
 import { detectObjects, latestDetection } from '$lib/server/model';
 import type { Readable } from 'stream';

@@ -2,7 +2,7 @@ import ort from 'onnxruntime-node';
 import sharp from 'sharp';
 import { writable, get } from 'svelte/store';
 import type { Box, InferenceData } from '$lib/types';
-import configStore from '$lib/configStore';
+import configStore from '$lib/server/configStore';
 
 let currentConfig = get(configStore);
 configStore.subscribe((c) => (currentConfig = c));

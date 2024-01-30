@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
 import fs from 'fs';
 import type { Config } from '$lib/types';
-import configExample from '../../config.example.json?raw';
+import configExample from '../../../config.example.json?raw';
 
 let currentConfig: Config;
 

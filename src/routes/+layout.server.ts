@@ -1,4 +1,4 @@
-import configStore from '$lib/configStore';
+import configStore from '$lib/server/configStore';
 import { get } from 'svelte/store';
 
 export function load() {
