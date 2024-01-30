@@ -30,7 +30,7 @@
 	$: updateRequested = false;
 	const requestUpdate = () => {
 		updateRequested = true;
-		send(JSON.stringify({ purpose: 'update' }));
+		send(JSON.stringify({ purpose: 'appUpdate' }));
 	}
 
 

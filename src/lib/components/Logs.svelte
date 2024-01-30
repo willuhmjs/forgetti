@@ -1,26 +1,12 @@
 <script>
-    import { socketStore } from "$lib/wsClient";
-    import { onMount } from "svelte";
-    let appUpdate = [{
-        purpose: "success",
-        message: "Logs initialized",
-        command: "meta",
-        type: "success"
-    }];
-
-    onMount(() => {
-		socketStore.subscribe((data) => {
-			if (data?.purpose === 'appUpdate') {
-				appUpdate = [...appUpdate, data];
-			}
-		});
-	});
+    import logsStore from "$lib/logsStore";
 </script>
 
 <div class="appUpdate">
-    {#each appUpdate as update}
+    {#each $logsStore as update}
         <p class="update {update.type}">
-            {update.command}: {update.message}
+            <span>{update.command}: {update.message}</span>
+            <span>{new Date().toLocaleTimeString()}</span>
         </p>
     {/each}
 </div>
@@ -30,11 +16,16 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
-        padding: 10px;
-        width: 100%;
-        height: 100%;
+        margin: 10px;
         overflow-y: auto;
-        
+    }
+
+    .update {
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        display: flex;
+        justify-content: space-between; 
     }
 
     .success {
