@@ -77,7 +77,7 @@ server.on('connection', (socket) => {
 				command: "meta",
 				type: "error",
 				toastable: true,
-				time: new Date().toLocaleTimeString()
+				time: new Date().toLocaleTimeString("en-US")
 			} as AppUpdateResponsePacket))
 			for (const command of commands) {
 			try {
@@ -97,7 +97,7 @@ server.on('connection', (socket) => {
 					command: command,
 					type: "success",
 					toastable: matchesToastable,
-					time: new Date().toLocaleTimeString()
+					time: new Date().toLocaleTimeString("en-US")
 				} as AppUpdateResponsePacket));
 				if (matchesToastable) break;
 			} catch (error) {
@@ -107,7 +107,7 @@ server.on('connection', (socket) => {
 						command: command,
 						type: "error",
 						toastable: false,
-						time: new Date().toLocaleTimeString()
+						time: new Date().toLocaleTimeString("en-US")
 					} as AppUpdateResponsePacket ))
 				}
 				}

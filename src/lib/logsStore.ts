@@ -8,7 +8,7 @@ const logsStore = writable<AppUpdateResponsePacket[]>([{
     command: "meta",
     type: "success",
     toastable: false,
-    time: new Date().toLocaleTimeString()
+    time: new Date().toLocaleTimeString("en-US")
 }]);
 
 if (typeof window !== 'undefined') {
