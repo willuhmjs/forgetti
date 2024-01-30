@@ -3,9 +3,9 @@
 	import TitleBar from '$lib/components/TitleBar.svelte';
 	import { Toaster } from "svelte-french-toast";
 	export let data;
-
-	
+	import liveData from '$lib/liveData';
 	onMount(() => {
+		liveData.set(data);
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
 	});
 </script>

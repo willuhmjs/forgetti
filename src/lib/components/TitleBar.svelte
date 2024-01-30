@@ -6,12 +6,13 @@
 	import toast from "svelte-french-toast";
 	import { socketStore } from '$lib/wsClient';
 	import { onMount } from 'svelte';
+	import liveData from "$lib/liveData";
 	import { page } from '$app/stores';
 	export let data: Config;
-	let liveData: Config = { ...data };
 	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
 	let color = data.BrandColor;
 	let powerMenu: HTMLDivElement;
+
 
 	$: slug = $page.url.pathname;
 
@@ -29,7 +30,7 @@
 			}).then(async response => {
 				const data = await response.json() as ConfigUpdateResponsePacket;
 				if (data.type === "success") {
-					liveData = { ...liveData, ...data.config };
+					$liveData = { ...$liveData, ...data.config };
 					resolve(data.message);
 				} else {
 					reject(data.message);
@@ -126,8 +127,8 @@
 		</a>
 	</div>
 	<div class="buttons">
-		<button on:click={() => updateConfigToastable({ Enabled: !liveData.Enabled })}>
-			<Fa icon={liveData.Enabled ? faStop : faPlay} color={liveData.Enabled ? "var(--red)" : "var(--green)"}/>
+		<button on:click={() => updateConfigToastable({ Enabled: !$liveData?.Enabled })}>
+			<Fa icon={$liveData?.Enabled ? faStop : faPlay} color={$liveData?.Enabled ? "var(--red)" : "var(--green)"}/>
 		</button>
 		<button id="color" on:click={cycleThemeColor}>
 			<Fa icon={faPalette} />
