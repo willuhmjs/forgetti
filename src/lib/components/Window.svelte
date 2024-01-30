@@ -30,13 +30,13 @@
 
 <style>
 	.window {
-		width: fit-content;
 		border: none;
 		border-radius: 15px;
 		background-color: #fff;
 		font-size: 12px;
 		background-color: var(--foreground);
 		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+		max-width: 100%;
 	}
 
 	.title-bar {
@@ -50,6 +50,7 @@
 		width: 100%;
 		display: flex;
 		justify-content: center;
+		overflow: scroll;
 		align-items: center;
 	}
 

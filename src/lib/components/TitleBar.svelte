@@ -192,4 +192,20 @@
 	:global(.pm-icon) {
 		margin-right: 0.5rem;
 	}
+
+	@media screen and (max-width: 576px) {
+		.titlebar {
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.buttons {
+			margin-top: 1rem;
+		}
+
+		.buttons button {
+			margin: 0;
+		}
+
+	}
 </style>
