@@ -4,6 +4,14 @@
 	import { socketStore } from '$lib/wsClient';
 	export let data: Config;
 	let canvas: HTMLCanvasElement;
+	
+	const colorMap = new Map([
+  ['var(--red)', '#ef4444'],
+  ['var(--green)', '#22c55e'],
+  ['var(--yellow)', '#eab308'],
+  ['var(--orange)', '#f97316'],
+  ['var(--blue)', '#3b82f6']
+]);
 
 	onMount(() => {
 		let img = new Image();
@@ -23,12 +31,13 @@
 				const ctx = canvas.getContext('2d');
 				if (ctx) {
 					ctx.drawImage(img, 0, 0);
-					ctx.strokeStyle = data.BrandColor;
+					
+					ctx.strokeStyle = colorMap.get(data.BrandColor) || "#ffffff";
 					ctx.lineWidth = 3;
 					ctx.font = '18px sans-serif';
 					boxes.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 						ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-						ctx.fillStyle = data.BrandColor;
+						ctx.fillStyle = colorMap.get(data.BrandColor) || "#ffffff";
 						const width = ctx.measureText(`failure ${prob}%`).width;
 						ctx.fillRect(x1, y1, width + 10, 25);
 						ctx.fillStyle = '#000000';
