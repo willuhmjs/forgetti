@@ -7,6 +7,7 @@ export const POST: RequestHandler = async ({ request }) => {
 	const requestPacket = (await request.json()) as ConfigUpdateRequestPacket;
 	try {
         const currentConfig = JSON.parse(fs.readFileSync('./config.json', 'utf-8'));
+
         const newConfig = {
             ...currentConfig,
             ...requestPacket.config,
