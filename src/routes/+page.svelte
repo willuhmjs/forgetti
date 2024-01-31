@@ -1,10 +1,11 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import LivePreview from '$lib/components/LivePreview.svelte';
 	import System from '$lib/components/System.svelte';
 	import Window from '$lib/components/Window.svelte';
 	import { faVideoCamera, faServer } from '@fortawesome/free-solid-svg-icons';
-	export let data;
+	import type { Config } from '$lib/types';
+	export let data: Config;
 	
 	onMount(() => {
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
