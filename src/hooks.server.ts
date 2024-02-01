@@ -1,5 +1,6 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
+import detectionHandler from '$lib/server/detectionHandler';
 import si from 'systeminformation';
 import configStore from '$lib/server/configStore';
 import server from '$lib/server/wsServer';
@@ -113,8 +114,8 @@ server.on('connection', (socket) => {
 	})
 });
 
-latestDetection.subscribe((val) => {
-	if (val?.box?.length) console.log(val.box);
+latestDetection.subscribe((data) => {
+	if (data?.box?.length) detectionHandler(data)
 });
 
 async function startStream(config: any) {
