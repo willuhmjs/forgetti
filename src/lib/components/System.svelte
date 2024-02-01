@@ -114,6 +114,7 @@
 
 	.spec .icon {
 		margin-right: 0.5rem;
+		color: var(--brand);
 	}
 
 	.circularBarWrapper {
