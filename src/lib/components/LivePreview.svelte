@@ -2,16 +2,11 @@
 	import { onMount } from 'svelte';
 	import type { Box, Config } from '$lib/types';
 	import { socketStore } from '$lib/wsClient';
+	import colorMap from "$lib/colorMap";
 	export let data: Config;
 	let canvas: HTMLCanvasElement;
 	
-	const colorMap = new Map([
-  ['var(--red)', '#ef4444'],
-  ['var(--green)', '#22c55e'],
-  ['var(--yellow)', '#eab308'],
-  ['var(--orange)', '#f97316'],
-  ['var(--blue)', '#3b82f6']
-]);
+	
 
 	onMount(() => {
 		let img = new Image();
