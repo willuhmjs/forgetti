@@ -72,8 +72,11 @@
 		</p>
 		<p class="spec">
 			<span class="icon"><Fa icon={faWifi} /></span>{convertToLargestUnit(socketData.netTX)}
-			<Fa icon={faUpload} /> / {convertToLargestUnit(socketData.netRX)}
+			<span class="icon">
+			<Fa icon={faUpload} /></span> / {convertToLargestUnit(socketData.netRX)}
+			<span class="icon">
 			<Fa icon={faDownload} />
+			</span>
 		</p>
     </div>
     <div class="circularBarContainer">
@@ -112,8 +115,11 @@
 		font-size: 0.9rem;
 	}
 
-	.spec .icon {
+	.spec .icon:first-of-type {
 		margin-right: 0.5rem;
+	}
+
+	.spec .icon {
 		color: var(--brand);
 	}
 
