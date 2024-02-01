@@ -19,6 +19,7 @@ export interface Config {
 		ConfidenceThreshold: number;
 		BrandColor: string;
 		DiscordWebhookURL: string;
+		ReportCooldown: string;
 }
 
 // response packets

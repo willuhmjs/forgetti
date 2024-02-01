@@ -3,6 +3,7 @@ import MjpegConsumer from 'mjpeg-consumer';
 import detectionHandler from '$lib/server/detectionHandler';
 import si from 'systeminformation';
 import configStore from '$lib/server/configStore';
+import ms from "ms";
 import server from '$lib/server/wsServer';
 import { detectObjects, latestDetection } from '$lib/server/model';
 import type { Readable } from 'stream';
@@ -11,6 +12,7 @@ import { exec } from 'child_process';
 import { dev } from '$app/environment';
 import type { AppUpdateRequestPacket, AppUpdateResponsePacket } from '$lib/types';
 
+let lastReport = 0;
 let currentCameraPromiseDirty = Symbol();
 let currentConfig = get(configStore);
 startStream(currentConfig);
@@ -115,7 +117,10 @@ server.on('connection', (socket) => {
 });
 
 latestDetection.subscribe((data) => {
-	if (data?.box?.length) detectionHandler(data)
+	if (data?.box?.[0].prob > currentConfig.ConfidenceThreshold && (Date.now() - lastReport) > ms(currentConfig.ReportCooldown)) {
+		lastReport = Date.now();
+		detectionHandler(data)
+	};
 });
 
 async function startStream(config: any) {

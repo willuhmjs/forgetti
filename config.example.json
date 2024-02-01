@@ -3,5 +3,6 @@
 	"CameraURL": "http://127.0.0.1/webcam?action=stream",
 	"ConfidenceThreshold": 50,
 	"BrandColor": "#f97316",
-	"DiscordWebhookURL": ""
+	"DiscordWebhookURL": "",
+	"ReportCooldown": "5m"
 }
