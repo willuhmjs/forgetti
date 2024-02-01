@@ -98,6 +98,7 @@
 	};
 
 	onMount(() => {
+		powerMenu.style.display = "none";
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
 		socketStore.subscribe((data) => {
 			if (!data) return;
