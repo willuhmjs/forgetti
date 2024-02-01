@@ -49,6 +49,6 @@
 	});
 </script>
 
-<div style="margin-bottom: -4px">
-	<canvas bind:this={canvas} />
+<div style="margin-bottom: -4px;">
+	<canvas bind:this={canvas} style="max-width: 640px; height: 100%;" />
 </div>
