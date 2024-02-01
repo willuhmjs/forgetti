@@ -18,6 +18,7 @@ export interface Config {
 		CameraURL: string;
 		ConfidenceThreshold: number;
 		BrandColor: string;
+		DiscordWebhookURL: string;
 }
 
 // response packets

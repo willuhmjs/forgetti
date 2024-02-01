@@ -1,17 +1,8 @@
 <script>
-	import { onMount } from 'svelte';
-	import TitleBar from '$lib/components/TitleBar.svelte';
 	import { Toaster } from "svelte-french-toast";
-	export let data;
-
-	
-	onMount(() => {
-		document.documentElement.style.setProperty('--brand', data.BrandColor);
-	});
 </script>
 
 <div class="desktop">
-	<TitleBar {data} />
 	<slot />
 </div>
 <Toaster />
@@ -22,6 +13,9 @@
 		color: #f9fafb;
 		margin: 0;
 		padding: 0;
+	}
+
+	:global(*) {
 		box-sizing: border-box;
 	}
 
