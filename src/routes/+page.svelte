@@ -5,7 +5,7 @@
 	import Logs from "$lib/components/Logs.svelte";
 	import Fa from 'svelte-fa';
 	import { send } from '$lib/wsClient';
-	import { faVideoCamera, faServer, faPowerOff, faSync, faPalette, faRotateRight, faPlay, faStop, faCogs, faFileLines, faHome, faCog } from '@fortawesome/free-solid-svg-icons';
+	import { faVideoCamera, faServer, faPowerOff, faSync, faPalette, faRotateRight, faPlay, faStop, faCogs, faFileLines, faHome, faCog, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 	import toast from "svelte-french-toast";
 	import { socketStore } from '$lib/wsClient';
@@ -176,8 +176,7 @@
 		<input type="text" id="CameraURL" bind:value={liveData.CameraURL} placeholder="http://yourcameraurl.com"/>
 	</div>
 	<div class="inputGroup">
-		<label for="CameraURL">Confidence Threshold</label>
-		{liveData.ConfidenceThreshold}
+		<label for="CameraURL">Confidence Threshold ({liveData.ConfidenceThreshold}%)</label>
 		<input type="range" id="ConfidenceThreshold" min=1 max=100 bind:value={liveData.ConfidenceThreshold} />
 	</div>
 </div>
@@ -193,7 +192,9 @@
 </Window>
 </div>
 
-<button on:click={() => updateConfigToastable(liveData)}>Save</button>
+<button on:click={() => updateConfigToastable(liveData)} class="saveButton">
+	<Fa fw icon={faFloppyDisk} />
+</button>
 
 {:else if activeWindow === "logs"}
 <Logs />
@@ -229,7 +230,7 @@
 		gap: 1rem;
 	}
 
-	.buttons button {
+	button {
 		all: unset;
 	}
 
@@ -294,7 +295,6 @@
     .inputGroup label {
         display: block;
         margin-bottom: 0.5rem;
-        color: var(--brand);
     }
 
     .inputGroup input {
@@ -306,11 +306,41 @@
         color: white;
     }
 
+	/* todo: use auto prefixer */
+	.inputGroup input[type="range"]::-webkit-slider-runnable-track {
+    background: var(--brand);
+	}
+
+	.inputGroup input[type="range"]::-moz-range-track {
+		background: var(--brand);
+	}
+
+	.inputGroup input[type="range"]::-ms-track {
+		background: var(--brand);
+	}
+
     .inputGroup input:focus {
         outline: none;
         border-color: var(--brand);
         box-shadow: 0 0 3px var(--brand);
     }
+
+	.saveButton {
+		background-color: var(--brand);
+		color: white;
+		bottom: none;
+		border-radius: 50%;
+		padding: 0.8rem;
+		font-size: 1.5rem;
+		position: absolute;
+		left: 1rem;
+		bottom: 1rem;
+	}
+
+	.saveButton:hover {
+		cursor: pointer;
+		filter: brightness(0.85);
+	}
 
 	@media screen and (max-width: 576px) {
 		.titlebar {
