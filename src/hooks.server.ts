@@ -117,7 +117,7 @@ server.on('connection', (socket) => {
 });
 
 latestDetection.subscribe((data) => {
-	if (data?.box?.[0].prob > currentConfig.ConfidenceThreshold && (Date.now() - lastReport) > ms(currentConfig.ReportCooldown)) {
+	if (data?.box?.[0]?.prob > currentConfig.ConfidenceThreshold && (Date.now() - lastReport) > ms(currentConfig.ReportCooldown)) {
 		lastReport = Date.now();
 		detectionHandler(data)
 	};
