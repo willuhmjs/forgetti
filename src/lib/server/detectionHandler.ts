@@ -1,7 +1,7 @@
 import type { Box, InferenceData } from "$lib/types";
 import { WebhookClient, EmbedBuilder, type HexColorString } from "discord.js";
-import { createCanvas, loadImage } from "canvas";
-import sizeOf from "image-size";
+import Canvas from "@napi-rs/canvas";
+import sharp from "sharp";
 import { get } from "svelte/store";
 import colorMap from "$lib/colorMap";
 import configStore from "./configStore";
@@ -29,12 +29,11 @@ export default async (data: InferenceData) => {
 
 const buildImage = async (data: InferenceData): Promise<Buffer> => {
     const buffer: Buffer = Buffer.from(data.buffer, "base64");
-    const img = await loadImage(buffer);
-    const { width, height } = sizeOf(buffer);
-    const canvas = createCanvas(width, height)
-
+    const { width, height } = await sharp(buffer).metadata();
+    const canvas = Canvas.createCanvas(width, height);
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(img, 0, 0);
+    const background = await Canvas.loadImage(buffer);
+    ctx.drawImage(background, 0, 0);
     ctx.strokeStyle = colorMap.get(config.BrandColor) || "#ffffff";
     ctx.lineWidth = 5;
     ctx.font = '20px sans-serif';
@@ -46,9 +45,8 @@ const buildImage = async (data: InferenceData): Promise<Buffer> => {
         ctx.fillStyle = '#000000';
         ctx.fillText(`failure ${prob}%`, x1, y1 + 18);
     });
-    return canvas.toBuffer();
+    return canvas.toBuffer("image/jpeg");
 }
-
 
 const notifyDiscord = (data: InferenceDataBuffer) => {
     const webhookClient = new WebhookClient({ url: config.DiscordWebhookURL });
