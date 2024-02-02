@@ -4,6 +4,7 @@
 	import Window from '$lib/components/Window.svelte';
 	import Logs from "$lib/components/Logs.svelte";
 	import Fa from 'svelte-fa';
+	import { fly } from "svelte/transition";
 	import { send } from '$lib/wsClient';
 	import { faVideoCamera, faServer, faPowerOff, faSync, faPalette, faRotateRight, faPlay, faStop, faCogs, faFileLines, faHome, faCog, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
@@ -194,10 +195,14 @@
 
 <!-- only show if liveconfig differs from data -->
 {#if JSON.stringify(liveData) !== JSON.stringify(data)}
-<button on:click={() => updateConfigToastable(liveData)} class="saveButton">
+
+<div class="saveButtonDiv">
+<button on:click={() => updateConfigToastable(liveData)} class="saveButton" transition:fly={{ y: 100 }}>
 	<Fa fw icon={faFloppyDisk} />
 </button>
+</div>
 {/if}
+
 
 {:else if activeWindow === "logs"}
 <Logs />
@@ -328,6 +333,13 @@
         box-shadow: 0 0 3px var(--brand);
     }
 
+	.saveButtonDiv {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		overflow: hidden;
+	}
+
 	.saveButton {
 		background-color: var(--brand);
 		color: white;
@@ -335,9 +347,8 @@
 		border-radius: 50%;
 		padding: 0.8rem;
 		font-size: 1.5rem;
-		position: absolute;
-		left: 1rem;
-		bottom: 1rem;
+		margin-bottom: 1rem;
+		margin-left: 1rem;
 	}
 
 	.saveButton:hover {
