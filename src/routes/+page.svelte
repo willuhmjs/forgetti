@@ -192,9 +192,12 @@
 </Window>
 </div>
 
+<!-- only show if liveconfig differs from data -->
+{#if JSON.stringify(liveData) !== JSON.stringify(data)}
 <button on:click={() => updateConfigToastable(liveData)} class="saveButton">
 	<Fa fw icon={faFloppyDisk} />
 </button>
+{/if}
 
 {:else if activeWindow === "logs"}
 <Logs />
