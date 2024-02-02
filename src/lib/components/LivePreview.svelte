@@ -28,8 +28,8 @@
 					ctx.drawImage(img, 0, 0);
 					
 					ctx.strokeStyle = colorMap.get(data.BrandColor) || "#ffffff";
-					ctx.lineWidth = 3;
-					ctx.font = '18px sans-serif';
+					ctx.lineWidth = 5;
+					ctx.font = '20px sans-serif';
 					boxes.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 						ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
 						ctx.fillStyle = colorMap.get(data.BrandColor) || "#ffffff";
