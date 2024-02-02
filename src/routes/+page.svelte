@@ -181,6 +181,10 @@
 		<label for="CameraURL">Confidence Threshold ({liveDataUnsaved.ConfidenceThreshold}%)</label>
 		<input type="range" id="ConfidenceThreshold" min=1 max=100 bind:value={liveDataUnsaved.ConfidenceThreshold} />
 	</div>
+	<div class="inputGroup">
+		<label for="ReportCooldown">Report Cooldown</label>
+		<input type="text" id="ReportCooldown" bind:value={liveDataUnsaved.ReportCooldown} placeholder="5 minutes"/>
+	</div>
 </div>
 </Window>
 
