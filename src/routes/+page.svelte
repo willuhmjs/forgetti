@@ -15,34 +15,35 @@
 	export let data: Config;
 	
 	let liveData: Config = { ...data };
+	let liveDataUnsaved: Config = { ...data };
 	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
 	let color = data.BrandColor;
 	let powerMenu: HTMLDivElement;
 
 	let activeWindow: "home" | "config" | "logs" = "home";
 	const updateConfig = async (config: Partial<Config>) => {
-		return new Promise((resolve, reject) => {
-			fetch('/api/update_config', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					purpose: "configUpdate",
-					config
-				} as ConfigUpdateRequestPacket)
-			}).then(async response => {
-				const data = await response.json() as ConfigUpdateResponsePacket;
-				if (data.type === "success") {
-					liveData = { ...liveData, ...data.config };
-					resolve(data.message);
-				} else {
-					reject(data.message);
-				}
-			});
-		});
-
-	};
+        return new Promise((resolve, reject) => {
+            fetch('/api/update_config', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    purpose: "configUpdate",
+                    config
+                } as ConfigUpdateRequestPacket)
+            }).then(async response => {
+                const data = await response.json() as ConfigUpdateResponsePacket;
+                if (data.type === "success") {
+                    liveData = { ...liveData, ...data.config };
+                    liveDataUnsaved = { ...liveData }; // Update liveDataUnsaved with the new liveData
+                    resolve(data.message);
+                } else {
+                    reject(data.message);
+                }
+            });
+        });
+    };
 
 	const updateConfigToastable = async (config: Partial<Config>) => {
 		toast.promise(updateConfig(config), {
@@ -174,11 +175,11 @@
 	<div class="form">
 	<div class="inputGroup">
 		<label for="CameraURL">Camera URL</label>
-		<input type="text" id="CameraURL" bind:value={liveData.CameraURL} placeholder="http://yourcameraurl.com"/>
+		<input type="text" id="CameraURL" bind:value={liveDataUnsaved.CameraURL} placeholder="http://yourcameraurl.com"/>
 	</div>
 	<div class="inputGroup">
-		<label for="CameraURL">Confidence Threshold ({liveData.ConfidenceThreshold}%)</label>
-		<input type="range" id="ConfidenceThreshold" min=1 max=100 bind:value={liveData.ConfidenceThreshold} />
+		<label for="CameraURL">Confidence Threshold ({liveDataUnsaved.ConfidenceThreshold}%)</label>
+		<input type="range" id="ConfidenceThreshold" min=1 max=100 bind:value={liveDataUnsaved.ConfidenceThreshold} />
 	</div>
 </div>
 </Window>
@@ -187,17 +188,17 @@
 	<div class="form">
 		<div class="inputGroup">
 			<label for="DiscordWebhookURL">Webhook URL</label>
-			<input type="text" id="DiscordWebhookURL" bind:value={liveData.DiscordWebhookURL} placeholder="https://discord.com/api/webhooks/yourwebhookid/yourwebhooktoken" />
+			<input type="text" id="DiscordWebhookURL" bind:value={liveDataUnsaved.DiscordWebhookURL} placeholder="https://discord.com/api/webhooks/yourwebhookid/yourwebhooktoken" />
 		</div>
 	</div>
 </Window>
 </div>
 
 <!-- only show if liveconfig differs from data -->
-{#if JSON.stringify(liveData) !== JSON.stringify(data)}
+{#if JSON.stringify(liveData) !== JSON.stringify(liveDataUnsaved)}
 
 <div class="saveButtonDiv">
-<button on:click={() => updateConfigToastable(liveData)} class="saveButton" transition:fly={{ y: 100 }}>
+<button on:click={() => updateConfigToastable(liveDataUnsaved)} class="saveButton" transition:fly={{ y: 100 }}>
 	<Fa fw icon={faFloppyDisk} />
 </button>
 </div>
