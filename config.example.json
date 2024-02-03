@@ -4,5 +4,7 @@
 	"ConfidenceThreshold": 50,
 	"BrandColor": "#f97316",
 	"DiscordWebhookURL": "",
+	"DiscordUserPingEnabled": false,
+	"DiscordUserPing": "", 
 	"ReportCooldown": "5 minutes"
 }

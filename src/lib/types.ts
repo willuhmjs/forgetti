@@ -20,6 +20,8 @@ export interface Config {
 		BrandColor: string;
 		DiscordWebhookURL: string;
 		ReportCooldown: string;
+		DiscordUserPingEnabled: boolean;
+		DiscordUserPing: string;
 }
 
 // response packets

@@ -52,7 +52,6 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
     const webhookClient = new WebhookClient({ url: config.DiscordWebhookURL });
 
     const boxes = data.box;
-    
 
     const notifyEmbed = new EmbedBuilder()
         .setTitle("Spaghetti Detected!")
@@ -66,6 +65,7 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
             files: [{
                 attachment: data.buffer,
                 name: "spaghetti.jpg"
-            }]
+            }],
+            content: config.DiscordUserPing && config.DiscordUserPing ? `<@#${config.DiscordUserPing}>` : undefined
         })
 }

@@ -194,6 +194,16 @@
 			<label for="DiscordWebhookURL">Webhook URL</label>
 			<input type="text" id="DiscordWebhookURL" bind:value={liveDataUnsaved.DiscordWebhookURL} placeholder="https://discord.com/api/webhooks/yourwebhookid/yourwebhooktoken" />
 		</div>
+		<div class="inputGroup">
+			<label for="DiscordUserPingEnabled">Ping User</label>
+			<input type="checkbox" id="DiscordUserPingEnabled" bind:checked={liveDataUnsaved.DiscordUserPingEnabled} />
+		</div>
+		{#if liveDataUnsaved.DiscordUserPingEnabled}
+		<div class="inputGroup">
+			<label for="DiscordUserPing">Ping User ID</label>
+			<input type="text" id="DiscordUserPing" bind:value={liveDataUnsaved.DiscordUserPing} placeholder="969629831300005918" />
+		</div>
+		{/if}
 	</div>
 </Window>
 </div>
