@@ -59,13 +59,12 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
         .setTimestamp()
         .setImage("attachment://spaghetti.jpg")
         .setColor(colorMap.get(config.BrandColor) as HexColorString || "#ffffff");
-
         webhookClient.send({
             embeds: [notifyEmbed],
             files: [{
                 attachment: data.buffer,
                 name: "spaghetti.jpg"
             }],
-            content: config.DiscordUserPing && config.DiscordUserPing ? `<@#${config.DiscordUserPing}>` : undefined
+            content: config.DiscordUserPing && config.DiscordUserPing ? `<@${config.DiscordUserPing}>` : undefined
         })
 }
