@@ -370,19 +370,6 @@
 		color: white;
 	}
 
-	/* todo: use auto prefixer */
-	.inputGroup input[type='range']::-webkit-slider-runnable-track {
-		background: var(--brand);
-	}
-
-	.inputGroup input[type='range']::-moz-range-track {
-		background: var(--brand);
-	}
-
-	.inputGroup input[type='range']::-ms-track {
-		background: var(--brand);
-	}
-
 	.inputGroup input:focus {
 		outline: none;
 		border-color: var(--brand);

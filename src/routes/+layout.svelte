@@ -1,11 +1,12 @@
 <script>
+	import '../app.pcss';
 	import { Toaster } from 'svelte-french-toast';
 </script>
 
 <div class="desktop">
 	<slot />
 </div>
-<Toaster />
+<Toaster></Toaster>
 
 <style>
 	:global(body) {
