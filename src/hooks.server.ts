@@ -3,7 +3,7 @@ import MjpegConsumer from 'mjpeg-consumer';
 import detectionHandler from '$lib/server/detectionHandler';
 import si from 'systeminformation';
 import configStore from '$lib/server/configStore';
-import ms from "ms";
+import ms from 'ms';
 import server from '$lib/server/wsServer';
 import { detectObjects, latestDetection } from '$lib/server/model';
 import type { Readable } from 'stream';
@@ -18,22 +18,22 @@ let currentConfig = get(configStore);
 startStream(currentConfig);
 
 function execCommand(command: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-        exec(command, (error, stdout, stderr) => {
-            if (error) {
+	return new Promise((resolve, reject) => {
+		exec(command, (error, stdout, stderr) => {
+			if (error) {
 				console.log(error.message);
-                reject(error.message);
-                return;
-            }
-            if (stderr) {
+				reject(error.message);
+				return;
+			}
+			if (stderr) {
 				console.log(stderr);
-                reject(stderr);
-                return;
-            }
-            console.log(stdout);
-            resolve(stdout);
-        });
-    });
+				reject(stderr);
+				return;
+			}
+			console.log(stdout);
+			resolve(stdout);
+		});
+	});
 }
 
 server.on('connection', (socket) => {
@@ -60,67 +60,77 @@ server.on('connection', (socket) => {
 				memPercent: Math.round((mem.used / mem.total) * 100),
 				cpuTemp: Math.round(cpuTemp.main) || 0,
 				netiface: netStats.iface,
-				netRX: (netStats.rx_bytes / 1000),
-				netTX: (netStats.tx_bytes / 1000),
+				netRX: netStats.rx_bytes / 1000,
+				netTX: netStats.tx_bytes / 1000,
 				loadPercent: Math.round(loadPercent)
 			})
 		);
 	}, 1000);
 
-	const commands = ["git pull", "pnpm install", "pnpm build", "sudo systemctl restart forgetti"]
+	const commands = ['git pull', 'pnpm install', 'pnpm build', 'sudo systemctl restart forgetti'];
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
-	socket.on("message", async (data) => {
+	socket.on('message', async (data) => {
 		const requestPacket: AppUpdateRequestPacket = JSON.parse(data.toString());
-		if (requestPacket.purpose === "appUpdate") {
-			if (dev) return socket.send(JSON.stringify({
-				purpose: "appUpdate",
-				message: "Cannot update while in developer mode!",
-				command: "meta",
-				type: "error",
-				toastable: true,
-				time: new Date().toLocaleTimeString("en-US")
-			} as AppUpdateResponsePacket))
+		if (requestPacket.purpose === 'appUpdate') {
+			if (dev)
+				return socket.send(
+					JSON.stringify({
+						purpose: 'appUpdate',
+						message: 'Cannot update while in developer mode!',
+						command: 'meta',
+						type: 'error',
+						toastable: true,
+						time: new Date().toLocaleTimeString('en-US')
+					} as AppUpdateResponsePacket)
+				);
 			for (const command of commands) {
-			try {
-				const output = await execCommand(command);
-				let matchesToastable = false;
-				if (command === "git pull") {
-					for (const toastable of toastableLogs) {
-						if (toastable.test(output)) {
-							matchesToastable = true;
-							break;
+				try {
+					const output = await execCommand(command);
+					let matchesToastable = false;
+					if (command === 'git pull') {
+						for (const toastable of toastableLogs) {
+							if (toastable.test(output)) {
+								matchesToastable = true;
+								break;
+							}
 						}
 					}
+					socket.send(
+						JSON.stringify({
+							purpose: 'appUpdate',
+							message: output,
+							command: command,
+							type: 'success',
+							toastable: matchesToastable,
+							time: new Date().toLocaleTimeString('en-US')
+						} as AppUpdateResponsePacket)
+					);
+					if (matchesToastable) break;
+				} catch (error) {
+					socket.send(
+						JSON.stringify({
+							purpose: 'appUpdate',
+							message: error,
+							command: command,
+							type: 'error',
+							toastable: false,
+							time: new Date().toLocaleTimeString('en-US')
+						} as AppUpdateResponsePacket)
+					);
 				}
-				socket.send(JSON.stringify({
-					purpose: "appUpdate",
-					message: output,
-					command: command,
-					type: "success",
-					toastable: matchesToastable,
-					time: new Date().toLocaleTimeString("en-US")
-				} as AppUpdateResponsePacket));
-				if (matchesToastable) break;
-			} catch (error) {
-					socket.send(JSON.stringify({
-						purpose: "appUpdate",
-						message: error,
-						command: command,
-						type: "error",
-						toastable: false,
-						time: new Date().toLocaleTimeString("en-US")
-					} as AppUpdateResponsePacket ))
-				}
-				}
-		} 
-	})
+			}
+		}
+	});
 });
 
 latestDetection.subscribe((data) => {
-	if (data?.box?.[0]?.prob > currentConfig.ConfidenceThreshold && (Date.now() - lastReport) > ms(currentConfig.ReportCooldown)) {
+	if (
+		data?.box?.[0]?.prob > currentConfig.ConfidenceThreshold &&
+		Date.now() - lastReport > ms(currentConfig.ReportCooldown)
+	) {
 		lastReport = Date.now();
-		detectionHandler(data)
-	};
+		detectionHandler(data);
+	}
 });
 
 async function startStream(config: any) {
@@ -173,5 +183,3 @@ configStore.subscribe((config) => {
 	if (enabledFalseToTrue || cameraURLChangedWhileEnabled) startStream(config);
 	currentConfig = config;
 });
-
-

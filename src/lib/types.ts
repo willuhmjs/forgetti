@@ -1,4 +1,4 @@
-type ResponseType = "error" | "success";
+type ResponseType = 'error' | 'success';
 
 export interface Box {
 	x1: number;
@@ -14,14 +14,14 @@ export interface InferenceData {
 }
 
 export interface Config {
-		Enabled: boolean;
-		CameraURL: string;
-		ConfidenceThreshold: number;
-		BrandColor: string;
-		DiscordWebhookURL: string;
-		ReportCooldown: string;
-		DiscordUserPingEnabled: boolean;
-		DiscordUserPing: string;
+	Enabled: boolean;
+	CameraURL: string;
+	ConfidenceThreshold: number;
+	BrandColor: string;
+	DiscordWebhookURL: string;
+	ReportCooldown: string;
+	DiscordUserPingEnabled: boolean;
+	DiscordUserPing: string;
 }
 
 // response packets
@@ -41,31 +41,31 @@ export interface SystemResponsePacket {
 }
 
 export interface InferenceResponsePacket extends InferenceData {
-	purpose: 'inference'
+	purpose: 'inference';
 }
 
 export interface AppUpdateResponsePacket {
-	purpose: "appUpdate",
-	message: string,
-	command: string,
-	type: ResponseType
-	toastable: boolean,
-	time: string
+	purpose: 'appUpdate';
+	message: string;
+	command: string;
+	type: ResponseType;
+	toastable: boolean;
+	time: string;
 }
 
 export interface ConfigUpdateResponsePacket {
-	message: string,
-	type: ResponseType
-	purpose: "configUpdate",
-	config?: Config
+	message: string;
+	type: ResponseType;
+	purpose: 'configUpdate';
+	config?: Config;
 }
 
 // request packets
 export interface AppUpdateRequestPacket {
-	purpose: "appUpdate"
+	purpose: 'appUpdate';
 }
 
 export interface ConfigUpdateRequestPacket {
-	purpose: "configUpdate",
-	config: Partial<Config>
+	purpose: 'configUpdate';
+	config: Partial<Config>;
 }

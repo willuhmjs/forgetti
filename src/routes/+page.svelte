@@ -2,69 +2,84 @@
 	import LivePreview from '$lib/components/LivePreview.svelte';
 	import System from '$lib/components/System.svelte';
 	import Window from '$lib/components/Window.svelte';
-	import Logs from "$lib/components/Logs.svelte";
+	import Logs from '$lib/components/Logs.svelte';
 	import Fa from 'svelte-fa';
-	import { fly } from "svelte/transition";
+	import { fly } from 'svelte/transition';
 	import { send } from '$lib/wsClient';
-	import { faVideoCamera, faServer, faPowerOff, faSync, faPalette, faRotateRight, faPlay, faStop, faCogs, faFileLines, faHome, faCog, faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+	import {
+		faVideoCamera,
+		faServer,
+		faPowerOff,
+		faSync,
+		faPalette,
+		faRotateRight,
+		faPlay,
+		faStop,
+		faCogs,
+		faFileLines,
+		faHome,
+		faCog,
+		faFloppyDisk
+	} from '@fortawesome/free-solid-svg-icons';
 	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
-	import toast from "svelte-french-toast";
+	import toast from 'svelte-french-toast';
 	import { socketStore } from '$lib/wsClient';
 	import { onMount } from 'svelte';
 	import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 	export let data: Config;
-	
+
 	let liveData: Config = { ...data };
 	let liveDataUnsaved: Config = { ...data };
 	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
 	let color = data.BrandColor;
 	let powerMenu: HTMLDivElement;
 
-	let activeWindow: "home" | "config" | "logs" = "home";
+	let activeWindow: 'home' | 'config' | 'logs' = 'home';
 	const updateConfig = async (config: Partial<Config>) => {
-        return new Promise((resolve, reject) => {
-            fetch('/api/update_config', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    purpose: "configUpdate",
-                    config
-                } as ConfigUpdateRequestPacket)
-            }).then(async response => {
-                const data = await response.json() as ConfigUpdateResponsePacket;
-                if (data.type === "success") {
-                    liveData = { ...liveData, ...data.config };
-                    liveDataUnsaved = { ...liveData }; // Update liveDataUnsaved with the new liveData
-                    resolve(data.message);
-                } else {
-                    reject(data.message);
-                }
-            });
-        });
-    };
+		return new Promise((resolve, reject) => {
+			fetch('/api/update_config', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					purpose: 'configUpdate',
+					config
+				} as ConfigUpdateRequestPacket)
+			}).then(async (response) => {
+				const data = (await response.json()) as ConfigUpdateResponsePacket;
+				if (data.type === 'success') {
+					liveData = { ...liveData, ...data.config };
+					liveDataUnsaved = { ...liveData }; // Update liveDataUnsaved with the new liveData
+					resolve(data.message);
+				} else {
+					reject(data.message);
+				}
+			});
+		});
+	};
 
 	const updateConfigToastable = async (config: Partial<Config>) => {
-		toast.promise(updateConfig(config), {
-			loading: 'Loading',
-			success: (data) => `${data}`,
-			error: (err) => `${err.toString()}`,
-		}, {
-			duration: 5000,
-			position: 'bottom-right',
-			style: [
-				"background-color: var(--foreground);",
-				"color: white",
-			].join(""),
-		})
-	}
+		toast.promise(
+			updateConfig(config),
+			{
+				loading: 'Loading',
+				success: (data) => `${data}`,
+				error: (err) => `${err.toString()}`
+			},
+			{
+				duration: 5000,
+				position: 'bottom-right',
+				style: ['background-color: var(--foreground);', 'color: white'].join('')
+			}
+		);
+	};
 
 	const cycleThemeColor = () => {
 		color = colors[(colors.indexOf(color) + 1) % colors.length];
 		updateConfig({
-				BrandColor: color
-			})
+			BrandColor: color
+		});
 		document.documentElement.style.setProperty('--brand', color);
 	};
 
@@ -72,8 +87,7 @@
 	const requestUpdate = () => {
 		updateRequested = true;
 		send(JSON.stringify({ purpose: 'appUpdate' }));
-	}
-
+	};
 
 	const openPowerWindow = () => {
 		if (powerMenu) powerMenu.style.display = powerMenu!.style.display === 'none' ? 'block' : 'none';
@@ -86,63 +100,58 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({ command })
-		}).then(async response => {
+		}).then(async (response) => {
 			const json = await response.json();
 			toast.success(json.message, {
 				duration: 5000,
 				position: 'bottom-right',
-				style: [
-						"background-color: var(--foreground);",
-						"color: white",
-				].join("")
-			})
-		})
+				style: ['background-color: var(--foreground);', 'color: white'].join('')
+			});
+		});
 	};
 
 	onMount(() => {
-		powerMenu.style.display = "none";
+		powerMenu.style.display = 'none';
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
 		socketStore.subscribe((data) => {
 			if (!data) return;
 			if (data.purpose === 'appUpdate' && data.toastable) {
-                updateRequested = false;
+				updateRequested = false;
 				toast[data.type](data.message, {
 					duration: 5000,
 					position: 'bottom-right',
-					style: [
-						"background-color: var(--foreground);",
-						"color: white",
-					].join(""),
-					
-				})
+					style: ['background-color: var(--foreground);', 'color: white'].join('')
+				});
 			}
 		});
 	});
 </script>
 
-
 <div class="titlebar">
 	<h3 class="title">Forgetti</h3>
 	<div class="buttons">
-		<button on:click={() => activeWindow = "home"}>
-			<Fa icon={faHome} fw={true} color={activeWindow === "home" ? "var(--brand)" : ""}/>
+		<button on:click={() => (activeWindow = 'home')}>
+			<Fa icon={faHome} fw={true} color={activeWindow === 'home' ? 'var(--brand)' : ''} />
 		</button>
-		<button on:click={() => activeWindow = "config"}>
-			<Fa icon={faCogs} fw={true} color={activeWindow === "config" ? "var(--brand)" : ""} />
+		<button on:click={() => (activeWindow = 'config')}>
+			<Fa icon={faCogs} fw={true} color={activeWindow === 'config' ? 'var(--brand)' : ''} />
 		</button>
-		<button on:click={() => activeWindow = "logs"}>
-			<Fa icon={faFileLines} fw={true} color={activeWindow === "logs" ? "var(--brand)" : ""} />
+		<button on:click={() => (activeWindow = 'logs')}>
+			<Fa icon={faFileLines} fw={true} color={activeWindow === 'logs' ? 'var(--brand)' : ''} />
 		</button>
 	</div>
 	<div class="buttons">
 		<button on:click={() => updateConfigToastable({ Enabled: !liveData.Enabled })}>
-			<Fa icon={liveData.Enabled ? faStop : faPlay} color={liveData.Enabled ? "var(--red)" : "var(--green)"}/>
+			<Fa
+				icon={liveData.Enabled ? faStop : faPlay}
+				color={liveData.Enabled ? 'var(--red)' : 'var(--green)'}
+			/>
 		</button>
 		<button id="color" on:click={cycleThemeColor}>
 			<Fa icon={faPalette} />
 		</button>
 		<button id="update" on:click={requestUpdate}>
-			<Fa icon={faSync} spin={updateRequested} color="var(--yellow)"/>
+			<Fa icon={faSync} spin={updateRequested} color="var(--yellow)" />
 		</button>
 		<button id="power" on:click={openPowerWindow}>
 			<Fa icon={faPowerOff} />
@@ -158,69 +167,101 @@
 	</div>
 </div>
 
-{#if activeWindow === "home"}
-<div class="window-container">
-	<Window title="Camera" icon={faVideoCamera}>
-		<LivePreview {data} />
-	</Window>
+{#if activeWindow === 'home'}
+	<div class="window-container">
+		<Window title="Camera" icon={faVideoCamera}>
+			<LivePreview {data} />
+		</Window>
 
-	<Window title="System" icon={faServer}>
-		<System />
-	</Window>
-</div>
-{:else if activeWindow === "config"}
-<div class="window-container">
+		<Window title="System" icon={faServer}>
+			<System />
+		</Window>
+	</div>
+{:else if activeWindow === 'config'}
+	<div class="window-container">
+		<Window title="General" icon={faCog}>
+			<div class="form">
+				<div class="inputGroup">
+					<label for="CameraURL">Camera URL</label>
+					<input
+						type="text"
+						id="CameraURL"
+						bind:value={liveDataUnsaved.CameraURL}
+						placeholder="http://yourcameraurl.com"
+					/>
+				</div>
+				<div class="inputGroup">
+					<label for="CameraURL"
+						>Confidence Threshold ({liveDataUnsaved.ConfidenceThreshold}%)</label
+					>
+					<input
+						type="range"
+						id="ConfidenceThreshold"
+						min="1"
+						max="100"
+						bind:value={liveDataUnsaved.ConfidenceThreshold}
+					/>
+				</div>
+				<div class="inputGroup">
+					<label for="ReportCooldown">Report Cooldown</label>
+					<input
+						type="text"
+						id="ReportCooldown"
+						bind:value={liveDataUnsaved.ReportCooldown}
+						placeholder="5 minutes"
+					/>
+				</div>
+			</div>
+		</Window>
 
-<Window title="General" icon={faCog}>
-	<div class="form">
-	<div class="inputGroup">
-		<label for="CameraURL">Camera URL</label>
-		<input type="text" id="CameraURL" bind:value={liveDataUnsaved.CameraURL} placeholder="http://yourcameraurl.com"/>
+		<Window title="Discord" icon={faDiscord}>
+			<div class="form">
+				<div class="inputGroup">
+					<label for="DiscordWebhookURL">Webhook URL</label>
+					<input
+						type="text"
+						id="DiscordWebhookURL"
+						bind:value={liveDataUnsaved.DiscordWebhookURL}
+						placeholder="https://discord.com/api/webhooks/yourwebhookid/yourwebhooktoken"
+					/>
+				</div>
+				<div class="inputGroup">
+					<label for="DiscordUserPingEnabled">Ping User</label>
+					<input
+						type="checkbox"
+						id="DiscordUserPingEnabled"
+						bind:checked={liveDataUnsaved.DiscordUserPingEnabled}
+					/>
+				</div>
+				{#if liveDataUnsaved.DiscordUserPingEnabled}
+					<div class="inputGroup">
+						<label for="DiscordUserPing">Ping User ID</label>
+						<input
+							type="text"
+							id="DiscordUserPing"
+							bind:value={liveDataUnsaved.DiscordUserPing}
+							placeholder="969629831300005918"
+						/>
+					</div>
+				{/if}
+			</div>
+		</Window>
 	</div>
-	<div class="inputGroup">
-		<label for="CameraURL">Confidence Threshold ({liveDataUnsaved.ConfidenceThreshold}%)</label>
-		<input type="range" id="ConfidenceThreshold" min=1 max=100 bind:value={liveDataUnsaved.ConfidenceThreshold} />
-	</div>
-	<div class="inputGroup">
-		<label for="ReportCooldown">Report Cooldown</label>
-		<input type="text" id="ReportCooldown" bind:value={liveDataUnsaved.ReportCooldown} placeholder="5 minutes"/>
-	</div>
-</div>
-</Window>
 
-<Window title="Discord" icon={faDiscord}>
-	<div class="form">
-		<div class="inputGroup">
-			<label for="DiscordWebhookURL">Webhook URL</label>
-			<input type="text" id="DiscordWebhookURL" bind:value={liveDataUnsaved.DiscordWebhookURL} placeholder="https://discord.com/api/webhooks/yourwebhookid/yourwebhooktoken" />
+	<!-- only show if liveconfig differs from data -->
+	{#if JSON.stringify(liveData) !== JSON.stringify(liveDataUnsaved)}
+		<div class="saveButtonDiv">
+			<button
+				on:click={() => updateConfigToastable(liveDataUnsaved)}
+				class="saveButton"
+				transition:fly={{ y: 100 }}
+			>
+				<Fa fw icon={faFloppyDisk} />
+			</button>
 		</div>
-		<div class="inputGroup">
-			<label for="DiscordUserPingEnabled">Ping User</label>
-			<input type="checkbox" id="DiscordUserPingEnabled" bind:checked={liveDataUnsaved.DiscordUserPingEnabled} />
-		</div>
-		{#if liveDataUnsaved.DiscordUserPingEnabled}
-		<div class="inputGroup">
-			<label for="DiscordUserPing">Ping User ID</label>
-			<input type="text" id="DiscordUserPing" bind:value={liveDataUnsaved.DiscordUserPing} placeholder="969629831300005918" />
-		</div>
-		{/if}
-	</div>
-</Window>
-</div>
-
-<!-- only show if liveconfig differs from data -->
-{#if JSON.stringify(liveData) !== JSON.stringify(liveDataUnsaved)}
-
-<div class="saveButtonDiv">
-<button on:click={() => updateConfigToastable(liveDataUnsaved)} class="saveButton" transition:fly={{ y: 100 }}>
-	<Fa fw icon={faFloppyDisk} />
-</button>
-</div>
-{/if}
-
-
-{:else if activeWindow === "logs"}
-<Logs />
+	{/if}
+{:else if activeWindow === 'logs'}
+	<Logs />
 {/if}
 
 <style>
@@ -312,41 +353,41 @@
 	}
 
 	.inputGroup {
-        margin-bottom: 1rem;
-    }
+		margin-bottom: 1rem;
+	}
 
-    .inputGroup label {
-        display: block;
-        margin-bottom: 0.5rem;
-    }
+	.inputGroup label {
+		display: block;
+		margin-bottom: 0.5rem;
+	}
 
-    .inputGroup input {
-        width: 100%;
-        padding: 0.5rem;
-        border: 1px solid var(--brand);
-        border-radius: 4px;
-        background-color: var(--foreground);
-        color: white;
-    }
+	.inputGroup input {
+		width: 100%;
+		padding: 0.5rem;
+		border: 1px solid var(--brand);
+		border-radius: 4px;
+		background-color: var(--foreground);
+		color: white;
+	}
 
 	/* todo: use auto prefixer */
-	.inputGroup input[type="range"]::-webkit-slider-runnable-track {
-    background: var(--brand);
-	}
-
-	.inputGroup input[type="range"]::-moz-range-track {
+	.inputGroup input[type='range']::-webkit-slider-runnable-track {
 		background: var(--brand);
 	}
 
-	.inputGroup input[type="range"]::-ms-track {
+	.inputGroup input[type='range']::-moz-range-track {
 		background: var(--brand);
 	}
 
-    .inputGroup input:focus {
-        outline: none;
-        border-color: var(--brand);
-        box-shadow: 0 0 3px var(--brand);
-    }
+	.inputGroup input[type='range']::-ms-track {
+		background: var(--brand);
+	}
+
+	.inputGroup input:focus {
+		outline: none;
+		border-color: var(--brand);
+		box-shadow: 0 0 3px var(--brand);
+	}
 
 	.saveButtonDiv {
 		position: absolute;
@@ -384,11 +425,5 @@
 		.buttons button {
 			margin: 0;
 		}
-
 	}
-
-	
-
 </style>
-
-	

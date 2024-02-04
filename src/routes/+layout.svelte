@@ -1,11 +1,12 @@
 <script>
-	import { Toaster } from "svelte-french-toast";
+	import { Toaster } from 'svelte-french-toast';
 </script>
 
 <div class="desktop">
 	<slot />
 </div>
 <Toaster />
+
 <style>
 	:global(body) {
 		font-family: sans-serif;
@@ -28,6 +29,4 @@
 		--orange: #f97316;
 		--blue: #3b82f6;
 	}
-
-	
 </style>

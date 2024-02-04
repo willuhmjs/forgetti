@@ -14,11 +14,11 @@ if (!fs.existsSync('./config.json')) {
 	const defaultConfig = JSON.parse(configExample);
 	let isConfigUpdated = false;
 	for (const key in defaultConfig) {
-        if (currentConfig[key] === undefined) {
-            currentConfig[key] = defaultConfig[key];
-            isConfigUpdated = true;
-			}
+		if (currentConfig[key] === undefined) {
+			currentConfig[key] = defaultConfig[key];
+			isConfigUpdated = true;
 		}
+	}
 
 	if (isConfigUpdated) {
 		fs.writeFileSync('./config.json', JSON.stringify(currentConfig, null, 2), 'utf-8');

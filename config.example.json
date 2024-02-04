@@ -5,6 +5,6 @@
 	"BrandColor": "#f97316",
 	"DiscordWebhookURL": "",
 	"DiscordUserPingEnabled": false,
-	"DiscordUserPing": "", 
+	"DiscordUserPing": "",
 	"ReportCooldown": "5 minutes"
 }
