@@ -328,6 +328,7 @@
 		text-decoration: none;
 		display: block;
 		width: 100%;
+		box-sizing: border-box;
 		text-align: left;
 		border: none;
 		background: none;
