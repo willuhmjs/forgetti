@@ -10,16 +10,18 @@ command_exists() {
 # Check if git is installed
 if ! command_exists git; then
   echo "Git is not installed. Installing..."
-  sudo apt update && sudo apt upgrade -y
   sudo apt install -y git
 fi
 
 # Check if Node.js is installed
 if ! command_exists node; then
   echo "Node.js is not installed. Installing..."
-  sudo apt update && sudo apt upgrade -y
   sudo apt install -y nodejs
 fi
+
+if ! command_exists npm; then
+  echo "npm is not installed. Installing..."
+  sudo apt install -y npm
 
 if ! command_exists pnpm; then
   echo "pnpm is not installed. Installing..."
