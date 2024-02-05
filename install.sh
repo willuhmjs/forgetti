@@ -22,6 +22,7 @@ fi
 if ! command_exists npm; then
   echo "npm is not installed. Installing..."
   sudo apt install -y npm
+fi
 
 if ! command_exists pnpm; then
   echo "pnpm is not installed. Installing..."
