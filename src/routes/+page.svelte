@@ -218,7 +218,7 @@
 		<Window title="Discord" icon={faDiscord}>
 			<div class="form">
 				<div class="inputGroup">
-					<label for="DiscordWebhookEnabled">Ping User</label>
+					<label for="DiscordWebhookEnabled">Enabled</label>
 					<input
 						type="checkbox"
 						id="DiscordWebhookEnabled"
@@ -278,7 +278,7 @@
 				{/if}
 				</div>
 		</Window>
-		
+
 
 	</div>
 
