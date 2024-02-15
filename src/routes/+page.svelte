@@ -19,7 +19,8 @@
 		faFileLines,
 		faHome,
 		faCog,
-		faFloppyDisk
+		faFloppyDisk,
+		faSailboat
 	} from '@fortawesome/free-solid-svg-icons';
 	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 	import toast from 'svelte-french-toast';
@@ -256,6 +257,29 @@
 			{/if}
 			</div>
 		</Window>
+
+		<Window title="Moonraker" icon={faSailboat}>
+			<div class="form">
+				<div class="inputGroup">
+					<label for="MoonrakerEnabled">Enabled</label>
+					<input
+						type="checkbox"
+						id="MoonrakerEnabled"
+						bind:checked={liveDataUnsaved.MoonrakerEnabled}
+					/>
+				</div>
+				{#if liveDataUnsaved.MoonrakerEnabled}
+				<div class="inputGroup"><label for="MoonrakerURL">Moonraker URL</label><input
+						type="text"
+						id="MoonrakerURL"
+						bind:value={liveDataUnsaved.MoonrakerURL}
+						placeholder="http://yourmoonrakerurl.com"
+					/></div>
+				{/if}
+				</div>
+		</Window>
+		
+
 	</div>
 
 	<!-- only show if liveconfig differs from data -->
