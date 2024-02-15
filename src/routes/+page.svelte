@@ -217,6 +217,15 @@
 		<Window title="Discord" icon={faDiscord}>
 			<div class="form">
 				<div class="inputGroup">
+					<label for="DiscordWebhookEnabled">Ping User</label>
+					<input
+						type="checkbox"
+						id="DiscordWebhookEnabled"
+						bind:checked={liveDataUnsaved.DiscordWebhookEnabled}
+					/>
+				</div>
+				{#if liveDataUnsaved.DiscordWebhookEnabled}
+				<div class="inputGroup">
 					<label for="DiscordWebhookURL">Webhook URL</label>
 					<input
 						type="text"
@@ -244,6 +253,7 @@
 						/>
 					</div>
 				{/if}
+			{/if}
 			</div>
 		</Window>
 	</div>

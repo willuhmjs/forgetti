@@ -3,8 +3,11 @@
 	"CameraURL": "http://127.0.0.1/webcam?action=stream",
 	"ConfidenceThreshold": 50,
 	"BrandColor": "#f97316",
+	"DiscordWebhookEnabled": false,
 	"DiscordWebhookURL": "",
 	"DiscordUserPingEnabled": false,
 	"DiscordUserPing": "",
-	"ReportCooldown": "5 minutes"
+	"ReportCooldown": "5 minutes",
+	"MoonrakerEnabled": false,
+	"MoonrakerURL": "http://127.0.0.1/"
 }

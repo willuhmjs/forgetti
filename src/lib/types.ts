@@ -19,9 +19,12 @@ export interface Config {
 	ConfidenceThreshold: number;
 	ReportCooldown: string;
 	BrandColor: string;
+	DiscordWebhookEnabled: boolean;
 	DiscordWebhookURL: string;
 	DiscordUserPingEnabled: boolean;
 	DiscordUserPing: string;
+	MoonrakerEnabled: boolean;
+	MoonrakerURL: string;
 }
 
 // response packets

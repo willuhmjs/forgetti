@@ -21,7 +21,7 @@ export default async (data: InferenceData) => {
 			box: data.box,
 			buffer: drawnBuffer
 		};
-		notifyDiscord(newData);
+		if (config.DiscordWebhookEnabled && config.DiscordWebhookURL) notifyDiscord(newData);
 	} catch (e) {
 		console.error(e);
 	}
