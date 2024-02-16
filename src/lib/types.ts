@@ -17,9 +17,9 @@ export interface Config {
 	Enabled: boolean;
 	CameraURL: string;
 	ConfidenceThreshold: number;
+	ReportCooldown: string;
 	BrandColor: string;
 	DiscordWebhookURL: string;
-	ReportCooldown: string;
 	DiscordUserPingEnabled: boolean;
 	DiscordUserPing: string;
 }
