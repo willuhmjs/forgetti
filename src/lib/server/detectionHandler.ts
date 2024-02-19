@@ -73,3 +73,7 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 			config.DiscordUserPing && config.DiscordUserPing ? `<@${config.DiscordUserPing}>` : undefined
 	});
 };
+
+const notifyMoonraker = () => {
+	
+} 

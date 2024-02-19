@@ -1,6 +1,7 @@
 <script lang="ts">
 	import LivePreview from '$lib/components/LivePreview.svelte';
 	import System from '$lib/components/System.svelte';
+	import Moonraker from '$lib/components/Moonraker.svelte';
 	import Window from '$lib/components/Window.svelte';
 	import Logs from '$lib/components/Logs.svelte';
 	import Fa from 'svelte-fa';
@@ -176,6 +177,10 @@
 
 		<Window title="System" icon={faServer}>
 			<System />
+		</Window>
+
+		<Window title="Moonraker" icon={faSailboat}>
+			<Moonraker {liveData}/>
 		</Window>
 	</div>
 {:else if activeWindow === 'config'}
