@@ -50,7 +50,6 @@
 		width: 100%;
 		display: flex;
 		justify-content: center;
-		overflow-x: scroll;
 		overflow-y: hidden;
 		align-items: center;
 	}
