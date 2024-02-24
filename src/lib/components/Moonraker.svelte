@@ -65,7 +65,7 @@
             <span class="icon">
                 <Fa icon={faHourglassHalf} />
             </span>
-            {latestStats.state}
+            {latestStats.state.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
         </p>
 		{/if}
 	{:else}
