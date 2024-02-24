@@ -74,6 +74,4 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 	});
 };
 
-const notifyMoonraker = () => {
-	
-} 
+const notifyMoonraker = () => {};

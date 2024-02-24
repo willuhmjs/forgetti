@@ -180,7 +180,7 @@
 		</Window>
 
 		<Window title="Moonraker" icon={faSailboat}>
-			<Moonraker {liveData}/>
+			<Moonraker {liveData} />
 		</Window>
 	</div>
 {:else if activeWindow === 'config'}
@@ -231,35 +231,35 @@
 					/>
 				</div>
 				{#if liveDataUnsaved.DiscordWebhookEnabled}
-				<div class="inputGroup">
-					<label for="DiscordWebhookURL">Webhook URL</label>
-					<input
-						type="text"
-						id="DiscordWebhookURL"
-						bind:value={liveDataUnsaved.DiscordWebhookURL}
-						placeholder="https://discord.com/api/webhooks/yourwebhookid/yourwebhooktoken"
-					/>
-				</div>
-				<div class="inputGroup">
-					<label for="DiscordUserPingEnabled">Ping User</label>
-					<input
-						type="checkbox"
-						id="DiscordUserPingEnabled"
-						bind:checked={liveDataUnsaved.DiscordUserPingEnabled}
-					/>
-				</div>
-				{#if liveDataUnsaved.DiscordUserPingEnabled}
 					<div class="inputGroup">
-						<label for="DiscordUserPing">Ping User ID</label>
+						<label for="DiscordWebhookURL">Webhook URL</label>
 						<input
 							type="text"
-							id="DiscordUserPing"
-							bind:value={liveDataUnsaved.DiscordUserPing}
-							placeholder="969629831300005918"
+							id="DiscordWebhookURL"
+							bind:value={liveDataUnsaved.DiscordWebhookURL}
+							placeholder="https://discord.com/api/webhooks/yourwebhookid/yourwebhooktoken"
 						/>
 					</div>
+					<div class="inputGroup">
+						<label for="DiscordUserPingEnabled">Ping User</label>
+						<input
+							type="checkbox"
+							id="DiscordUserPingEnabled"
+							bind:checked={liveDataUnsaved.DiscordUserPingEnabled}
+						/>
+					</div>
+					{#if liveDataUnsaved.DiscordUserPingEnabled}
+						<div class="inputGroup">
+							<label for="DiscordUserPing">Ping User ID</label>
+							<input
+								type="text"
+								id="DiscordUserPing"
+								bind:value={liveDataUnsaved.DiscordUserPing}
+								placeholder="969629831300005918"
+							/>
+						</div>
+					{/if}
 				{/if}
-			{/if}
 			</div>
 		</Window>
 
@@ -274,17 +274,17 @@
 					/>
 				</div>
 				{#if liveDataUnsaved.MoonrakerEnabled}
-				<div class="inputGroup"><label for="MoonrakerURL">Moonraker URL</label><input
-						type="text"
-						id="MoonrakerURL"
-						bind:value={liveDataUnsaved.MoonrakerURL}
-						placeholder="http://yourmoonrakerurl.com"
-					/></div>
+					<div class="inputGroup">
+						<label for="MoonrakerURL">Moonraker URL</label><input
+							type="text"
+							id="MoonrakerURL"
+							bind:value={liveDataUnsaved.MoonrakerURL}
+							placeholder="http://yourmoonrakerurl.com"
+						/>
+					</div>
 				{/if}
-				</div>
+			</div>
 		</Window>
-
-
 	</div>
 
 	<!-- only show if liveconfig differs from data -->

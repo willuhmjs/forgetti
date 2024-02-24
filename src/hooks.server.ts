@@ -67,7 +67,12 @@ server.on('connection', (socket) => {
 		);
 	}, 1000);
 
-	const commands = ['git pull', 'pnpm install --frozen-lockfile', 'pnpm build', 'sudo systemctl restart forgetti'];
+	const commands = [
+		'git pull',
+		'pnpm install --frozen-lockfile',
+		'pnpm build',
+		'sudo systemctl restart forgetti'
+	];
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 	socket.on('message', async (data) => {
 		const requestPacket: AppUpdateRequestPacket = JSON.parse(data.toString());
@@ -85,14 +90,16 @@ server.on('connection', (socket) => {
 				);
 			for (const command of commands) {
 				try {
-					socket.send(JSON.stringify({
-						purpose: "appUpdate",
-						message: "Executing...",
-						command: command,
-						type: "success",
-						toastable: false,
-						time: new Date().toLocaleTimeString("en-US")
-					}))
+					socket.send(
+						JSON.stringify({
+							purpose: 'appUpdate',
+							message: 'Executing...',
+							command: command,
+							type: 'success',
+							toastable: false,
+							time: new Date().toLocaleTimeString('en-US')
+						})
+					);
 					const output = await execCommand(command);
 					let matchesToastable = false;
 					if (command === 'git pull') {
