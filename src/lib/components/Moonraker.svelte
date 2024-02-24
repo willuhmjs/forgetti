@@ -1,10 +1,11 @@
 <script lang="ts">
-    let intervalId: string | number | NodeJS.Timeout | null | undefined = null;
+    type interval = NodeJS.Timeout | string | number | undefined;
+    let intervalId: interval;
 
     import type { Config } from "$lib/types";
-	import { onDestroy, onMount } from "svelte";
+	import { onMount } from "svelte";
     export let liveData: Config;
-   
+    let latestStats = null;
     onMount(() => {
         intervalId = setInterval(async () => {
             console.log(liveData.MoonrakerEnabled)
@@ -12,17 +13,13 @@
             const url = new URL("/printer/objects/query?print_stats", liveData.MoonrakerURL);
             try {
                 const response = await fetch(url.href);
-                const json = await response.json();
-            } catch (e) {
+                latestStats = await response.json();
+            } catch (e) {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
             }
         }, 1000);
+        return () => clearInterval(intervalId as interval);
     });
 
-    onDestroy(() => {
-        if (intervalId) {
-            clearInterval(intervalId);
-        }
-    });
 </script>
 {liveData.MoonrakerEnabled}
 {Date.now()}
