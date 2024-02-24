@@ -20,8 +20,7 @@
 		intervalId = setInterval(async () => {
 			console.log(liveData.MoonrakerEnabled);
 			if (!liveData.MoonrakerURL || !liveData.MoonrakerEnabled) return;
-			//const url = new URL("/printer/objects/query?print_stats", liveData.MoonrakerURL);
-			const url = new URL('https://mocki.io/v1/7a1cf4d3-f180-43c0-b22e-71040253ce59');
+			const url = new URL("/printer/objects/query?print_stats", liveData.MoonrakerURL);
 			try {
 				const response = await fetch(url.href);
 				latestStats = (await response.json()).result.status.print_stats;
