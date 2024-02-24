@@ -85,6 +85,14 @@ server.on('connection', (socket) => {
 				);
 			for (const command of commands) {
 				try {
+					socket.send(JSON.stringify({
+						purpose: "appUpdate",
+						message: "Executing...",
+						command: command,
+						type: "success",
+						toastable: false,
+						time: new Date().toLocaleTimeString("en-US")
+					}))
 					const output = await execCommand(command);
 					let matchesToastable = false;
 					if (command === 'git pull') {
