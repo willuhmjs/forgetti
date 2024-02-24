@@ -67,7 +67,7 @@ server.on('connection', (socket) => {
 		);
 	}, 1000);
 
-	const commands = ['git pull', 'pnpm install', 'pnpm build', 'sudo systemctl restart forgetti'];
+	const commands = ['git pull', 'pnpm install --frozen-lockfile', 'pnpm build', 'sudo systemctl restart forgetti'];
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 	socket.on('message', async (data) => {
 		const requestPacket: AppUpdateRequestPacket = JSON.parse(data.toString());

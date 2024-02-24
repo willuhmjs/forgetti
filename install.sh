@@ -36,7 +36,7 @@ git clone https://github.com/willuhmjs/forgetti /home/"$USER"/forgetti
 cd /home/"$USER"/forgetti
 
 # Install dependencies and build the app
-pnpm install --prod
+pnpm install --prod --frozen-lockfile
 pnpm run build
 
 # Create a systemd service

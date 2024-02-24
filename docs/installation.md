@@ -22,7 +22,7 @@ Clone the repository to your home directory and build the project:
 
 ```bash
 cd ~/ && git clone https://github.com/willuhmjs/forgetti
-cd forgetti && pnpm install && pnpm build
+cd forgetti && pnpm install --frozen-lockfile && pnpm build
 ```
 
 Create a new systemd service:

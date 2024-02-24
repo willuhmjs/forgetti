@@ -11,7 +11,7 @@ Run the following commands:
 ```bash
 cd /home/"$USER"/forgetti
 git pull -q
-pnpm install
+pnpm install --frozen-lockfile
 pnpm run build
 sudo systemctl restart forgetti
 ```
