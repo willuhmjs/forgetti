@@ -1,6 +1,6 @@
 {
 	"Enabled": false,
-	"CameraURL": "http://127.0.0.1/webcam?action=stream",
+	"CameraURL": "http://raspberrypi/webcam?action=stream",
 	"ConfidenceThreshold": 50,
 	"BrandColor": "#f97316",
 	"DiscordWebhookEnabled": false,
@@ -9,5 +9,5 @@
 	"DiscordUserPing": "",
 	"ReportCooldown": "5 minutes",
 	"MoonrakerEnabled": false,
-	"MoonrakerURL": "http://127.0.0.1/"
+	"MoonrakerURL": "http://raspberrypi/"
 }
