@@ -18,7 +18,6 @@
 	let latestStats: printStats | null = null;
 	onMount(() => {
 		intervalId = setInterval(async () => {
-			console.log(liveData.MoonrakerEnabled);
 			if (!liveData.MoonrakerURL || !liveData.MoonrakerEnabled) return;
 			const url = new URL("/printer/objects/query?print_stats", liveData.MoonrakerURL);
 			try {
