@@ -1,4 +1,4 @@
-import type { Box, InferenceData } from '$lib/types';
+import type { Box, Config, InferenceData } from '$lib/types';
 import { WebhookClient, EmbedBuilder, type HexColorString } from 'discord.js';
 import Canvas from '@napi-rs/canvas';
 import sharp from 'sharp';
@@ -11,7 +11,7 @@ interface InferenceDataBuffer {
 	box: Box[];
 }
 
-let config = get(configStore);
+let config: Config = get(configStore);
 
 export default async (data: InferenceData) => {
 	config = get(configStore);
@@ -22,6 +22,7 @@ export default async (data: InferenceData) => {
 			buffer: drawnBuffer
 		};
 		if (config.DiscordWebhookEnabled && config.DiscordWebhookURL) notifyDiscord(newData);
+		if (config.MoonrakerEnabled && config.MoonrakerURL && data.box[0].prob >= config.MoonrakerPauseThreshold) notifyMoonraker();
 	} catch (e) {
 		console.error(e);
 	}
@@ -74,4 +75,9 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 	});
 };
 
-const notifyMoonraker = () => {};
+const notifyMoonraker = async () => {
+	// pause the print
+	await fetch(new URL("/printer/print/pause", config.MoonrakerURL), {
+		method: 'POST',
+	});
+};

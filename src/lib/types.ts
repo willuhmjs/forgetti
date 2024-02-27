@@ -25,6 +25,7 @@ export interface Config {
 	DiscordUserPing: string;
 	MoonrakerEnabled: boolean;
 	MoonrakerURL: string;
+	MoonrakerPauseThreshold: number;
 }
 
 // response packets

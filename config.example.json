@@ -9,5 +9,6 @@
 	"DiscordUserPing": "",
 	"ReportCooldown": "5 minutes",
 	"MoonrakerEnabled": false,
-	"MoonrakerURL": "http://raspberrypi/"
+	"MoonrakerURL": "http://raspberrypi/",
+	"MoonrakerPauseThreshold": 90
 }
