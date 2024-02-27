@@ -282,6 +282,10 @@
 							placeholder="http://yourmoonrakerurl.com"
 						/>
 					</div>
+					<div class="inputGroup">
+						<label for="MoonrakerPauseThreshold">Pause Threshold</label>
+						<input type="number" id="MoonrakerPauseThreshold" bind:value={liveDataUnsaved.MoonrakerPauseThreshold} />
+					</div>
 				{/if}
 			</div>
 		</Window>
