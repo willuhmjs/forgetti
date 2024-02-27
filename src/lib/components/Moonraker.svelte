@@ -51,7 +51,7 @@
                         <Fa icon={faIndustry} />
                     {/if}
                 </span>
-                {latestStats.state.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
+                {latestStats.state.toUpperCase()}
             </p>
             <p class="spec">
                 <span class="icon">
@@ -64,7 +64,7 @@
             <span class="icon">
                 <Fa icon={faHourglassHalf} />
             </span>
-            {latestStats.state.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ')}
+            {latestStats.state.toUpperCase()}
         </p>
 		{/if}
 	{:else}
