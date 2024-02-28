@@ -197,7 +197,7 @@
 					/>
 				</div>
 				<div class="inputGroup">
-					<label for="CameraURL"
+					<label for="ConfidenceThreshold"
 						>Confidence Threshold ({liveDataUnsaved.ConfidenceThreshold}%)</label
 					>
 					<input
