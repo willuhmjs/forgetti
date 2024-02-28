@@ -283,9 +283,17 @@
 						/>
 					</div>
 					<div class="inputGroup">
-						<label for="MoonrakerPauseThreshold">Pause Threshold</label>
-						<input type="number" id="MoonrakerPauseThreshold" bind:value={liveDataUnsaved.MoonrakerPauseThreshold} />
-					</div>
+					<label for="MoonrakerPauseThreshold"
+						>Pause Threshold ({liveDataUnsaved.MoonrakerPauseThreshold}%)</label
+					>
+					<input
+						type="range"
+						id="MoonrakerPauseThreshold"
+						min="{liveDataUnsaved.ConfidenceThreshold}"
+						max="100"
+						bind:value={liveDataUnsaved.MoonrakerPauseThreshold}
+					/>
+				</div>
 				{/if}
 			</div>
 		</Window>
