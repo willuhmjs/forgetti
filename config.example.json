@@ -2,6 +2,7 @@
 	"Enabled": false,
 	"CameraURL": "http://raspberrypi/webcam?action=stream",
 	"ConfidenceThreshold": 50,
+	"Model": "nano",
 	"BrandColor": "#f97316",
 	"DiscordWebhookEnabled": false,
 	"DiscordWebhookURL": "",

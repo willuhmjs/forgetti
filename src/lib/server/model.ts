@@ -12,10 +12,10 @@ export const latestDetection = writable<InferenceData>();
 let model: ort.InferenceSession;
 
 // Initialize the model on import
-(async function initializeModel() {
-	const modelUrl = 'src/model.onnx'; // replace with your model path
+export async function initializeModel() {
+	const modelUrl = `src/models/${currentConfig.Model || "nano"}.onnx`; // replace with your model path
 	model = await ort.InferenceSession.create(modelUrl);
-})();
+}
 
 // Detects objects in an image using YOLOv8 neural network
 export async function detectObjects(buf: Buffer) {

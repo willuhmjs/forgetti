@@ -17,6 +17,7 @@ export interface Config {
 	Enabled: boolean;
 	CameraURL: string;
 	ConfidenceThreshold: number;
+	Model: "nano" | "small" | "medium"
 	ReportCooldown: string;
 	BrandColor: string;
 	DiscordWebhookEnabled: boolean;
