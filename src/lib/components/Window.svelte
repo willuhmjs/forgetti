@@ -76,4 +76,10 @@
 		margin-right: 13px;
 		color: var(--brand);
 	}
+
+	@media screen and (max-width: 576px) {
+		.window {
+			width: 100%;
+		}
+	}
 </style>
