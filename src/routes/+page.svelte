@@ -422,9 +422,10 @@
 
     .inputGroup label {
         display: block;
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         font-weight: bold;
         color: #ddd;
+		font-size: 14px;
     }
 
     .inputGroup input[type="text"],
