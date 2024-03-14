@@ -21,7 +21,9 @@
 			if (!liveData.MoonrakerURL || !liveData.MoonrakerEnabled) return;
 			const url = new URL("/printer/objects/query?print_stats", liveData.MoonrakerURL);
 			try {
-				const response = await fetch(url.href);
+				const response = await fetch(url.href, {
+					mode: 'no-cors'
+				});
 				latestStats = (await response.json()).result.status.print_stats;
 			} catch (e) {
 				console.error(e);

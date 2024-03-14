@@ -79,5 +79,6 @@ const notifyMoonraker = async () => {
 	// pause the print
 	await fetch(new URL("/printer/print/pause", config.MoonrakerURL), {
 		method: 'POST',
+		mode: 'no-cors'
 	});
 };
