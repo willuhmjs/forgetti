@@ -92,11 +92,7 @@ server.on('connection', (socket) => {
 		}
 	}, 1000);
 
-	const commands = [
-		'git pull',
-		'pnpm install --frozen-lockfile',
-		'pnpm build',
-	];
+	const commands = ['git pull', 'pnpm install --frozen-lockfile', 'pnpm build'];
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 	socket.on('message', async (data) => {
 		const requestPacket: AppUpdateRequestPacket = JSON.parse(data.toString());
@@ -167,7 +163,7 @@ server.on('connection', (socket) => {
 					toastable: true,
 					time: new Date().toLocaleTimeString('en-US')
 				})
-			)
+			);
 			process.exit(1);
 		}
 	});
