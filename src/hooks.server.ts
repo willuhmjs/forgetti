@@ -108,6 +108,7 @@ server.on('connection', (socket) => {
 						time: new Date().toLocaleTimeString('en-US')
 					} as AppUpdateResponsePacket)
 				);
+			let errored = false;
 			for (const command of commands) {
 				try {
 					socket.send(
@@ -142,6 +143,7 @@ server.on('connection', (socket) => {
 					);
 					if (matchesToastable) break;
 				} catch (error) {
+					errored = true;
 					socket.send(
 						JSON.stringify({
 							purpose: 'appUpdate',
@@ -154,6 +156,7 @@ server.on('connection', (socket) => {
 					);
 				}
 			}
+			if (errored) return;
 			socket.send(
 				JSON.stringify({
 					purpose: 'appUpdate',
