@@ -41,7 +41,7 @@ server.on('connection', (socket) => {
 		socket.send(JSON.stringify({ purpose: 'inference', ...val }));
 	});
 
-	// send os data to client
+	// send os data, moonraker data to client
 
 	setInterval(async () => {
 		const osInfo = await si.osInfo();
@@ -67,12 +67,32 @@ server.on('connection', (socket) => {
 		);
 	}, 1000);
 
-	const commands = [
-		'git pull',
-		'pnpm install --frozen-lockfile',
-		'pnpm build',
-		'sudo systemctl restart forgetti'
-	];
+	setInterval(async () => {
+		if (!currentConfig.MoonrakerURL || !currentConfig.MoonrakerEnabled) return;
+		const url = new URL('/printer/objects/query?print_stats', currentConfig.MoonrakerURL);
+		try {
+			const response = await fetch(url.href);
+			const latestStats = (await response.json()).result.status.print_stats;
+			socket.send(
+				JSON.stringify({
+					purpose: 'moonraker',
+					type: 'success',
+					...latestStats
+				})
+			);
+		} catch (e: any) {
+			socket.send(
+				JSON.stringify({
+					purpose: 'moonraker',
+					type: 'error',
+					message: (e?.message || e) as string
+				})
+			);
+			console.error(e);
+		}
+	}, 1000);
+
+	const commands = ['git pull', 'pnpm install --frozen-lockfile', 'pnpm build'];
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 	socket.on('message', async (data) => {
 		const requestPacket: AppUpdateRequestPacket = JSON.parse(data.toString());
@@ -88,6 +108,7 @@ server.on('connection', (socket) => {
 						time: new Date().toLocaleTimeString('en-US')
 					} as AppUpdateResponsePacket)
 				);
+			let errored = false;
 			for (const command of commands) {
 				try {
 					socket.send(
@@ -122,6 +143,7 @@ server.on('connection', (socket) => {
 					);
 					if (matchesToastable) break;
 				} catch (error) {
+					errored = true;
 					socket.send(
 						JSON.stringify({
 							purpose: 'appUpdate',
@@ -134,6 +156,18 @@ server.on('connection', (socket) => {
 					);
 				}
 			}
+			if (errored) return;
+			socket.send(
+				JSON.stringify({
+					purpose: 'appUpdate',
+					message: 'Restarting app...',
+					command: 'meta',
+					type: 'success',
+					toastable: true,
+					time: new Date().toLocaleTimeString('en-US')
+				})
+			);
+			process.exit(1);
 		}
 	});
 });
@@ -191,12 +225,17 @@ async function startStream(config: any) {
 configStore.subscribe((config) => {
 	// A new symbol should be generated (aka stream stopped) if either the config.Enabled property is false or the new cameraURL is different from the old cameraURL
 	// A new stream should be started if either the config.Enabled property goes from false to true OR the CameraURL value updates WHILE config.Enabled is true
-	if (!config.Enabled || currentConfig.CameraURL != config.CameraURL || currentConfig.Model != config.Model)
+	if (
+		!config.Enabled ||
+		currentConfig.CameraURL != config.CameraURL ||
+		currentConfig.Model != config.Model
+	)
 		currentCameraPromiseDirty = Symbol();
 	const enabledFalseToTrue = !currentConfig.Enabled && config.Enabled;
 	const cameraURLChangedWhileEnabled =
 		currentConfig.CameraURL != config.CameraURL && config.Enabled;
 	const modelChangedWhileEnabled = currentConfig.Model != config.Model && config.Enabled;
-	if (enabledFalseToTrue || cameraURLChangedWhileEnabled || modelChangedWhileEnabled) startStream(config);
+	if (enabledFalseToTrue || cameraURLChangedWhileEnabled || modelChangedWhileEnabled)
+		startStream(config);
 	currentConfig = config;
 });

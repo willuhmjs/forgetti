@@ -3,13 +3,14 @@ import { transform } from 'cloud-url-resolver';
 import type {
 	SystemResponsePacket,
 	InferenceResponsePacket,
-	AppUpdateResponsePacket
+	AppUpdateResponsePacket,
+	MoonrakerResponsePacket
 } from './types';
 
 let socket: WebSocket;
 
 export const socketStore = readable<
-	SystemResponsePacket | InferenceResponsePacket | AppUpdateResponsePacket
+	SystemResponsePacket | InferenceResponsePacket | AppUpdateResponsePacket | MoonrakerResponsePacket
 >(undefined, (set) => {
 	socket = new WebSocket(transform(2221, 'ws'));
 
