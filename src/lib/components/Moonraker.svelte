@@ -1,5 +1,4 @@
 <script lang="ts">
-	type interval = NodeJS.Timeout | string | number | undefined;
 	import Fa from 'svelte-fa';
 	import {
 		faHourglassHalf,
