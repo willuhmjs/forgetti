@@ -180,7 +180,7 @@
 		</Window>
 
 		<Window title="Moonraker" icon={faSailboat}>
-			<Moonraker {liveData} />
+			<Moonraker />
 		</Window>
 	</div>
 {:else if activeWindow === 'config'}

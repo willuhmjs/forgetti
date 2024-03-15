@@ -9,33 +9,19 @@
 		faCube,
 		faIndustry
 	} from '@fortawesome/free-solid-svg-icons';
-	interface printStats {
-		filename: string;
-		total_duration: number;
-		print_duration: number;
-		filament_used: number;
-		state: string;
-		message: string;
-	}
-	let intervalId: interval;
+	
 
-	import type { Config } from '$lib/types';
+	import type {  MoonrakerResponsePacket } from '$lib/types';
 	import { onMount } from 'svelte';
-	export let liveData: Config;
-	let latestStats: printStats | null = null;
+	import { socketStore } from "$lib/wsClient";
+	let latestStats: MoonrakerResponsePacket | null = null;
 	onMount(() => {
-		intervalId = setInterval(async () => {
-			if (!liveData.MoonrakerURL || !liveData.MoonrakerEnabled) return;
-			const url = new URL('/printer/objects/query?print_stats', liveData.MoonrakerURL);
-			try {
-				const response = await fetch(url.href);
-				console.log(response)
-				latestStats = (await response.json()).result.status.print_stats;
-			} catch (e) {
-				console.error(e);
+		socketStore.subscribe((data) => {
+			if (data?.purpose === 'moonraker') {
+				if (data.state === 'error') return console.log("Error in Moonraker component. Please check server logs."); 
+				latestStats = data;
 			}
-		}, 1000);
-		return () => clearInterval(intervalId as interval);
+		});
 	});
 </script>
 

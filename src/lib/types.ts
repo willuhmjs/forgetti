@@ -28,7 +28,6 @@ export interface Config {
 	MoonrakerURL: string;
 	MoonrakerPauseThreshold: number;
 }
-
 // response packets
 export interface SystemResponsePacket {
 	purpose: 'system';
@@ -63,6 +62,20 @@ export interface ConfigUpdateResponsePacket {
 	type: ResponseType;
 	purpose: 'configUpdate';
 	config?: Config;
+}
+
+interface printStats {
+	filename: string;
+	total_duration: number;
+	print_duration: number;
+	filament_used: number;
+	state: string;
+	message: string;
+}
+
+export interface MoonrakerResponsePacket extends Partial<printStats> {
+	purpose: 'moonraker';
+	type: ResponseType;
 }
 
 // request packets
