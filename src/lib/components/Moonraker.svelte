@@ -9,16 +9,16 @@
 		faCube,
 		faIndustry
 	} from '@fortawesome/free-solid-svg-icons';
-	
 
-	import type {  MoonrakerResponsePacket } from '$lib/types';
+	import type { MoonrakerResponsePacket } from '$lib/types';
 	import { onMount } from 'svelte';
-	import { socketStore } from "$lib/wsClient";
+	import { socketStore } from '$lib/wsClient';
 	let latestStats: MoonrakerResponsePacket | null = null;
 	onMount(() => {
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'moonraker') {
-				if (data.state === 'error') return console.log("Error in Moonraker component. Please check server logs."); 
+				if (data.state === 'error')
+					return console.log('Error in Moonraker component. Please check server logs.');
 				latestStats = data;
 			}
 		});

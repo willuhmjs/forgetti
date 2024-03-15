@@ -69,28 +69,28 @@ server.on('connection', (socket) => {
 
 	setInterval(async () => {
 		if (!currentConfig.MoonrakerURL || !currentConfig.MoonrakerEnabled) return;
-			const url = new URL('/printer/objects/query?print_stats', currentConfig.MoonrakerURL);
-			try {
-				const response = await fetch(url.href);
-				const latestStats = (await response.json()).result.status.print_stats;
-				socket.send(
-					JSON.stringify({
-						purpose: 'moonraker',
-						type: "success",
-						...latestStats
-					})
-				)
-			} catch (e: any) {
-				socket.send(
-					JSON.stringify({
-						purpose: 'moonraker',
-						type: 'error',
-						message: (e?.message || e) as string
-					})
-				)
-				console.error(e);
-			}
-	}, 1000)
+		const url = new URL('/printer/objects/query?print_stats', currentConfig.MoonrakerURL);
+		try {
+			const response = await fetch(url.href);
+			const latestStats = (await response.json()).result.status.print_stats;
+			socket.send(
+				JSON.stringify({
+					purpose: 'moonraker',
+					type: 'success',
+					...latestStats
+				})
+			);
+		} catch (e: any) {
+			socket.send(
+				JSON.stringify({
+					purpose: 'moonraker',
+					type: 'error',
+					message: (e?.message || e) as string
+				})
+			);
+			console.error(e);
+		}
+	}, 1000);
 
 	const commands = [
 		'git pull',
