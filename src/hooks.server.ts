@@ -96,7 +96,6 @@ server.on('connection', (socket) => {
 		'git pull',
 		'pnpm install --frozen-lockfile',
 		'pnpm build',
-		'sudo systemctl restart forgetti'
 	];
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 	socket.on('message', async (data) => {
@@ -159,6 +158,17 @@ server.on('connection', (socket) => {
 					);
 				}
 			}
+			socket.send(
+				JSON.stringify({
+					purpose: 'appUpdate',
+					message: 'Restarting app',
+					command: 'meta',
+					type: 'success',
+					toastable: true,
+					time: new Date().toLocaleTimeString('en-US')
+				})
+			)
+			process.exit(1);
 		}
 	});
 });
