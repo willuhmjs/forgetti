@@ -65,7 +65,7 @@
 		toast.promise(
 			updateConfig(config),
 			{
-				loading: 'Loading',
+				loading: 'Loading...',
 				success: (data) => `${data}`,
 				error: (err) => `${err.toString()}`
 			},

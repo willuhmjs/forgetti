@@ -157,7 +157,7 @@ server.on('connection', (socket) => {
 			socket.send(
 				JSON.stringify({
 					purpose: 'appUpdate',
-					message: 'Restarting app',
+					message: 'Restarting app...',
 					command: 'meta',
 					type: 'success',
 					toastable: true,
