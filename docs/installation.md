@@ -34,20 +34,25 @@ sudo nano /etc/systemd/system/forgetti.service
 Paste the following into the file, replacing `YOUR_USERNAME` with your username:
 
 ```ini
-[Unit]
-Description=Forgetti App
 
-[Service]
-WorkingDirectory=/home/YOUR_USERNAME/forgetti
-ExecStart=pnpm run preview
-Restart=always
-User=YOUR_USERNAME
-Group=YOUR_USERNAME
-Environment=PATH=/usr/bin:/usr/local/bin
-Environment=NODE_ENV=production
+[Unit]
+Description=Forgetti Api
+Documentation=https://willuhmjs.github.io/forgetti
+Requires=network-online.target
+After=network-online.target
 
 [Install]
 WantedBy=multi-user.target
+
+[Service]
+Type=simple
+User=will
+RemainAfterExit=yes
+WorkingDirectory=/home/will/forgetti
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+ExecStart=pnpm run preview
+Restart=always
 ```
 
 Reload systemd and start the service:

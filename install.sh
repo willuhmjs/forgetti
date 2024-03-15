@@ -41,20 +41,25 @@ pnpm run build
 
 # Create a systemd service
 cat <<EOF | sudo tee /etc/systemd/system/forgetti.service
-[Unit]
-Description=Forgetti App
 
-[Service]
-WorkingDirectory=/home/$USER/forgetti
-ExecStart=pnpm run preview
-Restart=always
-User=$USER
-Group=$USER
-Environment=PATH=/usr/bin:/usr/local/bin
-Environment=NODE_ENV=production
+[Unit]
+Description=Forgetti Api
+Documentation=https://willuhmjs.github.io/forgetti
+Requires=network-online.target
+After=network-online.target
 
 [Install]
 WantedBy=multi-user.target
+
+[Service]
+Type=simple
+User=will
+RemainAfterExit=yes
+WorkingDirectory=/home/will/forgetti
+Environment=PATH=/usr/bin:/usr/local/bin
+Environment=NODE_ENV=production
+ExecStart=pnpm run preview
+Restart=always
 EOF
 
 # Reload systemd and start the app
