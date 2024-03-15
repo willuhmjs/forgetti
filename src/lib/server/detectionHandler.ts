@@ -22,7 +22,12 @@ export default async (data: InferenceData) => {
 			buffer: drawnBuffer
 		};
 		if (config.DiscordWebhookEnabled && config.DiscordWebhookURL) notifyDiscord(newData);
-		if (config.MoonrakerEnabled && config.MoonrakerURL && data.box[0].prob >= config.MoonrakerPauseThreshold) notifyMoonraker();
+		if (
+			config.MoonrakerEnabled &&
+			config.MoonrakerURL &&
+			data.box[0].prob >= config.MoonrakerPauseThreshold
+		)
+			notifyMoonraker();
 	} catch (e) {
 		console.error(e);
 	}
@@ -77,7 +82,7 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 
 const notifyMoonraker = async () => {
 	// pause the print
-	await fetch(new URL("/printer/print/pause", config.MoonrakerURL), {
+	await fetch(new URL('/printer/print/pause', config.MoonrakerURL), {
 		method: 'POST',
 		mode: 'no-cors'
 	});

@@ -191,12 +191,17 @@ async function startStream(config: any) {
 configStore.subscribe((config) => {
 	// A new symbol should be generated (aka stream stopped) if either the config.Enabled property is false or the new cameraURL is different from the old cameraURL
 	// A new stream should be started if either the config.Enabled property goes from false to true OR the CameraURL value updates WHILE config.Enabled is true
-	if (!config.Enabled || currentConfig.CameraURL != config.CameraURL || currentConfig.Model != config.Model)
+	if (
+		!config.Enabled ||
+		currentConfig.CameraURL != config.CameraURL ||
+		currentConfig.Model != config.Model
+	)
 		currentCameraPromiseDirty = Symbol();
 	const enabledFalseToTrue = !currentConfig.Enabled && config.Enabled;
 	const cameraURLChangedWhileEnabled =
 		currentConfig.CameraURL != config.CameraURL && config.Enabled;
 	const modelChangedWhileEnabled = currentConfig.Model != config.Model && config.Enabled;
-	if (enabledFalseToTrue || cameraURLChangedWhileEnabled || modelChangedWhileEnabled) startStream(config);
+	if (enabledFalseToTrue || cameraURLChangedWhileEnabled || modelChangedWhileEnabled)
+		startStream(config);
 	currentConfig = config;
 });

@@ -291,17 +291,17 @@
 						/>
 					</div>
 					<div class="inputGroup">
-					<label for="MoonrakerPauseThreshold"
-						>Pause Threshold ({liveDataUnsaved.MoonrakerPauseThreshold}%)</label
-					>
-					<input
-						type="range"
-						id="MoonrakerPauseThreshold"
-						min="{liveDataUnsaved.ConfidenceThreshold}"
-						max="100"
-						bind:value={liveDataUnsaved.MoonrakerPauseThreshold}
-					/>
-				</div>
+						<label for="MoonrakerPauseThreshold"
+							>Pause Threshold ({liveDataUnsaved.MoonrakerPauseThreshold}%)</label
+						>
+						<input
+							type="range"
+							id="MoonrakerPauseThreshold"
+							min={liveDataUnsaved.ConfidenceThreshold}
+							max="100"
+							bind:value={liveDataUnsaved.MoonrakerPauseThreshold}
+						/>
+					</div>
 				{/if}
 			</div>
 		</Window>
@@ -322,6 +322,7 @@
 {:else if activeWindow === 'logs'}
 	<Logs />
 {/if}
+
 <style>
 	.window-container {
 		display: flex;
@@ -406,76 +407,74 @@
 		margin-right: 0.5rem;
 	}
 
-	
-    .form {
-        width: 100%;
-        max-width: 400px;
-        margin: auto;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+	.form {
+		width: 100%;
+		max-width: 400px;
+		margin: auto;
+		padding: 20px;
+		border-radius: 8px;
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	}
 
-    .inputGroup {
-        margin-bottom: 20px;
-    }
+	.inputGroup {
+		margin-bottom: 20px;
+	}
 
-    .inputGroup label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
-        color: #ddd;
+	.inputGroup label {
+		display: block;
+		margin-bottom: 10px;
+		font-weight: bold;
+		color: #ddd;
 		font-size: 14px;
-    }
+	}
 
-    .inputGroup input[type="text"],
-    .inputGroup select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #555;
-        border-radius: 5px;
-        background-color: #333;
-        color: #ddd;
-        font-size: 16px;
-    }
+	.inputGroup input[type='text'],
+	.inputGroup select {
+		width: 100%;
+		padding: 10px;
+		border: 1px solid #555;
+		border-radius: 5px;
+		background-color: #333;
+		color: #ddd;
+		font-size: 16px;
+	}
 
-    .inputGroup input[type="text"]:focus,
-    .inputGroup select:focus {
-        outline: none;
-        border-color: var(--brand);
-        box-shadow: 0 0 8px var(--brand);
-    }
+	.inputGroup input[type='text']:focus,
+	.inputGroup select:focus {
+		outline: none;
+		border-color: var(--brand);
+		box-shadow: 0 0 8px var(--brand);
+	}
 
-    .inputGroup select {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        background-image: url('data:image/svg+xml;utf8,<svg fill="#ddd" width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>');
-        background-repeat: no-repeat;
-        background-position: right 10px center;
-        padding-right: 30px;
-    }
+	.inputGroup select {
+		appearance: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		background-image: url('data:image/svg+xml;utf8,<svg fill="#ddd" width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>');
+		background-repeat: no-repeat;
+		background-position: right 10px center;
+		padding-right: 30px;
+	}
 
+	.inputGroup input[type='checkbox'] {
+		appearance: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		width: 20px;
+		height: 20px;
+		border-radius: 5px;
+		background-color: #333;
+		outline: none;
+		cursor: pointer;
+		vertical-align: middle;
+		border: 1px solid #666;
+		margin-left: 0;
+	}
 
-	.inputGroup input[type="checkbox"] {
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 5px;
-    background-color: #333;
-    outline: none;
-    cursor: pointer;
-    vertical-align: middle;
-    border: 1px solid #666;
-	margin-left: 0;
-}
-
-.inputGroup input[type="checkbox"]:checked {
-    background-color: var(--brand); 
-    border-color: var(--brand); 
-}
+	.inputGroup input[type='checkbox']:checked {
+		background-color: var(--brand);
+		border-color: var(--brand);
+	}
 
 	.saveButtonDiv {
 		position: fixed;

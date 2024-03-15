@@ -13,7 +13,7 @@ let model: ort.InferenceSession;
 
 // Initialize the model on import
 export async function initializeModel() {
-	const modelUrl = `src/models/${currentConfig.Model || "nano"}.onnx`; // replace with your model path
+	const modelUrl = `src/models/${currentConfig.Model || 'nano'}.onnx`; // replace with your model path
 	model = await ort.InferenceSession.create(modelUrl);
 }
 
