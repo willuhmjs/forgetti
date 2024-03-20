@@ -7,6 +7,9 @@ nav:
   - Setup:
       - Installation: installation.md
       - Updates: updates.md
+  - Features:
+      - Detection: detection.md
+
 not_in_nav: |
   proposal.md
 theme:
@@ -36,9 +39,13 @@ markdown_extensions:
   - admonition
   - pymdownx.details
   - pymdownx.superfences
+  - tables
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/willuhmjs/forgetti
     - icon: fontawesome/brands/discord
       link: https://discord.gg/SQJewQPDjK
+plugins:
+  - search
+  - table-reader
