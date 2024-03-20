@@ -19,6 +19,6 @@ The configuration of the detection feature is fairly straightforward, and is don
 ### Model
 * This is the YOLOv8 model that Forgetti will use.
 * Although beefier models may have higher mAP scores, they have higher processing times and may not work on weaker hardware.
-* **Bigger does not always mean better**
+* **Bigger does not always mean better.**
 
 {{ read_csv('models.csv') }}
