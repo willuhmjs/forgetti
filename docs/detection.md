@@ -21,4 +21,4 @@ The configuration of the detection feature is fairly straightforward, and is don
 * Although beefier models may have higher mAP scores, they have higher processing times and may not work on weaker hardware.
 * **Bigger does not always mean better**
 
-{{ read_excel('tables/excel_table.xlsx', engine='openpyxl') }}
+{{ read_csv('models.csv') }}
