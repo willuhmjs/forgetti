@@ -9,6 +9,7 @@ nav:
       - Updates: updates.md
   - Features:
       - Detection: detection.md
+      - Discord: discord.md
 
 not_in_nav: |
   proposal.md
