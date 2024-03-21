@@ -222,7 +222,6 @@
 					<select id="Model" bind:value={liveDataUnsaved.Model}>
 						<option value="nano" selected>Nano</option>
 						<option value="small">Small</option>
-						<option value="medium">Medium</option>
 					</select>
 				</div>
 			</div>
