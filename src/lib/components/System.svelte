@@ -59,7 +59,7 @@
 		<div>
 			<p class="spec">
 				<span class="icon"><Fa icon={platformIcon} /></span>{socketData.distro}
-				{socketData.release} ({socketData.codename})
+				{socketData.release} {socketData.codename ? `(${socketData.codename})` : ''}
 			</p>
 			<p class="spec">
 				<span class="icon"><Fa icon={faServer} /></span>{socketData.platform}
