@@ -30,10 +30,10 @@ if ! command_exists pnpm; then
 fi
 
 # Clone the repository to the user's home directory
-git clone https://github.com/willuhmjs/forgetti /home/"$USER"/forgetti
+git clone https://github.com/willuhmjs/forgetti /home/$USER/forgetti
 
 # Navigate to the app directory
-cd /home/"$USER"/forgetti
+cd /home/$USER/forgetti
 
 # Install dependencies and build the app
 pnpm install --prod --frozen-lockfile
@@ -53,9 +53,9 @@ WantedBy=multi-user.target
 
 [Service]
 Type=simple
-User=will
+User=$USER
 RemainAfterExit=yes
-WorkingDirectory=/home/will/forgetti
+WorkingDirectory=/home/$USER/forgetti
 Environment=PATH=/usr/bin:/usr/local/bin
 Environment=NODE_ENV=production
 ExecStart=pnpm run preview
