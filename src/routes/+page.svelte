@@ -197,7 +197,7 @@
 					/>
 				</div>
 				<div class="inputGroup">
-					<label for="WebcamAuthEnabled">Enabled</label>
+					<label for="WebcamAuthEnabled">Webcam Authentication</label>
 					<input
 						type="checkbox"
 						id="WebcamAuthEnabled"
@@ -206,7 +206,7 @@
 				</div>
 				{#if liveDataUnsaved.WebcamAuthEnabled}
 					<div class="inputGroup">
-						<label for="WebcamUsername">Webcam Username</label>
+						<label for="WebcamUsername">Username</label>
 						<input
 							type="text"
 							id="WebcamUsername"
@@ -215,7 +215,7 @@
 						/>
 					</div>
 					<div class="inputGroup">
-						<label for="WebcamPassword">Webcam Password</label>
+						<label for="WebcamPassword">Password</label>
 						<input
 							type="password"
 							id="WebcamPassword"
