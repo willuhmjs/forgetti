@@ -206,20 +206,20 @@
 				</div>
 				{#if liveDataUnsaved.WebcamAuthEnabled}
 					<div class="inputGroup">
-						<label for="WebcamUsername">Username</label>
+						<label for="CameraUsername">Username</label>
 						<input
 							type="text"
-							id="WebcamUsername"
-							bind:value={liveDataUnsaved.WebcamUsername}
+							id="CameraUsername"
+							bind:value={liveDataUnsaved.CameraUsername}
 							placeholder="admin"
 						/>
 					</div>
 					<div class="inputGroup">
-						<label for="WebcamPassword">Password</label>
+						<label for="CameraPassword">Password</label>
 						<input
 							type="password"
-							id="WebcamPassword"
-							bind:value={liveDataUnsaved.WebcamPassword}
+							id="CameraPassword"
+							bind:value={liveDataUnsaved.CameraPassword}
 							placeholder="password"
 						/>
 					</div>

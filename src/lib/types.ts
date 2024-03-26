@@ -18,8 +18,8 @@ export interface Config {
 	CameraURL: string;
 	ConfidenceThreshold: number;
 	WebcamAuthEnabled: boolean;
-	WebcamUsername: string;
-	WebcamPassword: string;
+	CameraUsername: string;
+	CameraPassword: string;
 	Model: 'nano' | 'small';
 	ReportCooldown: string;
 	BrandColor: string;
