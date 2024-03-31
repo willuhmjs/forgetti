@@ -197,6 +197,35 @@
 					/>
 				</div>
 				<div class="inputGroup">
+					<label for="WebcamAuthEnabled">Webcam Authentication</label>
+					<input
+						type="checkbox"
+						id="WebcamAuthEnabled"
+						bind:checked={liveDataUnsaved.WebcamAuthEnabled}
+					/>
+				</div>
+				{#if liveDataUnsaved.WebcamAuthEnabled}
+					<div class="inputGroup">
+						<label for="CameraUsername">Username</label>
+						<input
+							type="text"
+							id="CameraUsername"
+							bind:value={liveDataUnsaved.CameraUsername}
+							placeholder="admin"
+						/>
+					</div>
+					<div class="inputGroup">
+						<label for="CameraPassword">Password</label>
+						<input
+							type="password"
+							id="CameraPassword"
+							bind:value={liveDataUnsaved.CameraPassword}
+							placeholder="password"
+						/>
+					</div>
+					
+				{/if}
+				<div class="inputGroup">
 					<label for="ConfidenceThreshold"
 						>Confidence Threshold ({liveDataUnsaved.ConfidenceThreshold}%)</label
 					>
@@ -428,6 +457,7 @@
 	}
 
 	.inputGroup input[type='text'],
+	.inputGroup input[type='password'],
 	.inputGroup select {
 		width: 100%;
 		padding: 10px;
@@ -439,6 +469,7 @@
 	}
 
 	.inputGroup input[type='text']:focus,
+	.inputGroup input[type='password']:focus,
 	.inputGroup select:focus {
 		outline: none;
 		border-color: var(--brand);

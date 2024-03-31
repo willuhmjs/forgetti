@@ -186,10 +186,14 @@ async function startStream(config: any) {
 	await initializeModel();
 	const trackedSymbol = currentCameraPromiseDirty;
 	const mjpegConsumer = new MjpegConsumer();
-
 	const requestConfig: AxiosRequestConfig = {
 		url: config.CameraURL,
-		responseType: 'stream'
+		responseType: 'stream',
+		headers: {
+			Authorization: `Basic ${Buffer.from(
+				`${config.CameraUsername}:${config.CameraPassword}`
+			).toString('base64')}`
+		}
 	};
 
 	let processing = false;
