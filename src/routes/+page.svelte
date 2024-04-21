@@ -238,6 +238,18 @@
 					/>
 				</div>
 				<div class="inputGroup">
+					<label for="MaxCPU"
+						>CPU Threshold ({liveDataUnsaved.MaxCPU}%)</label
+					>
+					<input
+						type="range"
+						id="MaxCPU"
+						min="1"
+						max="100"
+						bind:value={liveDataUnsaved.MaxCPU}
+					/>
+				</div>
+				<div class="inputGroup">
 					<label for="ReportCooldown">Report Cooldown</label>
 					<input
 						type="text"
@@ -253,7 +265,6 @@
 						<option value="small">Small</option>
 					</select>
 				</div>
-			</div>
 		</Window>
 
 		<Window title="Discord" icon={faDiscord}>

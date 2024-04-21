@@ -207,9 +207,11 @@ async function startStream(config: any) {
 		const response = await axios(requestConfig);
 		const stream: Readable = response.data.pipe(mjpegConsumer);
 
-		stream.on('data', (frame: Buffer) => {
+		stream.on('data', async (frame: Buffer) => {
 			if (frame && !processing) {
 				try {
+					const cpuUsage = await si.currentLoad();
+					if (cpuUsage.currentLoad > currentConfig.MaxCPU) return;
 					process(frame);
 				} catch (e) {
 					console.error(e);

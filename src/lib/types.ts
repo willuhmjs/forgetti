@@ -30,6 +30,7 @@ export interface Config {
 	MoonrakerEnabled: boolean;
 	MoonrakerURL: string;
 	MoonrakerPauseThreshold: number;
+	MaxCPU: number;
 }
 // response packets
 export interface SystemResponsePacket {

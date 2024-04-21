@@ -14,5 +14,6 @@
 	"ReportCooldown": "5 minutes",
 	"MoonrakerEnabled": false,
 	"MoonrakerURL": "http://raspberrypi/",
-	"MoonrakerPauseThreshold": 90
+	"MoonrakerPauseThreshold": 90,
+	"MaxCPU": 90
 }
