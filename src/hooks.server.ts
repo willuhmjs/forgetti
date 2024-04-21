@@ -36,6 +36,8 @@ function execCommand(command: string): Promise<string> {
 	});
 }
 
+let lastCPUReading = 0;
+
 server.on('connection', (socket) => {
 	latestDetection.subscribe((val) => {
 		socket.send(JSON.stringify({ purpose: 'inference', ...val }));
@@ -49,6 +51,7 @@ server.on('connection', (socket) => {
 		const mem = await si.mem(); // .used / .total * 100
 		const cpuTemp = await si.cpuTemperature(); // .main + .max
 		const netStats = (await si.networkStats())[0];
+		lastCPUReading = loadPercent
 		socket.send(
 			JSON.stringify({
 				purpose: 'system',
@@ -210,8 +213,8 @@ async function startStream(config: any) {
 		stream.on('data', async (frame: Buffer) => {
 			if (frame && !processing) {
 				try {
-					const cpuUsage = await si.currentLoad();
-					if (cpuUsage.currentLoad > currentConfig.MaxCPU) return;
+					
+					if (lastCPUReading > currentConfig.MaxCPU) return;
 					process(frame);
 				} catch (e) {
 					console.error(e);
