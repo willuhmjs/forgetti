@@ -12,6 +12,10 @@ The configuration of the detection feature is fairly straightforward, and it is 
 * This is the minimum confidence required for Forgetti to respond to a failure.
 * For example, a confidence threshold of 60% forces Forgetti to only respond to failures with a confidence of 60% or higher.
 
+### CPU Threshold
+* This is the maximum CPU usage Forgetti will withstand before temporarily pausing inference.
+* This prevents Forgetti from crashing other processes such as Klipper.
+
 ### Report Cooldown
 * This is the amount of time Forgetti will wait before reporting a second failure.
 * This is necessary to ensure that the same failure isn't reported more than once.
