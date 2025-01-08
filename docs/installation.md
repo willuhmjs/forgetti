@@ -5,7 +5,7 @@ This section outlines the installation process for Forgetti on a Raspberry Pi ru
 To install, run the following command in your home directory. The app will be hosted at `raspberrypi:4173`.
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/willuhmjs/forgetti/main/install.sh | sh
+curl -sSL https://willuhmjs.github.io/forgetti/install.sh | sh
 ```
 
 ### Manual Installation
