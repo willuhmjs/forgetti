@@ -1,3 +1,5 @@
+Test Commit
+
 The dashboard is how you interface with Forgetti and includes a variety of widgets to help you interact with the software. The dashboard is divided into three pages: Home, Configuration, and Logs. Each page has widgets that allow you to interact with the software and view information.
 
 ## Home
