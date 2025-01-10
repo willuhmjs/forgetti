@@ -9,17 +9,16 @@
   import Package2 from "lucide-svelte/icons/package-2";
   import Search from "lucide-svelte/icons/search";
   import Users from "lucide-svelte/icons/users";
-
-  
   import Settings from "lucide-svelte/icons/settings";
   import Logs from "lucide-svelte/icons/logs";
   import Soup from "lucide-svelte/icons/soup";
-
   import Play from "lucide-svelte/icons/play";
   import Power from "lucide-svelte/icons/power";
   import Restart from "lucide-svelte/icons/rotate-ccw";
   import Square from "lucide-svelte/icons/square";
-
+  
+  import Test from "$lib/components/test/test.svelte";
+  import Boxmod from "$lib/components/boxmod/boxmod.svelte";
 
   import { Badge } from "$lib/components/ui/badge/index.js";
   import { Button } from "$lib/components/ui/button/index.js";
@@ -29,7 +28,10 @@
   import * as Sheet from "$lib/components/ui/sheet/index.js";
   import LightSwtich from "$lib/components/light-switch/light-switch.svelte";
   import LightSwitch from "$lib/components/light-switch/light-switch.svelte";
-  
+    import Checkbox from "$lib/components/ui/checkbox/checkbox.svelte";
+    import Label from "$lib/components/ui/label/label.svelte";
+    import { Switch } from "$lib/components/ui/switch/index.js";
+    import { Slider } from "$lib/components/ui/slider/index.js";
 </script>
 
 <div class="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -49,34 +51,34 @@
         <nav class="grid items-start px-2 text-sm font-medium lg:px-4">
           <a
             href="/admin"
-            class="text-muted-foreground hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
+            class="bg-muted text-primary hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
           >
             <House class="h-4 w-4" />
             Dashboard
           </a>
           <a
-            href="##"
+            href="/settings"
             class="text-muted-foreground hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
           >
             <Settings class="h-4 w-4" />
             Settings
           </a>
           <a
-            href="##"
-            class="bg-muted text-primary hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
+            href="/logs"
+            class="text-muted-foreground hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
           >
             <Logs class="h-4 w-4" />
             Logs
           </a>
           <a
-            href="##"
+            href="blank1"
             class="text-muted-foreground hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
           >
             <Users class="h-4 w-4" />
             1...
           </a>
           <a
-            href="##"
+            href="blank2"
             class="text-muted-foreground hover:text-primary flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
           >
             <ChartLine class="h-4 w-4" />
@@ -188,11 +190,23 @@
           </div>
         </form>
       </div>
+      
+      <Button variant="outline" size="icon">
+        <Power class="h-4 w-4" />
+      </Button>
 
-      <Power class="h-5 w-5" />
-      <Restart class="h-5 w-5" />
-      <Square class="h-5 w-5" />
-      <Play class="h-5 w-5" />
+      <Button variant="outline" size="icon">
+        <Restart class="h-4 w-4" />
+      </Button>
+      
+      <Button variant="outline" size="icon">
+        <Square class="h-4 w-4" />
+      </Button>
+    
+      <Button variant="outline" size="icon">
+        <Play class="h-4 w-4" />
+      </Button>
+
       <LightSwitch />
 
       <DropdownMenu.Root>
@@ -217,12 +231,19 @@
         </DropdownMenu.Content>
       </DropdownMenu.Root>
     </header>
+    
     <main class="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
       <div class="flex items-center">
         <h1 class="text-lg font-semibold md:text-2xl">Inventory</h1>
       </div>
       
+
+
       <LightSwitch />
+      
+      
+      
+      
       
     
       <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
@@ -234,10 +255,164 @@
           </p>
           <Button class="mt-4">Add Product</Button>
         </div>
+      
+      
+
       </div>
 
-      <div class="flex flex-1 items-center justify-left rounded-lg border border-dashed shadow-sm"></div>
-     
+      
+  
+
+
+
+      <div class="flex-container" style="display: flex; gap: 20px;">
+        <div class="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm">
+          <div class="flex flex-col items-center gap-1 text-center">
+            <h3 class="text-2xl font-bold tracking-tight">You have no products</h3>
+            <p class="text-muted-foreground text-sm">
+              You can start selling as soon as you add a product.
+            </p>
+            <Button class="mt-4">Add Product</Button>
+          </div>
+        </div>
+      
+        <div class="flex flex-1 flex-col items-start justify-evenly rounded-lg border border-dashed shadow-sm p-2">
+          <div class="flex flex-col items-start space-y-4">
+            
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: Live webcam</h3>
+  
+            
+          </div>
+        </div>
+
+        <div class="flex flex-1 flex-col items-center justify-evenly rounded-lg border border-dashed shadow-sm">
+          <div class="flex flex-col items-center space-y-2">
+            
+            <div class="flex w-full max-w-sm flex-col gap-1.5">
+              <Label for="email-2">Camera URL</Label>
+              <Input type="email" id="email-2" placeholder="https://3dprinter.home/webcam" />
+            </div>
+
+            <div class="flex items-center space-x-2" style="margin-left: 0;">
+              <Switch id="airplane-mode" />
+              <Label for="airplane-mode">Webcam Authentication</Label>
+            </div>
+            
+            
+            <h3 class="text-2 tracking-tight">Confidence Threshold</h3>
+            <Slider value={[50]} max={100} step={1} class="max-w-[70%]" />
+            
+            <h3 class="text-2 tracking-tight">CPU Threshold</h3>
+            <Slider value={[50]} max={100} step={1} class="max-w-[70%]" />
+
+            <div class="flex w-full max-w-sm flex-col gap-1.5">
+              <Label for="email-2">Report Cooldown</Label>
+              <Input type="email" id="email-2" placeholder="5 minutes" />
+            </div>
+
+            <div class="flex w-full max-w-sm flex-col gap-1.5">
+              <Label for="email-2">Model</Label>
+              <Input type="email" id="email-2" placeholder="Nano" />
+            </div>
+
+            
+
+          </div>
+        </div>
+
+        <div class="flex flex-1 flex-col items-center justify-evenly rounded-lg border border-dashed shadow-sm">
+          <div class="flex flex-col items-center space-y-2">
+            
+            <div class="flex items-center space-x-2" style="margin-left: 0;">
+              <Switch id="airplane-mode" />
+              <Label for="airplane-mode">Enable Discord Webhook</Label>
+            </div>
+            
+            <div class="flex w-full max-w-sm flex-col gap-1.5">
+              <Label for="email-2">Webhook URL</Label>
+              <Input type="email" id="email-2" placeholder="564531453438543" />
+            </div>
+            
+            <div class="flex items-center space-x-2" style="margin-left: 0;">
+              <Switch id="airplane-mode" />
+              <Label for="airplane-mode">Ping Discord User </Label>
+            </div>
+            
+            <div class="flex w-full max-w-sm flex-col gap-1.5">
+              <Label for="email-2">Discord ID</Label>
+              <Input type="email" id="email-2" placeholder="564531453438543" />
+            </div>
+      
+          </div>
+        </div>
+
+        
+
+        <div class="flex flex-1 flex-col items-start justify-evenly rounded-lg border border-dashed shadow-sm p-2">
+          <div class="flex flex-col items-start space-y-4">
+            
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: Debian GNU/Linux 12 (bookworm)</h3>
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: linux 6.1.0-18-amd64</h3>
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: 70C</h3>
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: 1.22up/578.66down</h3>
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: MEM 55%</h3>
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: MEM 83%</h3>
+            
+          </div>
+        </div>
+
+        <div class="flex flex-1 flex-col items-start justify-evenly rounded-lg border border-dashed shadow-sm p-2">
+          <div class="flex flex-col items-start space-y-4">
+            
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: Saniverse 2024-04-25 082024 32m.gcode</h3>
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: STATUS PRINTING</h3>
+            <h3 class="text-2 tracking-tight mt-4">PLACEHOLDER: 0.00m</h3>
+            
+            <div class="flex items-start space-x-2">
+              <Switch id="airplane-mode" />
+              <Label for="airplane-mode">Enable Moonraker</Label>
+            </div>
+        
+            <div class="flex w-full max-w-sm flex-col gap-2">
+              <Label for="email-2">Moonraker URL</Label>
+              <Input type="email" id="email-2" placeholder="564531453438543" style="flex-grow: 1;" />
+            </div>
+        
+            <h3 class="text-2 tracking-tight mt-4">Pause Threshold</h3>
+            <Slider value={[50]} max={100} step={1} class="max-w-[70%] mt-2" />
+          </div>
+        </div>
+        
+        
+
+      
+      </div><div class="flex flex-1 items-center justify-evenly rounded-lg border border-dashed shadow-sm">
+        
+        
+          <div class="flex items-center space-x-2">
+            <Checkbox id="terms" />
+            <Label for="terms">Enable</Label>
+          </div>
+        <div>
+        <Input type="email" placeholder="enter" class="max-w-xs" />
+        </div>
+        <div class="flex items-center space-x-2">
+          <Switch id="airplane-mode" />
+          <Label for="airplane-mode">Airplane Mode</Label>
+        </div>
+      </div>
+      
+      <Test />
+      <Test />
+      <Test />
+      <Test />
+      <Test />
+      <Test />
+
+      <Boxmod />
+      
+
+
 
     </main>
   </div>
