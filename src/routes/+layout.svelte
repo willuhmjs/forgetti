@@ -1,4 +1,5 @@
 <script>
+	import '../app.css';
 	import '../app.pcss';
 	import { Toaster } from 'svelte-french-toast';
 </script>
