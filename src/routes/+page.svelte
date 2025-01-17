@@ -28,15 +28,19 @@
 	import { socketStore } from '$lib/wsClient';
 	import { onMount } from 'svelte';
 	import { faDiscord } from '@fortawesome/free-brands-svg-icons';
-	export let data: Config;
+	interface Props {
+		data: Config;
+	}
 
-	let liveData: Config = { ...data };
-	let liveDataUnsaved: Config = { ...data };
+	let { data }: Props = $props();
+
+	let liveData: Config = $state({ ...data });
+	let liveDataUnsaved: Config = $state({ ...data });
 	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
 	let color = data.BrandColor;
-	let powerMenu: HTMLDivElement;
+	let powerMenu: HTMLDivElement = $state();
 
-	let activeWindow: 'home' | 'config' | 'logs' = 'home';
+	let activeWindow: 'home' | 'config' | 'logs' = $state('home');
 	const updateConfig = async (config: Partial<Config>) => {
 		return new Promise((resolve, reject) => {
 			fetch('/api/update_config', {
@@ -85,7 +89,8 @@
 		document.documentElement.style.setProperty('--brand', color);
 	};
 
-	$: updateRequested = false;
+	let updateRequested = $state(false);
+	
 	const requestUpdate = () => {
 		updateRequested = true;
 		send(JSON.stringify({ purpose: 'appUpdate' }));
@@ -132,38 +137,38 @@
 <div class="titlebar">
 	<h3 class="title">Forgetti</h3>
 	<div class="buttons">
-		<button on:click={() => (activeWindow = 'home')}>
+		<button onclick={() => (activeWindow = 'home')}>
 			<Fa icon={faHome} fw={true} color={activeWindow === 'home' ? 'var(--brand)' : ''} />
 		</button>
-		<button on:click={() => (activeWindow = 'config')}>
+		<button onclick={() => (activeWindow = 'config')}>
 			<Fa icon={faCogs} fw={true} color={activeWindow === 'config' ? 'var(--brand)' : ''} />
 		</button>
-		<button on:click={() => (activeWindow = 'logs')}>
+		<button onclick={() => (activeWindow = 'logs')}>
 			<Fa icon={faFileLines} fw={true} color={activeWindow === 'logs' ? 'var(--brand)' : ''} />
 		</button>
 	</div>
 	<div class="buttons">
-		<button on:click={() => updateConfigToastable({ Enabled: !liveData.Enabled })}>
+		<button onclick={() => updateConfigToastable({ Enabled: !liveData.Enabled })}>
 			<Fa
 				icon={liveData.Enabled ? faStop : faPlay}
 				color={liveData.Enabled ? 'var(--red)' : 'var(--green)'}
 			/>
 		</button>
-		<button id="color" on:click={cycleThemeColor}>
+		<button id="color" onclick={cycleThemeColor}>
 			<Fa icon={faPalette} />
 		</button>
-		<button id="update" on:click={requestUpdate}>
+		<button id="update" onclick={requestUpdate}>
 			<Fa icon={faSync} spin={updateRequested} color="var(--yellow)" />
 		</button>
-		<button id="power" on:click={openPowerWindow}>
+		<button id="power" onclick={openPowerWindow}>
 			<Fa icon={faPowerOff} />
 		</button>
 	</div>
 	<div class="power-menu" bind:this={powerMenu}>
-		<button on:click={() => execCommand('Shutdown')}
+		<button onclick={() => execCommand('Shutdown')}
 			><Fa icon={faPowerOff} class="pm-icon" />Shutdown</button
 		>
-		<button on:click={() => execCommand('Restart')}
+		<button onclick={() => execCommand('Restart')}
 			><Fa icon={faRotateRight} class="pm-icon" />Restart</button
 		>
 	</div>
@@ -350,7 +355,7 @@
 	{#if JSON.stringify(liveData) !== JSON.stringify(liveDataUnsaved)}
 		<div class="saveButtonDiv">
 			<button
-				on:click={() => updateConfigToastable(liveDataUnsaved)}
+				onclick={() => updateConfigToastable(liveDataUnsaved)}
 				class="saveButton"
 				transition:fly={{ y: 100 }}
 			>

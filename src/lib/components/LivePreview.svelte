@@ -3,8 +3,12 @@
 	import type { Box, Config } from '$lib/types';
 	import { socketStore } from '$lib/wsClient';
 	import colorMap from '$lib/colorMap';
-	export let data: Config;
-	let canvas: HTMLCanvasElement;
+	interface Props {
+		data: Config;
+	}
+
+	let { data }: Props = $props();
+	let canvas: HTMLCanvasElement = $state();
 
 	onMount(() => {
 		let img = new Image();
@@ -43,5 +47,5 @@
 </script>
 
 <div style="margin-bottom: -4px;">
-	<canvas bind:this={canvas} style="max-width: 640px; height: 100%;" />
+	<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
 </div>

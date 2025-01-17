@@ -12,7 +12,7 @@
 	import type { MoonrakerResponsePacket } from '$lib/types';
 	import { onMount } from 'svelte';
 	import { socketStore } from '$lib/wsClient';
-	let latestStats: MoonrakerResponsePacket | null = null;
+	let latestStats: MoonrakerResponsePacket | null = $state(null);
 	onMount(() => {
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'moonraker') {

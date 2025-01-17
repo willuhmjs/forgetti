@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onMount } from 'svelte';
 	import { socketStore } from '$lib/wsClient';
 	import CircularBar from './CircularBar.svelte';
@@ -17,7 +19,7 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons';
 
-	let socketData: SystemResponsePacket;
+	let socketData: SystemResponsePacket = $state();
 
 	onMount(() => {
 		socketStore.subscribe((data) => {
@@ -39,9 +41,9 @@
 		return `${kilobytes.toFixed(2)} ${units[index]}`;
 	}
 
-	let platformIcon: IconDefinition = faQuestionCircle;
+	let platformIcon: IconDefinition = $state(faQuestionCircle);
 
-	$: {
+	run(() => {
 		if (socketData?.platform) {
 			if (socketData.platform.toLowerCase().includes('win')) {
 				platformIcon = faWindows;
@@ -51,7 +53,7 @@
 				platformIcon = faLinux;
 			}
 		}
-	}
+	});
 </script>
 
 <div class="systemContainer">

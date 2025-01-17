@@ -1,21 +1,25 @@
 <script>
-	export let value = 0;
-	export let color;
-	export let trackColor;
-	export let textColor;
-	export let thickness = '5%'; // Thickness of stroke
-	export let decimals = false;
+	import { run } from 'svelte/legacy';
 
-	let newValue; // Value already validated
-	let radius, xaxis, side;
-	let circle, hidCircle;
-	let rootEle;
-	let rootWidth, rootHeight;
-	let textLarge, percent;
+	/** @type {{value?: number, color: any, trackColor: any, textColor: any, thickness?: string, decimals?: boolean}} */
+	let {
+		value = 0,
+		color,
+		trackColor,
+		textColor,
+		thickness = '5%',
+		decimals = false
+	} = $props();
+
+	let newValue = $state(); // Value already validated
+	let radius = $state(), xaxis = $state(), side;
+	let circle = $state(), hidCircle = $state();
+	let rootEle = $state();
+	let rootWidth = $state(), rootHeight;
+	let textLarge = $state(), percent = $state();
 	let max = 100;
 	let discRadius = 80;
 
-	$: calculate(value, rootWidth, rootHeight);
 
 	function calculate() {
 		newValue = (value > max ? max : value < 0 ? 0 : value) || 0;
@@ -66,6 +70,9 @@
 			percent.style.fontSize = Math.max(radius / 6, 10) + 'px';
 		}
 	}
+	run(() => {
+		calculate(value, rootWidth, rootHeight);
+	});
 </script>
 
 <section bind:clientWidth={rootWidth} bind:this={rootEle} class="circle">
