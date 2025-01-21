@@ -125,8 +125,4 @@
 		margin-bottom: 1rem;
 		margin-left: 1rem;
 	}
-
-	.save-coordinates-button:hover {
-		filter: brightness(0.85);
-	}
 </style>
