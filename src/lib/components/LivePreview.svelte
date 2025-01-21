@@ -89,7 +89,6 @@
 			);
 		};
 </script>
-{color}
 <BoundingBox bind:coordinatesBoxes={coords} outerColor={color} innerColor="rgba(255,255,255,0.2)">
 	<div style="margin-bottom: -4px;">
 		<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
