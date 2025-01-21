@@ -3,7 +3,7 @@
 	import { Fa } from 'svelte-fa';
 	import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 	import { onMount } from 'svelte';
-	import type { Box, Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket, Coordinates } from '$lib/types';
+	import type { Box, Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 	import { socketStore } from '$lib/wsClient';
 	import colorMap from '$lib/colorMap';
 	import { toast } from 'svelte-french-toast';
@@ -14,8 +14,9 @@
 
 	let { data }: Props = $props();
 	let canvas: HTMLCanvasElement = $state();
-	let coords = $state.raw(data.Coordinates);
+	let coords = $state(data.Coordinates || []);
 	let settingsSynced = $state(true);
+
 
 	$effect(() => {
 		settingsSynced = JSON.stringify(coords) === JSON.stringify(data.Coordinates);
@@ -88,8 +89,7 @@
 			);
 		};
 </script>
-
-<BoundingBox bind:coordinatesBoxes={coords}>
+<BoundingBox bind:coordinatesBoxes={coords} outerColor={colorMap.get(data.BrandColor)} innerColor="rgba(255,255,255,0.2)">
 	<div style="margin-bottom: -4px;">
 		<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
 	</div>

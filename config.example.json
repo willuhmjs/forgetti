@@ -15,5 +15,6 @@
 	"MoonrakerEnabled": false,
 	"MoonrakerURL": "http://raspberrypi/",
 	"MoonrakerPauseThreshold": 90,
-	"MaxCPU": 90
+	"MaxCPU": 90,
+	"Coordinates": []
 }
