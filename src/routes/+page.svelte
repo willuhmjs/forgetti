@@ -28,6 +28,8 @@
 	import { socketStore } from '$lib/wsClient';
 	import { onMount } from 'svelte';
 	import { faDiscord } from '@fortawesome/free-brands-svg-icons';
+	import colorStore from '$lib/colorStore';
+	import colorMap from '$lib/colorMap';
 	interface Props {
 		data: Config;
 	}
@@ -87,6 +89,10 @@
 			BrandColor: color
 		});
 		document.documentElement.style.setProperty('--brand', color);
+		const colorValue = colorMap.get(color);
+		if (colorValue) {
+			colorStore.set(colorValue);
+		}
 	};
 
 	let updateRequested = $state(false);
@@ -119,6 +125,10 @@
 
 	onMount(() => {
 		powerMenu.style.display = 'none';
+		const colorValue = colorMap.get(data.BrandColor);
+		if (colorValue) {
+			colorStore.set(colorValue);
+		}
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
 		socketStore.subscribe((data) => {
 			if (!data) return;

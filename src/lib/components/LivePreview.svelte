@@ -1,13 +1,14 @@
 <script lang="ts">
 	import { BoundingBox } from "svelte-bounding-box";
 	import { Fa } from 'svelte-fa';
-	import { faFloppyDisk, faSync } from '@fortawesome/free-solid-svg-icons';
+	import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 	import { onMount } from 'svelte';
 	import type { Box, Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 	import { socketStore } from '$lib/wsClient';
-	import colorMap from '$lib/colorMap';
 	import { toast } from 'svelte-french-toast';
 	import { fly } from "svelte/transition";
+	import colorStore from "$lib/colorStore";
+	import LoadingBar from "./LoadingBar.svelte";
 	interface Props {
 		data: Config;
 	}
@@ -16,7 +17,6 @@
 	let canvas: HTMLCanvasElement = $state();
 	let coords = $state(data.Coordinates || []);
 	let settingsSynced = $state(true);
-	let color = $state(colorMap.get(data.BrandColor) || '#ffffff');
 	let hasContent = $state(false);
 
 	$effect(() => {
@@ -27,7 +27,6 @@
 		let img = new Image();
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'inference') {
-				color = colorMap.get(document.documentElement.style.getPropertyValue('--brand'));
 				const { box, buffer } = data;
 				img.src = `data:image/jpeg;base64,${buffer}`;
 				img.onload = () => drawCanvas(box);
@@ -43,12 +42,12 @@
 					ctx.drawImage(img, 0, 0);
 					hasContent = true;
 
-					ctx.strokeStyle = color;
+					ctx.strokeStyle = $colorStore;
 					ctx.lineWidth = 5;
 					ctx.font = '20px sans-serif';
 					boxes.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 						ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-						ctx.fillStyle = color;
+						ctx.fillStyle = $colorStore;
 						const width = ctx.measureText(`failure ${prob}%`).width;
 						ctx.fillRect(x1, y1, width + 10, 25);
 						ctx.fillStyle = '#000000';
@@ -93,13 +92,13 @@
 </script>
 
 {#if hasContent}
-<BoundingBox bind:coordinatesBoxes={coords} outerColor={color} innerColor="rgba(255,255,255,0.2)">
+<BoundingBox bind:coordinatesBoxes={coords} outerColor={$colorStore} innerColor="rgba(255,255,255,0.2)">
 	<div style="margin-bottom: -4px;">
 		<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
 	</div>
 </BoundingBox>
 {:else}
-	<Fa icon={faSync} spin />
+	<LoadingBar />
 {/if}
 
 {#if !settingsSynced}

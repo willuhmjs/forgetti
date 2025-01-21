@@ -1,13 +1,10 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { onMount } from 'svelte';
 	import { socketStore } from '$lib/wsClient';
 	import CircularBar from './CircularBar.svelte';
 	import type { SystemResponsePacket } from '$lib/types';
 	import Fa from 'svelte-fa';
 	import {
-		faSync,
 		faQuestionCircle,
 		type IconDefinition,
 		faServer,
@@ -18,6 +15,8 @@
 		faDownload
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons';
+	import LoadingBar from './LoadingBar.svelte';
+	import { run } from 'svelte/legacy';
 
 	let socketData: SystemResponsePacket = $state();
 
@@ -105,7 +104,8 @@
 			</div>
 		</div>
 	{:else}
-		<Fa icon={faSync} spin />
+		<LoadingBar />
+		
 	{/if}
 </div>
 

@@ -21,7 +21,8 @@
 		"@types/ws": "^8.5.13",
 		"prettier": "^3.4.2",
 		"prettier-plugin-svelte": "^3.3.3",
-		"svelte-check": "^4.1.4"
+		"svelte-check": "^4.1.4",
+		"svelte-loading-spinners": "^0.3.6"
 	},
 	"type": "module",
 	"dependencies": {

@@ -111,6 +111,9 @@ importers:
       svelte-check:
         specifier: ^4.1.4
         version: 4.1.4(picomatch@4.0.2)(svelte@5.19.1)(typescript@5.7.3)
+      svelte-loading-spinners:
+        specifier: ^0.3.6
+        version: 0.3.6
 
 packages:
 
@@ -1373,6 +1376,9 @@ packages:
     resolution: {integrity: sha512-5PW+6RFX3xQPbR44CngYAP1Sd9oCq9P2FOox4FZffzJuZI2mHOB7q5gJBVnOiLF5y3moVGZ7u2bYt7+yPAgcEQ==}
     peerDependencies:
       svelte: ^3.57.0 || ^4.0.0
+
+  svelte-loading-spinners@0.3.6:
+    resolution: {integrity: sha512-mthHQ2TwiwzTWzbFry3CBnVEfzqPOD9WkVw84OfSYzHRq6N9wgQ+yv37u81uPeuLU/ZOIPqhujpXquB1aol5ZQ==}
 
   svelte-writable-derived@3.1.1:
     resolution: {integrity: sha512-w4LR6/bYZEuCs7SGr+M54oipk/UQKtiMadyOhW0PTwAtJ/Ai12QS77sLngEcfBx2q4H8ZBQucc9ktSA5sUGZWw==}
@@ -2690,6 +2696,8 @@ snapshots:
     dependencies:
       svelte: 5.19.1
       svelte-writable-derived: 3.1.1(svelte@5.19.1)
+
+  svelte-loading-spinners@0.3.6: {}
 
   svelte-writable-derived@3.1.1(svelte@5.19.1):
     dependencies:

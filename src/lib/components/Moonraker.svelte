@@ -4,7 +4,6 @@
 		faHourglassHalf,
 		faRuler,
 		faSpinner,
-		faSync,
 		faCube,
 		faIndustry
 	} from '@fortawesome/free-solid-svg-icons';
@@ -12,6 +11,8 @@
 	import type { MoonrakerResponsePacket } from '$lib/types';
 	import { onMount } from 'svelte';
 	import { socketStore } from '$lib/wsClient';
+	import LoadingBar from './LoadingBar.svelte';
+	let color = $state("");
 	let latestStats: MoonrakerResponsePacket | null = $state(null);
 	onMount(() => {
 		socketStore.subscribe((data) => {
@@ -61,7 +62,7 @@
 				</p>
 			{/if}
 		{:else}
-			<Fa icon={faSync} spin />
+			<LoadingBar />
 		{/if}
 	</div>
 </div>
