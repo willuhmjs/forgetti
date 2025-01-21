@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types';
 import type { ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 import fs from 'fs';
 import configStore from '$lib/server/configStore';
+
 export const POST: RequestHandler = async ({ request }) => {
 	const requestPacket = (await request.json()) as ConfigUpdateRequestPacket;
 	try {
@@ -10,7 +11,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		const newConfig = {
 			...currentConfig,
-			...requestPacket.config
+			...requestPacket.config,
 		};
 		fs.writeFileSync('./config.json', JSON.stringify(newConfig, null, 2));
 		configStore.set(newConfig);
@@ -21,7 +22,7 @@ export const POST: RequestHandler = async ({ request }) => {
 			config: newConfig
 		} as ConfigUpdateResponsePacket);
 	} catch (error: any) {
-		json({
+		return json({
 			message: error.message || error,
 			type: 'error',
 			purpose: 'configUpdate'

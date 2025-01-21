@@ -5,7 +5,7 @@ export interface Box {
 	y1: number;
 	x2: number;
 	y2: number;
-	prob: number;
+	prob?: number;
 }
 
 export interface InferenceData {
@@ -31,7 +31,16 @@ export interface Config {
 	MoonrakerURL: string;
 	MoonrakerPauseThreshold: number;
 	MaxCPU: number;
+	Coordinates: Coordinates[];
 }
+
+export interface Coordinates {
+	x1: number;
+	y1: number;
+	x2: number;
+	y2: number;
+}
+
 // response packets
 export interface SystemResponsePacket {
 	purpose: 'system';
@@ -90,4 +99,5 @@ export interface AppUpdateRequestPacket {
 export interface ConfigUpdateRequestPacket {
 	purpose: 'configUpdate';
 	config: Partial<Config>;
+	coordinates?: Coordinates[]; // Add coordinates to the request packet
 }
