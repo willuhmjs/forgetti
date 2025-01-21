@@ -16,7 +16,6 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons';
 	import LoadingBar from './LoadingBar.svelte';
-	import { run } from 'svelte/legacy';
 
 	let socketData: SystemResponsePacket = $state();
 
@@ -42,7 +41,7 @@
 
 	let platformIcon: IconDefinition = $state(faQuestionCircle);
 
-	run(() => {
+	$effect(() => {
 		if (socketData?.platform) {
 			if (socketData.platform.toLowerCase().includes('win')) {
 				platformIcon = faWindows;

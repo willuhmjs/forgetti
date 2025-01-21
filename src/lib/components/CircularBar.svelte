@@ -3,7 +3,7 @@
 
 	/** @type {{value?: number, color: any, trackColor: any, textColor: any, thickness?: string, decimals?: boolean}} */
 	let {
-		value = 0,
+		value = $bindable(0),
 		color,
 		trackColor,
 		textColor,
