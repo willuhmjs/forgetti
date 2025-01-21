@@ -16,7 +16,7 @@
 	let canvas: HTMLCanvasElement = $state();
 	let coords = $state(data.Coordinates || []);
 	let settingsSynced = $state(true);
-
+	let color = $state(colorMap.get(data.BrandColor) || '#ffffff');
 
 	$effect(() => {
 		settingsSynced = JSON.stringify(coords) === JSON.stringify(data.Coordinates);
@@ -26,6 +26,7 @@
 		let img = new Image();
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'inference') {
+				color = colorMap.get(document.documentElement.style.getPropertyValue('--brand'));
 				const { box, buffer } = data;
 				img.src = `data:image/jpeg;base64,${buffer}`;
 				img.onload = () => drawCanvas(box);
@@ -40,12 +41,12 @@
 				if (ctx) {
 					ctx.drawImage(img, 0, 0);
 
-					ctx.strokeStyle = colorMap.get(data.BrandColor) || '#ffffff';
+					ctx.strokeStyle = color;
 					ctx.lineWidth = 5;
 					ctx.font = '20px sans-serif';
 					boxes.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 						ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-						ctx.fillStyle = colorMap.get(data.BrandColor) || '#ffffff';
+						ctx.fillStyle = color;
 						const width = ctx.measureText(`failure ${prob}%`).width;
 						ctx.fillRect(x1, y1, width + 10, 25);
 						ctx.fillStyle = '#000000';
@@ -55,7 +56,6 @@
 			}
 		}
 	});
-
 
 	const saveCoordinates = async () => {
 		const configUpdate = { Coordinates: coords };
@@ -89,7 +89,8 @@
 			);
 		};
 </script>
-<BoundingBox bind:coordinatesBoxes={coords} outerColor={colorMap.get(data.BrandColor)} innerColor="rgba(255,255,255,0.2)">
+{color}
+<BoundingBox bind:coordinatesBoxes={coords} outerColor={color} innerColor="rgba(255,255,255,0.2)">
 	<div style="margin-bottom: -4px;">
 		<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
 	</div>
