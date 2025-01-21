@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { BoundingBox } from "svelte-bounding-box";
 	import { Fa } from 'svelte-fa';
-	import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
+	import { faFloppyDisk, faSync } from '@fortawesome/free-solid-svg-icons';
 	import { onMount } from 'svelte';
 	import type { Box, Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 	import { socketStore } from '$lib/wsClient';
@@ -17,6 +17,7 @@
 	let coords = $state(data.Coordinates || []);
 	let settingsSynced = $state(true);
 	let color = $state(colorMap.get(data.BrandColor) || '#ffffff');
+	let hasContent = $state(false);
 
 	$effect(() => {
 		settingsSynced = JSON.stringify(coords) === JSON.stringify(data.Coordinates);
@@ -40,6 +41,7 @@
 				const ctx = canvas.getContext('2d');
 				if (ctx) {
 					ctx.drawImage(img, 0, 0);
+					hasContent = true;
 
 					ctx.strokeStyle = color;
 					ctx.lineWidth = 5;
@@ -89,11 +91,16 @@
 			);
 		};
 </script>
+
+{#if hasContent}
 <BoundingBox bind:coordinatesBoxes={coords} outerColor={color} innerColor="rgba(255,255,255,0.2)">
 	<div style="margin-bottom: -4px;">
 		<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
 	</div>
 </BoundingBox>
+{:else}
+	<Fa icon={faSync} spin />
+{/if}
 
 {#if !settingsSynced}
 <div class="saveButtonDiv">
