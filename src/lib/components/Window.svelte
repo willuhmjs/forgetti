@@ -41,7 +41,6 @@
 		font-size: 12px;
 		background-color: var(--foreground);
 		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-		max-width: 100%;
 	}
 
 	.title-bar {
