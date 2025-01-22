@@ -10,6 +10,7 @@ nav:
   - Features:
       - Detection: detection.md
       - Discord: discord.md
+      - Moonraker: moonraker.md
 
 not_in_nav: |
   proposal.md
