@@ -194,7 +194,6 @@ latestDetection.subscribe(async (data) => {
 		dci &&
 		Date.now() - lastReport > ms(currentConfig.ReportCooldown)
 	) {
-		console.log('Detected object in zone');
 		lastReport = Date.now();
 		detectionHandler(data);
 	}
