@@ -14,7 +14,8 @@
 
 	let { data }: Props = $props();
 	let canvas: HTMLCanvasElement = $state();
-	let coords = $state(data.Coordinates || []);
+	let storedCoords = typeof localStorage !== 'undefined' ? localStorage.getItem('coordinates') : null;
+	let coords = storedCoords ? JSON.parse(storedCoords) : data.Coordinates || [];
 	let settingsSynced = $state(true);
 	let hasContent = $state(false);
 
@@ -25,6 +26,9 @@
 	
 
 	onMount(() => {
+		if (typeof localStorage !== 'undefined') {
+			storedCoords = localStorage.getItem('coordinates');
+		}
 		let img = new Image();
 		img.src = "./nosignal.jpg";
 		let lastBox: Box[];
@@ -69,6 +73,7 @@
 
 	const saveCoordinates = async () => {
 		const configUpdate = { Coordinates: coords };
+		localStorage.setItem('coordinates', JSON.stringify(coords));
 		toast.promise(
 			fetch('/api/update_config', {
 				method: 'POST',
@@ -102,6 +107,7 @@
 	export function clearCoordinates() {
 		coords = [];
 		settingsSynced = false;
+		localStorage.removeItem('coordinates');
 	};
 </script>
 <BoundingBox bind:coordinatesBoxes={coords} outerColor={$colorStore} innerColor="rgba(255,255,255,0.2)">

@@ -13,10 +13,15 @@ import { exec } from 'child_process';
 import { dev } from '$app/environment';
 import type { AppUpdateRequestPacket, AppUpdateResponsePacket } from '$lib/types';
 import { doCoordinatesIntersect, getImageDimensions, translateCoordinatesArray } from '$lib/server/imageUtils';
+import { writable } from 'svelte/store';
 
 let lastReport = 0;
 let currentCameraPromiseDirty = Symbol();
-let currentConfig = get(configStore);
+
+let inMemoryConfigStore = writable<Config>(get(configStore));
+let currentConfig: Config;
+inMemoryConfigStore.subscribe((config) => (currentConfig = config));
+
 if (currentConfig.Enabled) startStream(currentConfig);
 
 function execCommand(command: string): Promise<string> {
@@ -176,6 +181,11 @@ server.on('connection', (socket) => {
 			process.exit(1);
 		}
 	});
+
+	socket.on('close', () => {
+		// Clear in-memory store when the user session ends
+		inMemoryConfigStore.set(get(configStore));
+	});
 });
 
 latestDetection.subscribe(async (data) => {
@@ -193,7 +203,7 @@ latestDetection.subscribe(async (data) => {
 	const dci = doCoordinatesIntersect(adjustedCoordinates, data?.box || [])
 	if (
 		dci &&
-		Date.now() - lastReport > ms(currentConfig.ReportCooldown)
+		Date.now() - lastReport > Number(ms(currentConfig.ReportCooldown))
 	) {
 		lastReport = Date.now();
 		detectionHandler(data);
@@ -261,5 +271,6 @@ configStore.subscribe((config) => {
 	const modelChangedWhileEnabled = currentConfig.Model != config.Model && config.Enabled;
 	if (enabledFalseToTrue || cameraURLChangedWhileEnabled || modelChangedWhileEnabled)
 		startStream(config);
+	inMemoryConfigStore.set(config);
 	currentConfig = config;
 });

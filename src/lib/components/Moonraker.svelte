@@ -7,22 +7,14 @@
 		faCube,
 		faIndustry
 	} from '@fortawesome/free-solid-svg-icons';
-
-	import type { MoonrakerResponsePacket } from '$lib/types';
-	import { onMount } from 'svelte';
-	import { socketStore } from '$lib/wsClient';
 	import LoadingBar from './LoadingBar.svelte';
-	let color = $state("");
-	let latestStats: MoonrakerResponsePacket | null = $state(null);
-	onMount(() => {
-		socketStore.subscribe((data) => {
-			if (data?.purpose === 'moonraker') {
-				if (data.state === 'error')
-					return console.log('Error in Moonraker component. Please check server logs.');
-				latestStats = data;
-			}
-		});
-	});
+
+	// Static placeholder values
+	let latestStats = {
+		filename: 'example.gcode',
+		state: 'printing',
+		filament_used: 12345
+	};
 </script>
 
 <div class="moonrakerContainer">
@@ -51,7 +43,7 @@
 					<span class="icon">
 						<Fa icon={faRuler} />
 					</span>
-					{(latestStats.filament_used || 0 / 1000).toFixed(2)}m
+					{(latestStats.filament_used / 1000).toFixed(2)}m
 				</p>
 			{:else}
 				<p class="spec">

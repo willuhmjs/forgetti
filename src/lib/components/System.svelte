@@ -1,8 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { socketStore } from '$lib/wsClient';
 	import CircularBar from './CircularBar.svelte';
-	import type { SystemResponsePacket } from '$lib/types';
 	import Fa from 'svelte-fa';
 	import {
 		faQuestionCircle,
@@ -17,15 +14,19 @@
 	import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons';
 	import LoadingBar from './LoadingBar.svelte';
 
-	let socketData: SystemResponsePacket = $state();
-
-	onMount(() => {
-		socketStore.subscribe((data) => {
-			if (data?.purpose === 'system') {
-				socketData = data;
-			}
-		});
-	});
+	// Static placeholder values
+	let socketData = {
+		distro: 'Ubuntu',
+		release: '20.04',
+		codename: 'Focal Fossa',
+		platform: 'linux',
+		kernel: '5.4.0-42-generic',
+		cpuTemp: 55,
+		netTX: 2048,
+		netRX: 4096,
+		memPercent: 45,
+		loadPercent: 30
+	};
 
 	function convertToLargestUnit(kilobytes: number) {
 		let units = ['KB', 'MB', 'GB', 'TB', 'PB'];
@@ -39,73 +40,64 @@
 		return `${kilobytes.toFixed(2)} ${units[index]}`;
 	}
 
-	let platformIcon: IconDefinition = $state(faQuestionCircle);
+	let platformIcon: IconDefinition = faQuestionCircle;
 
-	$effect(() => {
-		if (socketData?.platform) {
-			if (socketData.platform.toLowerCase().includes('win')) {
-				platformIcon = faWindows;
-			} else if (socketData.platform.toLowerCase().includes('mac')) {
-				platformIcon = faApple;
-			} else if (socketData.platform.toLowerCase().includes('linux')) {
-				platformIcon = faLinux;
-			}
-		}
-	});
+	if (socketData.platform.toLowerCase().includes('win')) {
+		platformIcon = faWindows;
+	} else if (socketData.platform.toLowerCase().includes('mac')) {
+		platformIcon = faApple;
+	} else if (socketData.platform.toLowerCase().includes('linux')) {
+		platformIcon = faLinux;
+	}
 </script>
 
 <div class="systemContainer">
-	{#if socketData}
-		<div>
-			<p class="spec">
-				<span class="icon"><Fa icon={platformIcon} /></span>{socketData.distro}
-				{socketData.release} {socketData.codename ? `(${socketData.codename})` : ''}
-			</p>
-			<p class="spec">
-				<span class="icon"><Fa icon={faServer} /></span>{socketData.platform}
-				{socketData.kernel}
-			</p>
-			<p class="spec">
-				<span class="icon"
-					><Fa icon={socketData.cpuTemp > 60 ? faTemperatureHigh : faTemperatureLow} /></span
-				>{socketData.cpuTemp}°C
-			</p>
-			<p class="spec">
-				<span class="icon"><Fa icon={faWifi} /></span>{convertToLargestUnit(socketData.netTX)}
-				<span class="icon"> <Fa icon={faUpload} /></span> / {convertToLargestUnit(socketData.netRX)}
-				<span class="icon">
-					<Fa icon={faDownload} />
-				</span>
-			</p>
-		</div>
-		<div class="circularBarContainer">
-			<div class="circularBarWrapper">
-				<div class="circularBarSubContainer">
-					<CircularBar
-						bind:value={socketData.memPercent}
-						color="var(--brand)"
-						trackColor="var(--background)"
-						textColor="#fff"
-					/>
-				</div>
-				<p>MEM</p>
+	<div>
+		<p class="spec">
+			<span class="icon"><Fa icon={platformIcon} /></span>{socketData.distro}
+			{socketData.release} {socketData.codename ? `(${socketData.codename})` : ''}
+		</p>
+		<p class="spec">
+			<span class="icon"><Fa icon={faServer} /></span>{socketData.platform}
+			{socketData.kernel}
+		</p>
+		<p class="spec">
+			<span class="icon"
+				><Fa icon={socketData.cpuTemp > 60 ? faTemperatureHigh : faTemperatureLow} /></span
+			>{socketData.cpuTemp}°C
+		</p>
+		<p class="spec">
+			<span class="icon"><Fa icon={faWifi} /></span>{convertToLargestUnit(socketData.netTX)}
+			<span class="icon"> <Fa icon={faUpload} /></span> / {convertToLargestUnit(socketData.netRX)}
+			<span class="icon">
+				<Fa icon={faDownload} />
+			</span>
+		</p>
+	</div>
+	<div class="circularBarContainer">
+		<div class="circularBarWrapper">
+			<div class="circularBarSubContainer">
+				<CircularBar
+					bind:value={socketData.memPercent}
+					color="var(--brand)"
+					trackColor="var(--background)"
+					textColor="#fff"
+				/>
 			</div>
-			<div class="circularBarWrapper">
-				<div class="circularBarSubContainer">
-					<CircularBar
-						bind:value={socketData.loadPercent}
-						color="var(--brand)"
-						trackColor="var(--background)"
-						textColor="#fff"
-					/>
-				</div>
-				<p>CPU</p>
-			</div>
+			<p>MEM</p>
 		</div>
-	{:else}
-		<LoadingBar />
-		
-	{/if}
+		<div class="circularBarWrapper">
+			<div class="circularBarSubContainer">
+				<CircularBar
+					bind:value={socketData.loadPercent}
+					color="var(--brand)"
+					trackColor="var(--background)"
+					textColor="#fff"
+				/>
+			</div>
+			<p>CPU</p>
+		</div>
+	</div>
 </div>
 
 <style>

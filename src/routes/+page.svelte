@@ -31,6 +31,8 @@
 	import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 	import colorStore from '$lib/colorStore';
 	import colorMap from '$lib/colorMap';
+	import { writable } from 'svelte/store';
+	
 	interface Props {
 		data: Config;
 	}
@@ -41,30 +43,17 @@
 	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
 	let color = data.BrandColor;
 	let powerMenu: HTMLDivElement = $state();
-	let lp: LivePreview;
+	let lp: LivePreview = $state();
 
 	let activeWindow: 'home' | 'config' | 'logs' = $state('home');
+	const configStore = writable<Config>(data);
+
 	const updateConfig = async (config: Partial<Config>) => {
 		return new Promise((resolve, reject) => {
-			fetch('/api/update_config', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					purpose: 'configUpdate',
-					config
-				} as ConfigUpdateRequestPacket)
-			}).then(async (response) => {
-				const data = (await response.json()) as ConfigUpdateResponsePacket;
-				if (data.type === 'success') {
-					liveData = { ...liveData, ...data.config };
-					liveDataUnsaved = { ...liveData }; // Update liveDataUnsaved with the new liveData
-					resolve(data.message);
-				} else {
-					reject(data.message);
-				}
-			});
+			liveData = { ...liveData, ...config };
+			liveDataUnsaved = { ...liveData };
+			configStore.set(liveData);
+			resolve('Configuration updated');
 		});
 	};
 
@@ -125,6 +114,16 @@
 	};
 
 	onMount(() => {
+		configStore.subscribe((value) => {
+			liveData = value;
+			liveDataUnsaved = value;
+		});
+		if (typeof window !== 'undefined') {
+			const storedData = localStorage.getItem('configData');
+			data = storedData ? JSON.parse(storedData) : data;
+		}
+		liveData = { ...data };
+		liveDataUnsaved = { ...data };
 		powerMenu.style.display = 'none';
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
 		const colorValue = colorMap.get(color);
