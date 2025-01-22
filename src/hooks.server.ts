@@ -6,14 +6,18 @@ import configStore from '$lib/server/configStore';
 import ms from 'ms';
 import server from '$lib/server/wsServer';
 import { detectObjects, latestDetection, initializeModel } from '$lib/server/model';
-import type { Readable } from 'stream';
-import type { Box } from '$lib/types';
 import { get } from 'svelte/store';
 import { exec } from 'child_process';
 import { dev } from '$app/environment';
 import type { AppUpdateRequestPacket, AppUpdateResponsePacket } from '$lib/types';
 import { doCoordinatesIntersect, getImageDimensions, translateCoordinatesArray } from '$lib/server/imageUtils';
 import { writable } from 'svelte/store';
+import path from 'path';
+import fs from 'fs';
+
+const sp = path.resolve("src/lib/images/spaghetti.jpg")
+const spaghetti = fs.readFileSync(sp); 
+
 
 let lastReport = 0;
 let currentCameraPromiseDirty = Symbol();
@@ -213,16 +217,6 @@ latestDetection.subscribe(async (data) => {
 async function startStream(config: any) {
 	await initializeModel();
 	const trackedSymbol = currentCameraPromiseDirty;
-	const mjpegConsumer = new MjpegConsumer();
-	const requestConfig: AxiosRequestConfig = {
-		url: config.CameraURL,
-		responseType: 'stream',
-		headers: {
-			Authorization: `Basic ${Buffer.from(
-				`${config.CameraUsername}:${config.CameraPassword}`
-			).toString('base64')}`
-		}
-	};
 
 	let processing = false;
 	const process = async (frameBuffer: Buffer) => {
@@ -231,29 +225,21 @@ async function startStream(config: any) {
 		processing = false;
 	};
 
-	try {
-		const response = await axios(requestConfig);
-		const stream: Readable = response.data.pipe(mjpegConsumer);
-
-		stream.on('data', async (frame: Buffer) => {
-			if (frame && !processing) {
-				try {
-					
-					if (lastCPUReading > currentConfig.MaxCPU) return;
-					process(frame);
-				} catch (e) {
-					console.error(e);
-				}
+	const sendFrame = () => {
+		if (!processing) {
+			try {
+				if (lastCPUReading > currentConfig.MaxCPU) return;
+				process(spaghetti);
+			} catch (e) {
+				console.error(e);
 			}
+		}
 
-			if (currentCameraPromiseDirty != trackedSymbol) {
-				stream.destroy();
-				return;
-			}
-		});
-	} catch (e) {
-		console.error(e);
-	}
+		if (currentCameraPromiseDirty != trackedSymbol) return;
+		setTimeout(sendFrame, 1000);
+	};
+
+	sendFrame();
 }
 
 configStore.subscribe((config) => {

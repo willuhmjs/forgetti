@@ -110,11 +110,12 @@
 		localStorage.removeItem('coordinates');
 	};
 </script>
-<BoundingBox bind:coordinatesBoxes={coords} outerColor={$colorStore} innerColor="rgba(255,255,255,0.2)">
+<BoundingBox outerColor={$colorStore} innerColor="rgba(255,255,255,0.2)">
 	<div style="margin-bottom: -4px;">
 		<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
 	</div>
 </BoundingBox>
+
 {#if !data.Enabled && !hasContent}
 	<img src="./nosignal.jpg" alt="No signal" style="max-width: 640px; height: 100%;" />
 {/if}
