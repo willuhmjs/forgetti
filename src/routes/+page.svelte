@@ -21,7 +21,8 @@
 		faHome,
 		faCog,
 		faFloppyDisk,
-		faSailboat
+		faSailboat,
+		faTrash
 	} from '@fortawesome/free-solid-svg-icons';
 	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 	import toast from 'svelte-french-toast';
@@ -40,6 +41,7 @@
 	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
 	let color = data.BrandColor;
 	let powerMenu: HTMLDivElement = $state();
+	let lp: LivePreview;
 
 	let activeWindow: 'home' | 'config' | 'logs' = $state('home');
 	const updateConfig = async (config: Partial<Config>) => {
@@ -186,7 +188,12 @@
 {#if activeWindow === 'home'}
 	<div class="window-container">
 		<Window title="Camera" icon={faVideoCamera}>
-			<LivePreview {data} />
+			{#snippet buttons()}
+				<button onclick={lp.clearCoordinates} class="title-button">
+					<Fa icon={faTrash} />
+				</button>
+			{/snippet}
+			<LivePreview {data} bind:this={lp} />
 		</Window>
 
 		<Window title="System" icon={faServer}>
@@ -551,6 +558,20 @@
 	}
 
 	.saveButton:hover {
+		cursor: pointer;
+		filter: brightness(0.85);
+	}
+
+	.title-button {
+		all: unset;
+		font-size: 1rem;
+		margin-left: 10px;
+		padding: 0.25rem 1rem;
+		background-color: var(--brand);
+		height: 100%;
+	}
+
+	.title-button:hover {
 		cursor: pointer;
 		filter: brightness(0.85);
 	}
