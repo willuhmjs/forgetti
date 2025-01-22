@@ -28,12 +28,12 @@
 <div class="moonrakerContainer">
 	<div>
 		{#if latestStats}
-			{#if latestStats.state !== 'standby'}
+			{#if latestStats.state !== 'standbys'}
 				<p class="spec">
 					<span class="icon">
 						<Fa icon={faCube} />
 					</span>
-					{latestStats.filename}
+					{latestStats.filename || "No file loaded"}
 				</p>
 				<p class="spec">
 					<span class="icon">
@@ -51,7 +51,7 @@
 					<span class="icon">
 						<Fa icon={faRuler} />
 					</span>
-					{(latestStats.filament_used / 1000).toFixed(2)}m
+					{(latestStats.filament_used || 0 / 1000).toFixed(2)}m
 				</p>
 			{:else}
 				<p class="spec">
