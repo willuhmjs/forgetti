@@ -86,5 +86,6 @@
 		gap: 1.5rem;
 		justify-content: space-between;
 		align-items: middle;
+		width: 100%;
 	}
 </style>
