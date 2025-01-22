@@ -1,6 +1,6 @@
 {
 	"Enabled": false,
-	"CameraURL": "http://raspberrypi/webcam?action=stream",
+	"CameraURL": "http://localhost:8080/?action=stream",
 	"WebcamAuthEnabled": false,
 	"WebcamAuthUsername": "",
 	"WebcamAuthPassword": "",
