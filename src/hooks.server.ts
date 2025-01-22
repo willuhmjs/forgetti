@@ -7,10 +7,12 @@ import ms from 'ms';
 import server from '$lib/server/wsServer';
 import { detectObjects, latestDetection, initializeModel } from '$lib/server/model';
 import type { Readable } from 'stream';
+import type { Box } from '$lib/types';
 import { get } from 'svelte/store';
 import { exec } from 'child_process';
 import { dev } from '$app/environment';
 import type { AppUpdateRequestPacket, AppUpdateResponsePacket } from '$lib/types';
+import { doCoordinatesIntersect, getImageDimensions, translateCoordinatesArray } from '$lib/server/imageUtils';
 
 let lastReport = 0;
 let currentCameraPromiseDirty = Symbol();
@@ -175,11 +177,24 @@ server.on('connection', (socket) => {
 	});
 });
 
-latestDetection.subscribe((data) => {
+latestDetection.subscribe(async (data) => {
+	const boundingBoxes = currentConfig.Coordinates;
+	if (!data?.buffer) return;
+	const { width, height } = await getImageDimensions(data.buffer);
+	
+	const adjustedCoordinates = currentConfig.Coordinates.length > 0 ? translateCoordinatesArray(boundingBoxes, width, 640) : [{
+		x1: 0,
+		y1: 0,
+		x2: width || 0,
+		y2: height || 0
+		}
+	];
+	const dci = doCoordinatesIntersect(adjustedCoordinates, data?.box || [])
 	if (
-		data?.box?.[0]?.prob > currentConfig.ConfidenceThreshold &&
+		dci &&
 		Date.now() - lastReport > ms(currentConfig.ReportCooldown)
 	) {
+		console.log('Detected object in zone');
 		lastReport = Date.now();
 		detectionHandler(data);
 	}
