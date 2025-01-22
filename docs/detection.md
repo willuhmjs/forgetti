@@ -28,5 +28,5 @@ The configuration of the detection feature is fairly straightforward, and it is 
 {{ read_csv('models.csv') }}
 
 ## Detection Area Cropping
-![example of detection area cropping](bounding.png)
 You can specify areas for Forgetti to monitor by drawing bounding boxes on the camera stream. Simply click and drag to create a box. Forgetti will only report failures detected within these boxes. If no bounding boxes are defined, the entire camera feed will be monitored.
+![example of detection area cropping](bounding.png)
