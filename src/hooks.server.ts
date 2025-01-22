@@ -77,7 +77,8 @@ server.on('connection', (socket) => {
 		const url = new URL('/printer/objects/query?print_stats', currentConfig.MoonrakerURL);
 		try {
 			const response = await fetch(url.href);
-			const latestStats = (await response.json()).result.status.print_stats;
+			const r = await response.json();
+			const latestStats = (r).result.status.print_stats;
 			socket.send(
 				JSON.stringify({
 					purpose: 'moonraker',
