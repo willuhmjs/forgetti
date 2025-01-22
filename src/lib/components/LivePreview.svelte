@@ -8,7 +8,6 @@
 	import { toast } from 'svelte-french-toast';
 	import { fly } from "svelte/transition";
 	import colorStore from "$lib/colorStore";
-	import LoadingBar from "./LoadingBar.svelte";
 	interface Props {
 		data: Config;
 	}
@@ -99,6 +98,11 @@
 				}
 			);
 		};
+
+	export function clearCoordinates() {
+		coords = [];
+		settingsSynced = false;
+	};
 </script>
 <BoundingBox bind:coordinatesBoxes={coords} outerColor={$colorStore} innerColor="rgba(255,255,255,0.2)">
 	<div style="margin-bottom: -4px;">
@@ -109,7 +113,7 @@
 	<img src="./nosignal.jpg" alt="No signal" style="max-width: 640px; height: 100%;" />
 {/if}
 {#if !settingsSynced}
-<div class="saveButtonDiv">
+<div class="buttonContainer">
 	<button
 		onclick={saveCoordinates}
 		class="saveButton"
@@ -117,6 +121,7 @@
 	>
 		<Fa fw icon={faFloppyDisk} />
 	</button>
+	
 </div>
 {/if}
 
@@ -137,5 +142,14 @@
 		font-size: 1.5rem;
 		margin-bottom: 1rem;
 		margin-left: 1rem;
+	}
+
+	.buttonContainer {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		overflow: hidden;
+		display: flex;
+		gap: 1rem;
 	}
 </style>
