@@ -35,7 +35,6 @@
 	}
 
 	let { data }: Props = $props();
-
 	let liveData: Config = $state({ ...data });
 	let liveDataUnsaved: Config = $state({ ...data });
 	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
@@ -125,11 +124,11 @@
 
 	onMount(() => {
 		powerMenu.style.display = 'none';
-		const colorValue = colorMap.get(data.BrandColor);
+		document.documentElement.style.setProperty('--brand', data.BrandColor);
+		const colorValue = colorMap.get(color);
 		if (colorValue) {
 			colorStore.set(colorValue);
 		}
-		document.documentElement.style.setProperty('--brand', data.BrandColor);
 		socketStore.subscribe((data) => {
 			if (!data) return;
 			if (data.purpose === 'appUpdate' && data.toastable) {

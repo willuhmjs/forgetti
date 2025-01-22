@@ -23,17 +23,27 @@
 		settingsSynced = JSON.stringify(coords) === JSON.stringify(data.Coordinates);
 	})
 
+	
+
 	onMount(() => {
 		let img = new Image();
+		img.src = "./nosignal.jpg";
+		let lastBox: Box[];
 		socketStore.subscribe((data) => {
 			if (data?.purpose === 'inference') {
 				const { box, buffer } = data;
+				lastBox = box;
 				img.src = `data:image/jpeg;base64,${buffer}`;
 				img.onload = () => drawCanvas(box);
 			}
 		});
 
-		function drawCanvas(boxes: any[]) {
+		colorStore.subscribe(() => {
+			drawCanvas(lastBox)
+		});
+
+		function drawCanvas(boxes: any[] = []) {
+			const color = $colorStore;
 			if (canvas) {
 				canvas.width = img.width;
 				canvas.height = img.height;
@@ -42,12 +52,12 @@
 					ctx.drawImage(img, 0, 0);
 					hasContent = true;
 
-					ctx.strokeStyle = $colorStore;
+					ctx.strokeStyle = color;
 					ctx.lineWidth = 5;
 					ctx.font = '20px sans-serif';
 					boxes.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 						ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-						ctx.fillStyle = $colorStore;
+						ctx.fillStyle = color;
 						const width = ctx.measureText(`failure ${prob}%`).width;
 						ctx.fillRect(x1, y1, width + 10, 25);
 						ctx.fillStyle = '#000000';
@@ -90,17 +100,14 @@
 			);
 		};
 </script>
-
-{#if hasContent}
 <BoundingBox bind:coordinatesBoxes={coords} outerColor={$colorStore} innerColor="rgba(255,255,255,0.2)">
 	<div style="margin-bottom: -4px;">
 		<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
 	</div>
 </BoundingBox>
-{:else}
-	<LoadingBar />
+{#if !data.Enabled && !hasContent}
+	<img src="./nosignal.jpg" alt="No signal" style="max-width: 640px; height: 100%;" />
 {/if}
-
 {#if !settingsSynced}
 <div class="saveButtonDiv">
 	<button
