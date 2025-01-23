@@ -102,3 +102,8 @@ export interface ConfigUpdateRequestPacket {
 	config: Partial<Config>;
 	coordinates?: Coordinates[]; // Add coordinates to the request packet
 }
+
+export interface LogExportRequestPacket {
+	purpose: 'logExport';
+	logs: string;
+}

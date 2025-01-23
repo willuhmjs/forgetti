@@ -22,9 +22,11 @@
 		faCog,
 		faFloppyDisk,
 		faSailboat,
-		faTrash
+		faTrash,
+		faFileExport,
+		faDiscord
 	} from '@fortawesome/free-solid-svg-icons';
-	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
+	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket, LogExportRequestPacket } from '$lib/types';
 	import toast from 'svelte-french-toast';
 	import { onMount } from 'svelte';
 	import { faDiscord } from '@fortawesome/free-brands-svg-icons';
@@ -147,6 +149,44 @@
 		});
 	
 	});
+
+	const exportLogsToFile = () => {
+		const logs = get(logsStore);
+		const logText = logs.map(log => `${log.time} - ${log.command}: ${log.message}`).join('\n');
+		const blob = new Blob([logText], { type: 'text/plain' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'logs.txt';
+		a.click();
+		URL.revokeObjectURL(url);
+	};
+
+	const exportLogsToDiscord = async () => {
+		const logs = get(logsStore);
+		const logText = logs.map(log => `${log.time} - ${log.command}: ${log.message}`).join('\n');
+		const response = await fetch('/api/export_logs_to_discord', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ logs: logText } as LogExportRequestPacket)
+		});
+		const data = await response.json();
+		if (data.type === 'success') {
+			toast.success('Logs exported to Discord successfully!', {
+				duration: 5000,
+				position: 'bottom-right',
+				style: ['background-color: var(--foreground);', 'color: white'].join('')
+			});
+		} else {
+			toast.error('Failed to export logs to Discord.', {
+				duration: 5000,
+				position: 'bottom-right',
+				style: ['background-color: var(--foreground);', 'color: white'].join('')
+			});
+		}
+	};
 </script>
 
 {#if lowPowerMode}
@@ -391,6 +431,16 @@
 	{/if}
 {:else if activeWindow === 'logs'}
 	<Logs />
+	<div class="buttonContainer">
+		<button onclick={exportLogsToFile} class="exportButton">
+			<Fa icon={faFileExport} /> Export to File
+		</button>
+		{#if liveData.DiscordWebhookEnabled}
+			<button onclick={exportLogsToDiscord} class="exportButton">
+				<Fa icon={faDiscord} /> Export to Discord
+			</button>
+		{/if}
+	</div>
 {/if}
 
 <style>
@@ -607,5 +657,29 @@
 		.buttons button {
 			margin: 0;
 		}
+	}
+
+	.buttonContainer {
+		display: flex;
+		justify-content: center;
+		gap: 10px;
+		margin-top: 20px;
+	}
+
+	.exportButton {
+		background-color: var(--brand);
+		color: white;
+		border: none;
+		border-radius: 5px;
+		padding: 10px 20px;
+		font-size: 14px;
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		gap: 5px;
+	}
+
+	.exportButton:hover {
+		filter: brightness(0.85);
 	}
 </style>

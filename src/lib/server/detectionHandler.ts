@@ -86,3 +86,29 @@ const notifyMoonraker = async () => {
 		method: 'POST'
 	});
 };
+
+export const exportLogsToDiscord = async (logs: string) => {
+	if (!config.DiscordWebhookEnabled || !config.DiscordWebhookURL) {
+		throw new Error('Discord webhook is not enabled or URL is missing.');
+	}
+
+	const webhookClient = new WebhookClient({ url: config.DiscordWebhookURL });
+
+	const notifyEmbed = new EmbedBuilder()
+		.setTitle('Logs Export')
+		.setDescription('Exported logs')
+		.setTimestamp()
+		.setColor((colorMap.get(config.BrandColor) as HexColorString) || '#ffffff');
+
+	webhookClient.send({
+		embeds: [notifyEmbed],
+		files: [
+			{
+				attachment: Buffer.from(logs, 'utf-8'),
+				name: 'logs.txt'
+			}
+		],
+		content:
+			config.DiscordUserPing && config.DiscordUserPing ? `<@${config.DiscordUserPing}>` : undefined
+	});
+};
