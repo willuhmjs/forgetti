@@ -32,4 +32,19 @@
 		--orange: #f97316;
 		--blue: #3b82f6;
 	}
+
+	nav {
+		display: flex;
+		gap: 1rem;
+		margin-bottom: 1rem;
+	}
+
+	nav a {
+		color: #f9fafb;
+		text-decoration: none;
+	}
+
+	nav a:hover {
+		text-decoration: underline;
+	}
 </style>
