@@ -1,5 +1,7 @@
 import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
+import logsStore from '$lib/logsStore';
+import fs from 'fs';
 
 export const POST: RequestHandler = async ({ request }) => {
   try {

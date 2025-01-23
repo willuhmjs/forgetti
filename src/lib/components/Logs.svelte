@@ -1,8 +1,32 @@
 <script lang="ts">
 	import logsStore from '$lib/logsStore';
+
+	const exportLogs = async () => {
+		const response = await fetch('/api/export_logs', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify($logsStore)
+		});
+		if (response.ok) {
+			const blob = await response.blob();
+			const url = window.URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.style.display = 'none';
+			a.href = url;
+			a.download = 'logs.txt';
+			document.body.appendChild(a);
+			a.click();
+			window.URL.revokeObjectURL(url);
+		} else {
+			console.error('Failed to export logs');
+		}
+	};
 </script>
 
 <div class="appUpdate">
+	<button on:click={exportLogs}>Export Logs</button>
 	{#each $logsStore as update}
 		<p class="update {update.type}">
 			<span>{update.command}: {update.message}</span>
