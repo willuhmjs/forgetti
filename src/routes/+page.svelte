@@ -586,6 +586,14 @@
 		filter: brightness(0.85);
 	}
 
+	.low-power-banner {
+		background-color: var(--red);
+		color: white;
+		padding: 5px;
+		text-align: center;
+		font-weight: bold;
+	}
+
 	@media screen and (max-width: 576px) {
 		.titlebar {
 			flex-direction: column;
