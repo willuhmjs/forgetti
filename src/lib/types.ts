@@ -43,6 +43,7 @@ export interface Coordinates {
 
 // response packets
 export interface SystemResponsePacket {
+	lowPowerMode: boolean;
 	purpose: 'system';
 	distro: string;
 	platform: string;

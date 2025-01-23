@@ -12,18 +12,26 @@ let socket: WebSocket;
 export const socketStore = readable<
 	SystemResponsePacket | InferenceResponsePacket | AppUpdateResponsePacket | MoonrakerResponsePacket
 >(undefined, (set) => {
-	socket = new WebSocket(transform(2221, 'ws'));
+	if (typeof WebSocket !== 'undefined') {
+		socket = new WebSocket(transform(2221, 'ws'));
 
-	socket.addEventListener('message', function (event) {
-		const data = JSON.parse(event.data);
-		set(data);
-	});
+		socket.addEventListener('message', function (event) {
+			const data = JSON.parse(event.data);
+			set(data);
+		});
 
-	return () => {
-		socket.close();
-	};
+		return () => {
+			socket.close();
+		};
+	} else {
+		console.error('WebSocket is not defined');
+	}
 });
 
 export const send = (message: any) => {
-	socket.send(message);
+	if (typeof WebSocket !== 'undefined') {
+		socket.send(message);
+	} else {
+		console.error('WebSocket is not defined');
+	}
 };
