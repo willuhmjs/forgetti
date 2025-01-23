@@ -125,12 +125,6 @@
 
 	let lowPowerMode = $state(false);
 
-	socketStore.subscribe((data) => {
-		if (data?.purpose === 'system') {
-			lowPowerMode = data.lowPowerMode;
-		}
-	});
-
 	onMount(() => {
 		powerMenu.style.display = 'none';
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
@@ -147,8 +141,11 @@
 					position: 'bottom-right',
 					style: ['background-color: var(--foreground);', 'color: white'].join('')
 				});
-			}
+			} else if (data?.purpose === 'system') {
+			lowPowerMode = data.lowPowerMode;
+		}
 		});
+	
 	});
 </script>
 
