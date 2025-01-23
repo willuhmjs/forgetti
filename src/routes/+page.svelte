@@ -123,15 +123,13 @@
 		});
 	};
 
-	let lowPowerMode = false;
+	let lowPowerMode = $state(false);
 
-	$: {
-		socketStore.subscribe((data) => {
-			if (data?.purpose === 'system') {
-				lowPowerMode = data.lowPowerMode;
-			}
-		});
-	}
+	socketStore.subscribe((data) => {
+		if (data?.purpose === 'system') {
+			lowPowerMode = data.lowPowerMode;
+		}
+	});
 
 	onMount(() => {
 		powerMenu.style.display = 'none';
