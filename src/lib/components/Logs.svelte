@@ -15,10 +15,16 @@
 	.appUpdate {
 		display: flex;
 		flex-direction: column;
-		margin: 20px auto;
+		margin: 10px auto;
 		overflow-y: auto;
 		gap: 10px;
 		max-width: 700px;
+	}
+
+	@media (max-width: 710px) {
+		.appUpdate {
+			margin: 10px;
+		}
 	}
 
 	.update {
