@@ -6,5 +6,8 @@ export default defineConfig({
 	test: {
 		include: ['src/**/*.{test,spec}.{js,ts}']
 	},
-	assetsInclude: ['**/*.onnx', '**/*.json']
+	assetsInclude: ['**/*.onnx', '**/*.json'],
+	preview: {
+		allowedHosts: ["forgetti.willuhmjs.com"]
+	}
 });
