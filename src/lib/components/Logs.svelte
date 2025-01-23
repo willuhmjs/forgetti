@@ -15,7 +15,8 @@
 			const a = document.createElement('a');
 			a.style.display = 'none';
 			a.href = url;
-			a.download = 'logs.txt';
+			const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+			a.download = `logs-${timestamp}.txt`
 			document.body.appendChild(a);
 			a.click();
 			window.URL.revokeObjectURL(url);
@@ -26,7 +27,7 @@
 </script>
 
 <div class="appUpdate">
-	<button on:click={exportLogs}>Export Logs</button>
+	<button class="exportButton" on:click={exportLogs}>Export Logs</button>
 	{#each $logsStore as update}
 		<p class="update {update.type}">
 			<span>{update.command}: {update.message}</span>
@@ -66,5 +67,16 @@
 
 	.error {
 		background-color: var(--red);
+	}
+
+	.exportButton {
+		padding: 10px 20px;
+		background-color: var(--brand);
+		color: white;
+		border: none;
+		border-radius: 5px;
+		cursor: pointer;
+		font-size: 16px;
+		transition: background-color 0.3s ease;
 	}
 </style>
