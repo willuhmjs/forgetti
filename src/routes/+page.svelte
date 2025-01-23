@@ -24,6 +24,7 @@
 		faSailboat,
 		faTrash,
 		faFileExport,
+		faDiscord
 	} from '@fortawesome/free-solid-svg-icons';
 	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket, LogExportRequestPacket } from '$lib/types';
 	import toast from 'svelte-french-toast';
@@ -31,7 +32,6 @@
 	import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 	import colorStore from '$lib/colorStore';
 	import colorMap from '$lib/colorMap';
-	import logsStore from '$lib/logsStore';
 	interface Props {
 		data: Config;
 	}
@@ -151,7 +151,7 @@
 	});
 
 	const exportLogsToFile = () => {
-		const logs = $logsStore;
+		const logs = get(logsStore);
 		const logText = logs.map(log => `${log.time} - ${log.command}: ${log.message}`).join('\n');
 		const blob = new Blob([logText], { type: 'text/plain' });
 		const url = URL.createObjectURL(blob);
@@ -163,7 +163,7 @@
 	};
 
 	const exportLogsToDiscord = async () => {
-		const logs = $logsStore;
+		const logs = get(logsStore);
 		const logText = logs.map(log => `${log.time} - ${log.command}: ${log.message}`).join('\n');
 		const response = await fetch('/api/export_logs_to_discord', {
 			method: 'POST',
