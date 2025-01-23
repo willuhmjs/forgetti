@@ -6,12 +6,13 @@ import fs from 'fs';
 export const POST: RequestHandler = async ({ request }) => {
   try {
     const logs = await request.json();
-    const filePath = './logs.txt';
-    fs.writeFileSync(filePath, JSON.stringify(logs, null, 2));
-    return new Response(fs.createReadStream(filePath), {
+    const logsString = JSON.stringify(logs, null, 2);
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const filename = `logs-${timestamp}.txt`;
+    return new Response(logsString, {
       headers: {
-        'Content-Type': 'text/plain',
-        'Content-Disposition': 'attachment; filename="logs.txt"'
+      'Content-Type': 'text/plain',
+      'Content-Disposition': `attachment; filename="${filename}"`
       }
     });
   } catch (error) {
