@@ -3,7 +3,8 @@
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { Fa } from 'svelte-fa';
-	import { faFileExport, faDiscord } from '@fortawesome/free-solid-svg-icons';
+	import { faFileExport } from '@fortawesome/free-solid-svg-icons';
+	import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 	import { toast } from 'svelte-french-toast';
 	import type { Config } from '$lib/types';
 	import configStore from '$lib/server/configStore';
