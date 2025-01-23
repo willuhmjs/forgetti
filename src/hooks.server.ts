@@ -1,7 +1,7 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
 import detectionHandler from '$lib/server/detectionHandler';
-import si from 'systeminformation';
+import si, { battery } from 'systeminformation';
 import configStore from '$lib/server/configStore';
 import ms from 'ms';
 import server from '$lib/server/wsServer';
@@ -39,6 +39,16 @@ function execCommand(command: string): Promise<string> {
 }
 
 let lastCPUReading = 0;
+let lowPowerMode = false;
+
+async function checkBatteryStatus() {
+	const batteryInfo = await battery();
+	if (batteryInfo.hasBattery && batteryInfo.percent < 20) {
+		lowPowerMode = true;
+	} else {
+		lowPowerMode = false;
+	}
+}
 
 server.on('connection', (socket) => {
 	latestDetection.subscribe((val) => {
@@ -48,6 +58,7 @@ server.on('connection', (socket) => {
 	// send os data, moonraker data to client
 
 	setInterval(async () => {
+		await checkBatteryStatus();
 		const osInfo = await si.osInfo();
 		const loadPercent = (await si.currentLoad()).currentLoad;
 		const mem = await si.mem(); // .used / .total * 100
@@ -67,10 +78,11 @@ server.on('connection', (socket) => {
 				netiface: netStats.iface,
 				netRX: netStats.rx_bytes / 1000,
 				netTX: netStats.tx_bytes / 1000,
-				loadPercent: Math.round(loadPercent)
+				loadPercent: Math.round(loadPercent),
+				lowPowerMode: lowPowerMode
 			})
 		);
-	}, 1000);
+	}, lowPowerMode ? 5000 : 1000);
 
 	setInterval(async () => {
 		if (!currentConfig.MoonrakerURL || !currentConfig.MoonrakerEnabled) return;
@@ -96,7 +108,7 @@ server.on('connection', (socket) => {
 			);
 			console.error(e);
 		}
-	}, 1000);
+	}, lowPowerMode ? 5000 : 1000);
 
 	const commands = ['git pull', 'pnpm install --frozen-lockfile', 'pnpm build'];
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
@@ -229,7 +241,7 @@ async function startStream(config: any) {
 			if (frame && !processing) {
 				try {
 					
-					if (lastCPUReading > currentConfig.MaxCPU) return;
+					if (lastCPUReading > (lowPowerMode ? 50 : currentConfig.MaxCPU)) return;
 					process(frame);
 				} catch (e) {
 					console.error(e);

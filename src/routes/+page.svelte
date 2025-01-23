@@ -6,7 +6,7 @@
 	import Logs from '$lib/components/Logs.svelte';
 	import Fa from 'svelte-fa';
 	import { fly } from 'svelte/transition';
-	import { send } from '$lib/wsClient';
+	import { send, socketStore } from '$lib/wsClient';
 	import {
 		faVideoCamera,
 		faServer,
@@ -26,7 +26,6 @@
 	} from '@fortawesome/free-solid-svg-icons';
 	import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 	import toast from 'svelte-french-toast';
-	import { socketStore } from '$lib/wsClient';
 	import { onMount } from 'svelte';
 	import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 	import colorStore from '$lib/colorStore';
@@ -124,6 +123,16 @@
 		});
 	};
 
+	let lowPowerMode = false;
+
+	$: {
+		socketStore.subscribe((data) => {
+			if (data?.purpose === 'system') {
+				lowPowerMode = data.lowPowerMode;
+			}
+		});
+	}
+
 	onMount(() => {
 		powerMenu.style.display = 'none';
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
@@ -145,11 +154,17 @@
 	});
 </script>
 
+{#if lowPowerMode}
+	<div class="low-power-banner">
+		<p>Low Power Mode Enabled</p>
+	</div>
+{/if}
+
 <div class="titlebar">
 	<h3 class="title">Forgetti</h3>
 	<div class="buttons">
 		<button onclick={() => (activeWindow = 'home')}>
-			<Fa icon={faHome} fw={true} color={activeWindow === 'home' ? 'var(--brand)' : ''} />
+				<Fa icon={faHome} fw={true} color={activeWindow === 'home' ? 'var(--brand)' : ''} />
 		</button>
 		<button onclick={() => (activeWindow = 'config')}>
 			<Fa icon={faCogs} fw={true} color={activeWindow === 'config' ? 'var(--brand)' : ''} />
