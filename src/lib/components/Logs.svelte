@@ -15,9 +15,10 @@
 	.appUpdate {
 		display: flex;
 		flex-direction: column;
-		margin: 10px;
+		margin: 20px auto;
 		overflow-y: auto;
 		gap: 10px;
+		max-width: 700px;
 	}
 
 	.update {
