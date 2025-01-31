@@ -27,4 +27,4 @@ The best way to create an effective 3D model is to sculpt a model designed to fa
 Below is a list of strategies for producing failures. Popular digital models are modified using these strategies to antagonize print failures. 
 
 ## Gap & Shift
-This method is performed by slicing the model at different points (usually at \(0\% \leq x \leq 50\%\) vertically, and anywhere vertically).
+This method is performed by slicing the model at different points. This can vary, but the following models are cut in horizontal slices between \(0\% \leq x \leq 50\%\) horizontally, and anywhere vertically.
