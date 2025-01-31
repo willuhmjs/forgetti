@@ -11,9 +11,11 @@ nav:
       - Detection: detection.md
       - Discord: discord.md
       - Moonraker: moonraker.md
-
-not_in_nav: |
-  proposal.md
+  - Research:
+      - Proposal: proposal.md
+      - Training Data: training_data.md
+# not_in_nav: |
+#   proposal.md
 theme:
   name: material
   features:
