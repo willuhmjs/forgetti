@@ -1,3 +1,5 @@
+## Overview
+
 This documentation establishes principles for gathering high-quality training data for 3D printing models. Adhering to these guidelines ensures accurate, reliable data that improves model performance and minimizes risks and inefficiencies during the data collection process. 
 
 **Data should represent diverse real-world scenarios while minimizing unnecessary costs, risks, and resource usage.**
