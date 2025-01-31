@@ -1,4 +1,3 @@
-**Training Data Methodology**  
 This documentation establishes principles for gathering high-quality training data for 3D printing models. Adhering to these guidelines ensures accurate, reliable data that improves model performance and minimizes risks and inefficiencies during the data collection process. 
 
 **Data should represent diverse real-world scenarios while minimizing unnecessary costs, risks, and resource usage.**
@@ -25,3 +24,7 @@ During data collection, every effort should be made to reduce:
 
 The best way to create an effective 3D model is to sculpt a model designed to fail and then inject malicious G-Code into the G-Code.
 
+Below is a list of strategies for producing failures. Popular digital models are modified using these strategies to antagonize print failures. 
+
+## Gap & Shift
+This method is preformed by slicing the model at different points (usually at $$0\% \leq x \leq 50\%$$ vertically, and anywhere vertically).
