@@ -30,3 +30,7 @@ Below is a list of strategies for producing failures. Popular digital models are
 
 ## Gap & Shift
 This method is performed by slicing the model at different points. This can vary, but the following models are cut in horizontal slices between \(0\% \leq x \leq 50\%\) horizontally, and anywhere vertically.
+
+## Stable Diffusion
+This method is performed by feeding a failure frame into Stable Diffusion, a generative artificial intelligence model. Prompt engineering is used to 
+generate new images that depict various stages of print failures. 
