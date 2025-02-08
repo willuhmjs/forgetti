@@ -1,22 +1,31 @@
 import axios, { type AxiosRequestConfig } from 'axios';
 import MjpegConsumer from 'mjpeg-consumer';
 import detectionHandler from '$lib/server/detectionHandler';
-import si, { battery } from 'systeminformation';
+import si from 'systeminformation';
 import configStore from '$lib/server/configStore';
 import ms from 'ms';
 import server from '$lib/server/wsServer';
 import { detectObjects, latestDetection, initializeModel } from '$lib/server/model';
-import type { Readable } from 'stream';
-import type { Box } from '$lib/types';
 import { get } from 'svelte/store';
 import { exec } from 'child_process';
 import { dev } from '$app/environment';
 import type { AppUpdateRequestPacket, AppUpdateResponsePacket } from '$lib/types';
 import { doCoordinatesIntersect, getImageDimensions, translateCoordinatesArray } from '$lib/server/imageUtils';
+import { writable } from 'svelte/store';
+import path from 'path';
+import fs from 'fs';
+
+const sp = path.resolve("src/lib/images/spaghetti.jpg")
+const spaghetti = fs.readFileSync(sp); 
+
 
 let lastReport = 0;
 let currentCameraPromiseDirty = Symbol();
-let currentConfig = get(configStore);
+
+let inMemoryConfigStore = writable<Config>(get(configStore));
+let currentConfig: Config;
+inMemoryConfigStore.subscribe((config) => (currentConfig = config));
+
 if (currentConfig.Enabled) startStream(currentConfig);
 
 function execCommand(command: string): Promise<string> {
@@ -39,16 +48,6 @@ function execCommand(command: string): Promise<string> {
 }
 
 let lastCPUReading = 0;
-let lowPowerMode = false;
-
-async function checkBatteryStatus() {
-	const batteryInfo = await battery();
-	if (batteryInfo.hasBattery && batteryInfo.percent < 20) {
-		lowPowerMode = true;
-	} else {
-		lowPowerMode = false;
-	}
-}
 
 server.on('connection', (socket) => {
 	latestDetection.subscribe((val) => {
@@ -58,7 +57,6 @@ server.on('connection', (socket) => {
 	// send os data, moonraker data to client
 
 	setInterval(async () => {
-		await checkBatteryStatus();
 		const osInfo = await si.osInfo();
 		const loadPercent = (await si.currentLoad()).currentLoad;
 		const mem = await si.mem(); // .used / .total * 100
@@ -78,11 +76,10 @@ server.on('connection', (socket) => {
 				netiface: netStats.iface,
 				netRX: netStats.rx_bytes / 1000,
 				netTX: netStats.tx_bytes / 1000,
-				loadPercent: Math.round(loadPercent),
-				lowPowerMode: lowPowerMode
+				loadPercent: Math.round(loadPercent)
 			})
 		);
-	}, lowPowerMode ? 5000 : 1000);
+	}, 1000);
 
 	setInterval(async () => {
 		if (!currentConfig.MoonrakerURL || !currentConfig.MoonrakerEnabled) return;
@@ -108,7 +105,7 @@ server.on('connection', (socket) => {
 			);
 			console.error(e);
 		}
-	}, lowPowerMode ? 5000 : 1000);
+	}, 1000);
 
 	const commands = ['git pull', 'pnpm install --frozen-lockfile', 'pnpm build'];
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
@@ -188,6 +185,11 @@ server.on('connection', (socket) => {
 			process.exit(1);
 		}
 	});
+
+	socket.on('close', () => {
+		// Clear in-memory store when the user session ends
+		inMemoryConfigStore.set(get(configStore));
+	});
 });
 
 latestDetection.subscribe(async (data) => {
@@ -205,7 +207,7 @@ latestDetection.subscribe(async (data) => {
 	const dci = doCoordinatesIntersect(adjustedCoordinates, data?.box || [])
 	if (
 		dci &&
-		Date.now() - lastReport > ms(currentConfig.ReportCooldown)
+		Date.now() - lastReport > Number(ms(currentConfig.ReportCooldown))
 	) {
 		lastReport = Date.now();
 		detectionHandler(data);
@@ -215,16 +217,6 @@ latestDetection.subscribe(async (data) => {
 async function startStream(config: any) {
 	await initializeModel();
 	const trackedSymbol = currentCameraPromiseDirty;
-	const mjpegConsumer = new MjpegConsumer();
-	const requestConfig: AxiosRequestConfig = {
-		url: config.CameraURL,
-		responseType: 'stream',
-		headers: {
-			Authorization: `Basic ${Buffer.from(
-				`${config.CameraUsername}:${config.CameraPassword}`
-			).toString('base64')}`
-		}
-	};
 
 	let processing = false;
 	const process = async (frameBuffer: Buffer) => {
@@ -233,29 +225,21 @@ async function startStream(config: any) {
 		processing = false;
 	};
 
-	try {
-		const response = await axios(requestConfig);
-		const stream: Readable = response.data.pipe(mjpegConsumer);
-
-		stream.on('data', async (frame: Buffer) => {
-			if (frame && !processing) {
-				try {
-					
-					if (lastCPUReading > (lowPowerMode ? 50 : currentConfig.MaxCPU)) return;
-					process(frame);
-				} catch (e) {
-					console.error(e);
-				}
+	const sendFrame = () => {
+		if (!processing) {
+			try {
+				if (lastCPUReading > currentConfig.MaxCPU) return;
+				process(spaghetti);
+			} catch (e) {
+				console.error(e);
 			}
+		}
 
-			if (currentCameraPromiseDirty != trackedSymbol) {
-				stream.destroy();
-				return;
-			}
-		});
-	} catch (e) {
-		console.error(e);
-	}
+		if (currentCameraPromiseDirty != trackedSymbol) return;
+		setTimeout(sendFrame, 1000);
+	};
+
+	sendFrame();
 }
 
 configStore.subscribe((config) => {
@@ -273,5 +257,6 @@ configStore.subscribe((config) => {
 	const modelChangedWhileEnabled = currentConfig.Model != config.Model && config.Enabled;
 	if (enabledFalseToTrue || cameraURLChangedWhileEnabled || modelChangedWhileEnabled)
 		startStream(config);
+	inMemoryConfigStore.set(config);
 	currentConfig = config;
 });

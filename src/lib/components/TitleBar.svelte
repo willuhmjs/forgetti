@@ -8,16 +8,18 @@
   import colorMap from '$lib/colorMap';
   import { socketStore } from '$lib/wsClient';
 
-  export let liveData;
-  export let updateConfigToastable;
-  export let cycleThemeColor;
-  export let requestUpdate;
-  export let execCommand;
-  export let lowPowerMode;
+  let {
+    liveData,
+    updateConfigToastable,
+    cycleThemeColor,
+    requestUpdate,
+    execCommand,
+    lowPowerMode = $bindable()
+  } = $props();
 
-  let powerMenu: HTMLDivElement;
-  let updateRequested = false;
-  let activeWindow: 'home' | 'config' | 'logs' = 'home';
+  let powerMenu: HTMLDivElement = $state();
+  let updateRequested = $state(false);
+  let activeWindow: 'home' | 'config' | 'logs' = $state('home');
 
   const openPowerWindow = () => {
     if (powerMenu) powerMenu.style.display = powerMenu.style.display === 'none' ? 'block' : 'none';

@@ -27,7 +27,7 @@
 </script>
 
 <div class="appUpdate">
-	<button class="exportButton" on:click={exportLogs}>Export Logs</button>
+	<button class="exportButton" onclick={exportLogs}>Export Logs</button>
 	{#each $logsStore as update}
 		<p class="update {update.type}">
 			<span>{update.command}: {update.message}</span>

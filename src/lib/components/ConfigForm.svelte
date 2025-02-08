@@ -36,7 +36,7 @@
     });
   };
 
-  const updateConfigToastable = async (config: Partial<Config>) => {
+  const showToastForConfigUpdate = async (config: Partial<Config>) => {
     toast.promise(
       updateConfig(config),
       {
@@ -218,7 +218,7 @@
 {#if JSON.stringify(liveData) !== JSON.stringify(liveDataUnsaved)}
   <div class="saveButtonDiv">
     <button
-      onclick={() => updateConfigToastable(liveDataUnsaved)}
+      onclick={() => showToastForConfigUpdate(liveDataUnsaved)}
       class="saveButton"
       transition:fly={{ y: 100 }}
     >
