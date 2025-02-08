@@ -8,9 +8,13 @@
   import colorMap from '$lib/colorMap';
   import toast from 'svelte-french-toast';
 
-  export let liveDataUnsaved: Config;
-  export let updateConfigToastable: (config: Partial<Config>) => Promise<void>;
-  export let liveData: Config;
+  interface Props {
+    liveDataUnsaved: Config;
+    updateConfigToastable: (config: Partial<Config>) => Promise<void>;
+    liveData: Config;
+  }
+
+  let { liveDataUnsaved = $bindable(), updateConfigToastable, liveData = $bindable() }: Props = $props();
 
   const updateConfig = async (config: Partial<Config>) => {
     return new Promise((resolve, reject) => {
