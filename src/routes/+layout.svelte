@@ -5,6 +5,12 @@
 	let { children } = $props();
 </script>
 
+<nav>
+	<a href="/">Home</a>
+	<a href="/config">Config</a>
+	<a href="/logs">Logs</a>
+</nav>
+
 <div class="desktop">
 	{@render children?.()}
 </div>
