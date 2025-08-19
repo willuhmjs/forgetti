@@ -23,11 +23,11 @@ export default async (data: InferenceData) => {
 		};
 		if (config.DiscordWebhookEnabled && config.DiscordWebhookURL) notifyDiscord(newData);
 		if (
-			config.MoonrakerEnabled &&
-			config.MoonrakerURL &&
-			data.box[0].prob >= config.MoonrakerPauseThreshold
+			data.printer.MoonrakerEnabled &&
+			data.printer.MoonrakerURL &&
+			(data.box[0]?.prob || 0) >= data.printer.MoonrakerPauseThreshold
 		)
-			notifyMoonraker();
+			notifyMoonraker(data.printer.MoonrakerURL);
 	} catch (e) {
 		console.error(e);
 	}
@@ -46,10 +46,10 @@ const buildImage = async (data: InferenceData): Promise<Buffer> => {
 	data.box.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 		ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
 		ctx.fillStyle = colorMap.get(config.BrandColor) || '#ffffff';
-		const width = ctx.measureText(`failure ${prob}%`).width;
+		const width = ctx.measureText(`failure ${prob || 0}%`).width;
 		ctx.fillRect(x1, y1, width + 10, 25);
 		ctx.fillStyle = '#000000';
-		ctx.fillText(`failure ${prob}%`, x1, y1 + 18);
+		ctx.fillText(`failure ${prob || 0}%`, x1, y1 + 18);
 	});
 	return canvas.toBuffer('image/jpeg');
 };
@@ -62,7 +62,9 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 	const notifyEmbed = new EmbedBuilder()
 		.setTitle('Spaghetti Detected!')
 		.setDescription(
-			`Detected ${boxes.length} spaghetti instance${boxes.length === 1 ? '' : 's'} ≤ ${boxes[0].prob}%`
+			`Detected ${boxes.length} spaghetti instance${boxes.length === 1 ? '' : 's'} ≤ ${
+				boxes[0]?.prob || 0
+			}%`
 		)
 		.setTimestamp()
 		.setImage('attachment://spaghetti.jpg')
@@ -80,9 +82,9 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 	});
 };
 
-const notifyMoonraker = async () => {
+const notifyMoonraker = async (url: string) => {
 	// pause the print
-	await fetch(new URL('/printer/print/pause', config.MoonrakerURL), {
+	await fetch(new URL('/printer/print/pause', url), {
 		method: 'POST'
 	});
 };

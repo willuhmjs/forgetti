@@ -1,9 +1,5 @@
 {
 	"Enabled": false,
-	"CameraURL": "http://raspberrypi/webcam?action=stream",
-	"WebcamAuthEnabled": false,
-	"WebcamAuthUsername": "",
-	"WebcamAuthPassword": "",
 	"ConfidenceThreshold": 50,
 	"Model": "nano",
 	"BrandColor": "#f97316",
@@ -12,9 +8,18 @@
 	"DiscordUserPingEnabled": false,
 	"DiscordUserPing": "",
 	"ReportCooldown": "5 minutes",
-	"MoonrakerEnabled": false,
-	"MoonrakerURL": "http://raspberrypi/",
-	"MoonrakerPauseThreshold": 90,
 	"MaxCPU": 90,
-	"Coordinates": []
+	"Coordinates": [],
+	"Printers": [
+		{
+			"Name": "Default",
+			"CameraURL": "http://raspberrypi/webcam?action=stream",
+			"WebcamAuthEnabled": false,
+			"CameraUsername": "",
+			"CameraPassword": "",
+			"MoonrakerEnabled": false,
+			"MoonrakerURL": "http://raspberrypi/",
+			"MoonrakerPauseThreshold": 90
+		}
+	]
 }

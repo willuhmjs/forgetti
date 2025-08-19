@@ -11,15 +11,23 @@ export interface Box {
 export interface InferenceData {
 	box: Box[];
 	buffer: string;
+	printer: Printer;
+}
+
+export interface Printer {
+	Name: string;
+	CameraURL: string;
+	WebcamAuthEnabled: boolean;
+	CameraUsername: string;
+	CameraPassword: string;
+	MoonrakerEnabled: boolean;
+	MoonrakerURL: string;
+	MoonrakerPauseThreshold: number;
 }
 
 export interface Config {
 	Enabled: boolean;
-	CameraURL: string;
 	ConfidenceThreshold: number;
-	WebcamAuthEnabled: boolean;
-	CameraUsername: string;
-	CameraPassword: string;
 	Model: 'nano' | 'small';
 	ReportCooldown: string;
 	BrandColor: string;
@@ -27,11 +35,9 @@ export interface Config {
 	DiscordWebhookURL: string;
 	DiscordUserPingEnabled: boolean;
 	DiscordUserPing: string;
-	MoonrakerEnabled: boolean;
-	MoonrakerURL: string;
-	MoonrakerPauseThreshold: number;
 	MaxCPU: number;
 	Coordinates: Coordinates[];
+	Printers: Printer[];
 }
 
 export interface Coordinates {

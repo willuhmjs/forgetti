@@ -1,7 +1,7 @@
 import ort from 'onnxruntime-node';
 import sharp from 'sharp';
 import { writable, get } from 'svelte/store';
-import type { Box, InferenceData } from '$lib/types';
+import type { Box, InferenceData, Printer } from '$lib/types';
 import configStore from '$lib/server/configStore';
 
 let currentConfig = get(configStore);
@@ -18,13 +18,14 @@ export async function initializeModel() {
 }
 
 // Detects objects in an image using YOLOv8 neural network
-export async function detectObjects(buf: Buffer) {
+export async function detectObjects(buf: Buffer, printer: Printer) {
 	try {
 		const [input, imgWidth, imgHeight] = await prepareInput(buf);
 		const output = await runModel(input);
 		const processed = {
 			box: processOutput(output, imgWidth, imgHeight),
-			buffer: buf.toString('base64')
+			buffer: buf.toString('base64'),
+			printer,
 		};
 		latestDetection.set(processed);
 	} catch (e) {
@@ -87,7 +88,7 @@ function processOutput(output: any[], imgWidth: number, imgHeight: number) {
 		boxes.push({ x1, y1, x2, y2, prob: Math.round(prob * 100) });
 	}
 
-	boxes = boxes.sort((box1, box2) => box2.prob - box1.prob);
+	boxes = boxes.sort((box1, box2) => (box2.prob || 0) - (box1.prob || 0));
 	const result: Box[] = [];
 	while (boxes.length > 0) {
 		result.push(boxes[0]);

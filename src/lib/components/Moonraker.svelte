@@ -8,20 +8,30 @@
 		faIndustry
 	} from '@fortawesome/free-solid-svg-icons';
 
-	import type { MoonrakerResponsePacket } from '$lib/types';
+	import type { MoonrakerResponsePacket, Printer } from '$lib/types';
 	import { onMount } from 'svelte';
-	import { socketStore } from '$lib/wsClient';
 	import LoadingBar from './LoadingBar.svelte';
-	let color = $state("");
+
+	interface Props {
+		printer: Printer;
+	}
+	let { printer }: Props = $props();
 	let latestStats: MoonrakerResponsePacket | null = $state(null);
 	onMount(() => {
-		socketStore.subscribe((data) => {
-			if (data?.purpose === 'moonraker') {
-				if (data.state === 'error')
-					return console.log('Error in Moonraker component. Please check server logs.');
-				latestStats = data;
+		const interval = setInterval(async () => {
+			if (!printer.MoonrakerEnabled) return;
+			try {
+				const response = await fetch(
+					new URL(`/printer/objects/query?print_stats`, printer.MoonrakerURL).href
+				);
+				const r = await response.json();
+				latestStats = r.result.status.print_stats;
+			} catch (e) {
+				console.error(e);
 			}
-		});
+		}, 1000);
+
+		return () => clearInterval(interval);
 	});
 </script>
 
@@ -45,7 +55,7 @@
 							<Fa icon={faIndustry} />
 						{/if}
 					</span>
-					{latestStats.state.toUpperCase()}
+					{(latestStats.state || '').toUpperCase()}
 				</p>
 				<p class="spec">
 					<span class="icon">
@@ -58,7 +68,7 @@
 					<span class="icon">
 						<Fa icon={faHourglassHalf} />
 					</span>
-					{latestStats.state.toUpperCase()}
+					{(latestStats.state || '').toUpperCase()}
 				</p>
 			{/if}
 		{:else}

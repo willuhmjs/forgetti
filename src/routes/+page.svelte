@@ -37,9 +37,10 @@
 	let { data }: Props = $props();
 	let liveData: Config = $state({ ...data });
 	let liveDataUnsaved: Config = $state({ ...data });
+	let selectedPrinter = $state(liveData.Printers[0]);
 	const colors = ['var(--orange)', 'var(--red)', 'var(--green)', 'var(--blue)'];
 	let color = data.BrandColor;
-	let powerMenu: HTMLDivElement = $state();
+	let powerMenu: HTMLDivElement | undefined = $state();
 	let lp: LivePreview;
 
 	let activeWindow: 'home' | 'config' | 'logs' = $state('home');
@@ -126,7 +127,9 @@
 	let lowPowerMode = $state(false);
 
 	onMount(() => {
-		powerMenu.style.display = 'none';
+		if (powerMenu) {
+			powerMenu.style.display = 'none';
+		}
 		document.documentElement.style.setProperty('--brand', data.BrandColor);
 		const colorValue = colorMap.get(color);
 		if (colorValue) {
@@ -196,6 +199,13 @@
 </div>
 
 {#if activeWindow === 'home'}
+		<div class="printer-tabs">
+		{#each liveData.Printers as printer}
+			<button class="printer-tab" onclick={() => (selectedPrinter = printer)} class:active={selectedPrinter.Name === printer.Name}>
+				{printer.Name}
+			</button>
+		{/each}
+	</div>
 	<div class="window-container">
 		<Window title="Camera" icon={faVideoCamera}>
 			{#snippet buttons()}
@@ -203,59 +213,114 @@
 					<Fa icon={faTrash} />
 				</button>
 			{/snippet}
-			<LivePreview {data} bind:this={lp} />
+			<LivePreview printer={selectedPrinter} enabled={liveData.Enabled} coordinates={liveData.Coordinates} bind:this={lp} />
 		</Window>
 
 		<Window title="System" icon={faServer}>
 			<System />
 		</Window>
 
-		<Window title="Moonraker" icon={faSailboat}>
-			<Moonraker />
-		</Window>
+		{#if selectedPrinter.MoonrakerEnabled}
+			<Window title="Moonraker" icon={faSailboat}>
+				<Moonraker printer={selectedPrinter} />
+			</Window>
+		{/if}
 	</div>
 {:else if activeWindow === 'config'}
-	<div class="window-container">
+		<div class="window-container">
+		<Window title="Printers" icon={faCog}>
+			<div class="form">
+				{#each liveDataUnsaved.Printers as printer, i}
+					<div class="printer-config">
+						<div class="inputGroup">
+							<label for="PrinterName-{i}">Printer Name</label>
+							<input
+								type="text"
+								id="PrinterName-{i}"
+								bind:value={printer.Name}
+								placeholder="My Printer"
+							/>
+						</div>
+						<div class="inputGroup">
+							<label for="CameraURL-{i}">Camera URL</label>
+							<input
+								type="text"
+								id="CameraURL-{i}"
+								bind:value={printer.CameraURL}
+								placeholder="http://yourcameraurl.com"
+							/>
+						</div>
+						<div class="inputGroup">
+							<label for="WebcamAuthEnabled-{i}">Webcam Authentication</label>
+							<input
+								type="checkbox"
+								id="WebcamAuthEnabled-{i}"
+								bind:checked={printer.WebcamAuthEnabled}
+							/>
+						</div>
+						{#if printer.WebcamAuthEnabled}
+							<div class="inputGroup">
+								<label for="CameraUsername-{i}">Username</label>
+								<input
+									type="text"
+									id="CameraUsername-{i}"
+									bind:value={printer.CameraUsername}
+									placeholder="admin"
+								/>
+							</div>
+							<div class="inputGroup">
+								<label for="CameraPassword-{i}">Password</label>
+								<input
+									type="password"
+									id="CameraPassword-{i}"
+									bind:value={printer.CameraPassword}
+									placeholder="password"
+								/>
+							</div>
+						{/if}
+						<div class="inputGroup">
+							<label for="MoonrakerEnabled-{i}">Moonraker Enabled</label>
+							<input
+								type="checkbox"
+								id="MoonrakerEnabled-{i}"
+								bind:checked={printer.MoonrakerEnabled}
+							/>
+						</div>
+						{#if printer.MoonrakerEnabled}
+							<div class="inputGroup">
+								<label for="MoonrakerURL-{i}">Moonraker URL</label>
+								<input
+									type="text"
+									id="MoonrakerURL-{i}"
+									bind:value={printer.MoonrakerURL}
+									placeholder="http://yourmoonrakerurl.com"
+								/>
+							</div>
+							<div class="inputGroup">
+								<label for="MoonrakerPauseThreshold-{i}"
+									>Pause Threshold ({printer.MoonrakerPauseThreshold}%)</label
+								>
+								<input
+									type="range"
+									id="MoonrakerPauseThreshold-{i}"
+									min={liveDataUnsaved.ConfidenceThreshold}
+									max="100"
+									bind:value={printer.MoonrakerPauseThreshold}
+								/>
+							</div>
+						{/if}
+						<button class="delete-printer" onclick={() => liveDataUnsaved.Printers.splice(i, 1)}>
+							<Fa icon={faTrash} />
+						</button>
+					</div>
+				{/each}
+				<button class="add-printer" onclick={() => liveDataUnsaved.Printers.push({ Name: 'New Printer', CameraURL: '', WebcamAuthEnabled: false, CameraUsername: '', CameraPassword: '', MoonrakerEnabled: false, MoonrakerURL: '', MoonrakerPauseThreshold: 90 })}>
+					Add Printer
+				</button>
+			</div>
+		</Window>
 		<Window title="General" icon={faCog}>
 			<div class="form">
-				<div class="inputGroup">
-					<label for="CameraURL">Camera URL</label>
-					<input
-						type="text"
-						id="CameraURL"
-						bind:value={liveDataUnsaved.CameraURL}
-						placeholder="http://yourcameraurl.com"
-					/>
-				</div>
-				<div class="inputGroup">
-					<label for="WebcamAuthEnabled">Webcam Authentication</label>
-					<input
-						type="checkbox"
-						id="WebcamAuthEnabled"
-						bind:checked={liveDataUnsaved.WebcamAuthEnabled}
-					/>
-				</div>
-				{#if liveDataUnsaved.WebcamAuthEnabled}
-					<div class="inputGroup">
-						<label for="CameraUsername">Username</label>
-						<input
-							type="text"
-							id="CameraUsername"
-							bind:value={liveDataUnsaved.CameraUsername}
-							placeholder="admin"
-						/>
-					</div>
-					<div class="inputGroup">
-						<label for="CameraPassword">Password</label>
-						<input
-							type="password"
-							id="CameraPassword"
-							bind:value={liveDataUnsaved.CameraPassword}
-							placeholder="password"
-						/>
-					</div>
-					
-				{/if}
 				<div class="inputGroup">
 					<label for="ConfidenceThreshold"
 						>Confidence Threshold ({liveDataUnsaved.ConfidenceThreshold}%)</label
@@ -343,36 +408,6 @@
 
 		<Window title="Moonraker" icon={faSailboat}>
 			<div class="form">
-				<div class="inputGroup">
-					<label for="MoonrakerEnabled">Enabled</label>
-					<input
-						type="checkbox"
-						id="MoonrakerEnabled"
-						bind:checked={liveDataUnsaved.MoonrakerEnabled}
-					/>
-				</div>
-				{#if liveDataUnsaved.MoonrakerEnabled}
-					<div class="inputGroup">
-						<label for="MoonrakerURL">Moonraker URL</label><input
-							type="text"
-							id="MoonrakerURL"
-							bind:value={liveDataUnsaved.MoonrakerURL}
-							placeholder="http://yourmoonrakerurl.com"
-						/>
-					</div>
-					<div class="inputGroup">
-						<label for="MoonrakerPauseThreshold"
-							>Pause Threshold ({liveDataUnsaved.MoonrakerPauseThreshold}%)</label
-						>
-						<input
-							type="range"
-							id="MoonrakerPauseThreshold"
-							min={liveDataUnsaved.ConfidenceThreshold}
-							max="100"
-							bind:value={liveDataUnsaved.MoonrakerPauseThreshold}
-						/>
-					</div>
-				{/if}
 			</div>
 		</Window>
 	</div>
@@ -400,6 +435,48 @@
 		flex-wrap: wrap;
 		align-items: flex-start;
 		padding: 10px;
+	}
+
+	.printer-tabs {
+		display: flex;
+		gap: 10px;
+		padding: 10px;
+		background-color: var(--foreground);
+	}
+
+	.printer-tab {
+		all: unset;
+		padding: 10px;
+		cursor: pointer;
+		border-bottom: 2px solid transparent;
+	}
+
+	.printer-tab.active {
+		border-bottom-color: var(--brand);
+	}
+
+	.printer-config {
+		border: 1px solid #555;
+		border-radius: 5px;
+		padding: 20px;
+		margin-bottom: 20px;
+		position: relative;
+	}
+
+	.delete-printer {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		color: var(--red);
+	}
+
+	.add-printer {
+		all: unset;
+		background-color: var(--brand);
+		color: white;
+		padding: 10px;
+		border-radius: 5px;
+		cursor: pointer;
 	}
 
 	.titlebar {

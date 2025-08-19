@@ -3,23 +3,25 @@
 	import { Fa } from 'svelte-fa';
 	import { faFloppyDisk } from '@fortawesome/free-solid-svg-icons';
 	import { onMount } from 'svelte';
-	import type { Box, Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
+	import type { Box, Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket, Printer } from '$lib/types';
 	import { socketStore } from '$lib/wsClient';
 	import { toast } from 'svelte-french-toast';
 	import { fly } from "svelte/transition";
 	import colorStore from "$lib/colorStore";
 	interface Props {
-		data: Config;
+		printer: Printer;
+		enabled: boolean;
+		coordinates: Config['Coordinates'];
 	}
 
-	let { data }: Props = $props();
-	let canvas: HTMLCanvasElement = $state();
-	let coords = $state(data.Coordinates || []);
+	let { printer, enabled, coordinates }: Props = $props();
+	let canvas: HTMLCanvasElement | undefined = $state();
+	let coords = $state(coordinates || []);
 	let settingsSynced = $state(true);
 	let hasContent = $state(false);
 
 	$effect(() => {
-		settingsSynced = JSON.stringify(coords) === JSON.stringify(data.Coordinates);
+		settingsSynced = JSON.stringify(coords) === JSON.stringify(coordinates);
 	})
 
 	
@@ -29,7 +31,7 @@
 		img.src = "./nosignal.jpg";
 		let lastBox: Box[];
 		socketStore.subscribe((data) => {
-			if (data?.purpose === 'inference') {
+			if (data?.purpose === 'inference' && data.printer.Name === printer.Name) {
 				const { box, buffer } = data;
 				lastBox = box;
 				img.src = `data:image/jpeg;base64,${buffer}`;
@@ -109,7 +111,7 @@
 		<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
 	</div>
 </BoundingBox>
-{#if !data.Enabled && !hasContent}
+{#if !enabled && !hasContent}
 	<img src="./nosignal.jpg" alt="No signal" style="max-width: 640px; height: 100%;" />
 {/if}
 {#if !settingsSynced}
