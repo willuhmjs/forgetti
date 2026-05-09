@@ -21,7 +21,7 @@
 		<h2 class="title"><span class="title-icon"><Fa {icon} /></span>{title}</h2>
 		<div class="buttons">
 		{@render buttons?.()}
-		<button onclick={toggleMinimize} class="title-button">
+		<button onclick={toggleMinimize} class="button button--icon title-button">
 			{#if minimized}
 				<Fa icon={faCaretLeft} />
 			{:else}
@@ -39,21 +39,24 @@
 
 <style>
 	.window {
-		border: none;
-		border-radius: 15px;
-		background-color: #fff;
-		font-size: 12px;
-		background-color: var(--foreground);
-		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+		border-radius: var(--radius-lg);
+		background-color: var(--surface);
+		border: 1px solid var(--border);
+		box-shadow: var(--shadow-soft);
+		display: flex;
+		flex-direction: column;
+		min-width: 280px;
 	}
 
 	.title-bar {
-		background-color: var(--foreground);
+		background-color: var(--surface-2);
 		display: flex;
 		justify-content: space-between;
-		border-top-left-radius: 15px;
-		border-top-right-radius: 15px;
-		overflow: hidden;
+		align-items: center;
+		padding: 0.85rem 1rem;
+		border-bottom: 1px solid var(--border);
+		border-top-left-radius: var(--radius-lg);
+		border-top-right-radius: var(--radius-lg);
 	}
 	.content {
 		width: 100%;
@@ -62,35 +65,37 @@
 		overflow-y: hidden;
 		align-items: center;
 		flex-grow: 1;
+		padding: 1rem;
 	}
 
 	.title {
-		margin-left: 15px;
+		margin: 0;
+		font-size: 1rem;
+		font-weight: 600;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.65rem;
+		color: var(--text-strong);
 	}
 
 	.buttons {
 		display: flex;
 		align-items: center;
-		margin-left: 10px;
-		gap: 1px;
+		gap: 0.5rem;
 	}
 
 	.title-button {
-		all: unset;
-		font-size: 1.4rem;
-		padding: 0.25rem 1rem;
-		background-color: var(--brand);
-		border-top-right-radius: 15px;
-		height: 100%;
+		font-size: 1.05rem;
+		background: var(--surface-3);
+		border-color: rgba(148, 163, 184, 0.3);
+		color: var(--text);
 	}
 
 	.title-button:hover {
-		cursor: pointer;
-		filter: brightness(0.85);
+		background: var(--surface-3);
 	}
 
 	.title-icon {
-		margin-right: 13px;
 		color: var(--brand);
 	}
 

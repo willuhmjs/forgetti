@@ -161,38 +161,38 @@
 <div class="titlebar">
 	<h3 class="title">Forgetti</h3>
 	<div class="buttons">
-		<button onclick={() => (activeWindow = 'home')}>
+		<button class="button button--icon nav-button" onclick={() => (activeWindow = 'home')}>
 				<Fa icon={faHome} fw={true} color={activeWindow === 'home' ? 'var(--brand)' : ''} />
 		</button>
-		<button onclick={() => (activeWindow = 'config')}>
+		<button class="button button--icon nav-button" onclick={() => (activeWindow = 'config')}>
 			<Fa icon={faCogs} fw={true} color={activeWindow === 'config' ? 'var(--brand)' : ''} />
 		</button>
-		<button onclick={() => (activeWindow = 'logs')}>
+		<button class="button button--icon nav-button" onclick={() => (activeWindow = 'logs')}>
 			<Fa icon={faFileLines} fw={true} color={activeWindow === 'logs' ? 'var(--brand)' : ''} />
 		</button>
 	</div>
 	<div class="buttons">
-		<button onclick={() => updateConfigToastable({ Enabled: !liveData.Enabled })}>
+		<button class="button button--icon" onclick={() => updateConfigToastable({ Enabled: !liveData.Enabled })}>
 			<Fa
 				icon={liveData.Enabled ? faStop : faPlay}
 				color={liveData.Enabled ? 'var(--red)' : 'var(--green)'}
 			/>
 		</button>
-		<button id="color" onclick={cycleThemeColor}>
+		<button id="color" class="button button--icon" onclick={cycleThemeColor}>
 			<Fa icon={faPalette} />
 		</button>
-		<button id="update" onclick={requestUpdate}>
+		<button id="update" class="button button--icon" onclick={requestUpdate}>
 			<Fa icon={faSync} spin={updateRequested} color="var(--yellow)" />
 		</button>
-		<button id="power" onclick={openPowerWindow}>
+		<button id="power" class="button button--icon" onclick={openPowerWindow}>
 			<Fa icon={faPowerOff} />
 		</button>
 	</div>
 	<div class="power-menu" bind:this={powerMenu}>
-		<button onclick={() => execCommand('Shutdown')}
+		<button class="power-menu-item" onclick={() => execCommand('Shutdown')}
 			><Fa icon={faPowerOff} class="pm-icon" />Shutdown</button
 		>
-		<button onclick={() => execCommand('Restart')}
+		<button class="power-menu-item" onclick={() => execCommand('Restart')}
 			><Fa icon={faRotateRight} class="pm-icon" />Restart</button
 		>
 	</div>
@@ -200,16 +200,16 @@
 
 {#if activeWindow === 'home'}
 		<div class="printer-tabs">
-		{#each liveData.Printers as printer}
+	{#each liveData.Printers as printer}
 			<button class="printer-tab" onclick={() => (selectedPrinter = printer)} class:active={selectedPrinter.Name === printer.Name}>
 				{printer.Name}
 			</button>
 		{/each}
 	</div>
 	<div class="window-container">
-		<Window title="Camera" icon={faVideoCamera}>
-			{#snippet buttons()}
-				<button onclick={lp.clearCoordinates} class="title-button">
+	<Window title="Camera" icon={faVideoCamera}>
+		{#snippet buttons()}
+				<button onclick={lp.clearCoordinates} class="button button--icon title-button">
 					<Fa icon={faTrash} />
 				</button>
 			{/snippet}
@@ -309,12 +309,12 @@
 								/>
 							</div>
 						{/if}
-						<button class="delete-printer" onclick={() => liveDataUnsaved.Printers.splice(i, 1)}>
+						<button class="button button--icon button--danger delete-printer" onclick={() => liveDataUnsaved.Printers.splice(i, 1)}>
 							<Fa icon={faTrash} />
 						</button>
 					</div>
 				{/each}
-				<button class="add-printer" onclick={() => liveDataUnsaved.Printers.push({ Name: 'New Printer', CameraURL: '', WebcamAuthEnabled: false, CameraUsername: '', CameraPassword: '', MoonrakerEnabled: false, MoonrakerURL: '', MoonrakerPauseThreshold: 90 })}>
+				<button class="button button--primary add-printer" onclick={() => liveDataUnsaved.Printers.push({ Name: 'New Printer', CameraURL: '', WebcamAuthEnabled: false, CameraUsername: '', CameraPassword: '', MoonrakerEnabled: false, MoonrakerURL: '', MoonrakerPauseThreshold: 90 })}>
 					Add Printer
 				</button>
 			</div>
@@ -417,7 +417,7 @@
 		<div class="saveButtonDiv">
 			<button
 				onclick={() => updateConfigToastable(liveDataUnsaved)}
-				class="saveButton"
+				class="button button--primary button--fab saveButton"
 				transition:fly={{ y: 100 }}
 			>
 				<Fa fw icon={faFloppyDisk} />
@@ -430,124 +430,150 @@
 
 <style>
 	.window-container {
-		display: flex;
-		gap: 10px;
-		flex-wrap: wrap;
-		align-items: flex-start;
-		padding: 10px;
+		display: grid;
+		gap: 16px;
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		align-items: start;
+		padding: 0 4px 16px;
 	}
 
 	.printer-tabs {
-		display: flex;
-		gap: 10px;
-		padding: 10px;
-		background-color: var(--foreground);
+		display: inline-flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		padding: 0.35rem;
+		background-color: var(--surface-2);
+		border: 1px solid var(--border);
+		border-radius: 999px;
+		width: fit-content;
 	}
 
 	.printer-tab {
-		all: unset;
-		padding: 10px;
+		appearance: none;
+		font: inherit;
+		border: 1px solid transparent;
+		border-radius: 999px;
+		padding: 0.45rem 0.9rem;
 		cursor: pointer;
-		border-bottom: 2px solid transparent;
+		color: var(--text-muted);
+		font-size: 0.9rem;
+		transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+		background: transparent;
 	}
 
 	.printer-tab.active {
-		border-bottom-color: var(--brand);
+		background: var(--surface);
+		border-color: var(--border);
+		color: var(--text);
+		box-shadow: 0 10px 24px rgba(2, 6, 23, 0.35);
+	}
+
+	.printer-tab:hover {
+		background: var(--surface-3);
+		color: var(--text);
 	}
 
 	.printer-config {
-		border: 1px solid #555;
-		border-radius: 5px;
-		padding: 20px;
-		margin-bottom: 20px;
+		border: 1px solid var(--border);
+		border-radius: var(--radius-md);
+		padding: 1rem;
+		display: grid;
+		gap: 0.85rem;
 		position: relative;
+		background: var(--surface-2);
 	}
 
 	.delete-printer {
 		position: absolute;
-		top: 10px;
-		right: 10px;
-		color: var(--red);
+		top: 0.75rem;
+		right: 0.75rem;
 	}
 
 	.add-printer {
-		all: unset;
-		background-color: var(--brand);
-		color: white;
-		padding: 10px;
-		border-radius: 5px;
-		cursor: pointer;
+		align-self: flex-start;
 	}
 
 	.titlebar {
-		position: relative;
+		position: sticky;
+		top: 16px;
+		z-index: 10;
 		max-width: 100%;
-		background-color: var(--foreground);
-		padding: 1rem;
+		background: linear-gradient(135deg, rgba(96, 165, 250, 0.12), rgba(34, 197, 94, 0.08)),
+			var(--surface);
+		padding: 1rem 1.25rem;
 		margin: 0;
 		display: flex;
 		justify-content: space-between;
-		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+		align-items: center;
+		gap: 1rem;
+		box-shadow: var(--shadow-soft);
+		border-radius: var(--radius-lg);
+		border: 1px solid var(--border);
+		backdrop-filter: blur(12px);
 		font-size: 18px;
 	}
 
 	.title {
 		margin: 0;
+		font-weight: 600;
+		letter-spacing: 0.02em;
 	}
 
 	.buttons {
 		display: flex;
-		gap: 1rem;
-	}
-
-	button {
-		all: unset;
-	}
-
-	.buttons button:hover {
-		cursor: pointer;
-		filter: brightness(0.85);
+		gap: 0.6rem;
+		flex-wrap: wrap;
 	}
 
 	.buttons #power {
 		color: var(--red);
+		border-color: rgba(248, 113, 113, 0.4);
+		background: rgba(248, 113, 113, 0.12);
 	}
 
 	.buttons #color {
 		color: var(--brand);
 	}
 
+	.buttons #update {
+		color: var(--yellow);
+	}
+
 	.power-menu {
 		position: absolute;
-		top: 100%;
+		top: calc(100% + 0.5rem);
 		right: 0;
-		background-color: var(--foreground);
-		min-width: 160px;
-		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+		background-color: var(--surface);
+		min-width: 180px;
+		box-shadow: var(--shadow-soft);
 		z-index: 1;
-		border-bottom-left-radius: 15px;
+		border-radius: var(--radius-md);
+		border: 1px solid var(--border);
+		padding: 0.4rem;
 		display: none;
 	}
-	.power-menu button {
+
+	.power-menu-item {
+		appearance: none;
+		font: inherit;
 		color: inherit;
-		padding: 0.75rem 1rem;
+		padding: 0.6rem 0.75rem;
 		text-decoration: none;
-		display: block;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
 		width: 100%;
 		box-sizing: border-box;
 		text-align: left;
 		border: none;
-		background: none;
-		font-size: 15px;
-	}
-
-	.power-menu button:last-child {
-		border-bottom-left-radius: 15px;
-	}
-
-	.power-menu button:hover {
-		background-color: var(--brand);
+		background: transparent;
+		border-radius: var(--radius-sm);
+		font-size: 0.95rem;
 		cursor: pointer;
+	}
+
+	.power-menu-item:hover {
+		background-color: var(--surface-2);
 	}
 
 	:global(.pm-icon) {
@@ -555,126 +581,63 @@
 	}
 
 	.form {
-		width: 350px;
-		max-width: 350px;
+		width: 100%;
+		max-width: 420px;
 		margin: auto;
-		padding: 20px;
-
-		border-radius: 8px;
-		box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		padding: 0.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
 	}
 
 	.inputGroup {
-		margin-bottom: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 0.45rem;
 	}
 
 	.inputGroup label {
 		display: block;
-		margin-bottom: 10px;
-		font-weight: bold;
-		color: #ddd;
-		font-size: 14px;
-	}
-
-	.inputGroup input[type='text'],
-	.inputGroup input[type='password'],
-	.inputGroup select {
-		width: 100%;
-		padding: 10px;
-		border: 1px solid #555;
-		border-radius: 5px;
-		background-color: #333;
-		color: #ddd;
-		font-size: 16px;
-	}
-
-	.inputGroup input[type='text']:focus,
-	.inputGroup input[type='password']:focus,
-	.inputGroup select:focus {
-		outline: none;
-		border-color: var(--brand);
-		box-shadow: 0 0 8px var(--brand);
-	}
-
-	.inputGroup select {
-		appearance: none;
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		background-image: url('data:image/svg+xml;utf8,<svg fill="#ddd" width="18" height="18" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/></svg>');
-		background-repeat: no-repeat;
-		background-position: right 10px center;
-		padding-right: 30px;
-	}
-
-	.inputGroup input[type='checkbox'] {
-		appearance: none;
-		-webkit-appearance: none;
-		-moz-appearance: none;
-		width: 20px;
-		height: 20px;
-		border-radius: 5px;
-		background-color: #333;
-		outline: none;
-		cursor: pointer;
-		vertical-align: middle;
-		border: 1px solid #666;
-		margin-left: 0;
-	}
-
-	.inputGroup input[type='checkbox']:checked {
-		background-color: var(--brand);
-		border-color: var(--brand);
+		font-weight: 600;
+		color: var(--text-muted);
+		font-size: 0.72rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 	}
 
 	.saveButtonDiv {
 		position: fixed;
-		left: 0;
-		bottom: 0;
+		right: 1.5rem;
+		bottom: 1.5rem;
 		overflow: hidden;
+		z-index: 20;
 	}
 
 	.saveButton {
-		background-color: var(--brand);
-		color: white;
-		bottom: none;
-		border-radius: 50%;
-		padding: 0.8rem;
-		font-size: 1.5rem;
-		margin-bottom: 1rem;
-		margin-left: 1rem;
-	}
-
-	.saveButton:hover {
-		cursor: pointer;
-		filter: brightness(0.85);
+		font-size: 1.2rem;
 	}
 
 	.title-button {
-		all: unset;
-		font-size: 1rem;
-		margin-left: 10px;
-		padding: 0.25rem 1rem;
-		background-color: var(--brand);
-		height: 100%;
-	}
-
-	.title-button:hover {
-		cursor: pointer;
-		filter: brightness(0.85);
+		background: rgba(248, 113, 113, 0.15);
+		border-color: rgba(248, 113, 113, 0.4);
+		color: var(--red);
 	}
 
 	.low-power-banner {
-		background-color: var(--red);
-		color: white;
-		padding: 5px;
+		background-color: rgba(248, 113, 113, 0.15);
+		color: var(--red);
+		padding: 0.4rem 0.75rem;
 		text-align: center;
-		font-weight: bold;
+		font-weight: 600;
+		border: 1px solid rgba(248, 113, 113, 0.5);
+		border-radius: var(--radius-sm);
 	}
 
 	@media screen and (max-width: 576px) {
 		.titlebar {
 			flex-direction: column;
 			align-items: center;
+			text-align: center;
 		}
 
 		.buttons {

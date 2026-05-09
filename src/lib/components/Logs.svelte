@@ -27,9 +27,9 @@
 </script>
 
 <div class="appUpdate">
-	<button class="exportButton" on:click={exportLogs}>Export Logs</button>
+	<button class="button button--primary exportButton" on:click={exportLogs}>Export Logs</button>
 	{#each $logsStore as update}
-		<p class="update {update.type}">
+		<p class="surface-card update {update.type}">
 			<span>{update.command}: {update.message}</span>
 			<span>{update.time}</span>
 		</p>
@@ -42,8 +42,9 @@
 		flex-direction: column;
 		margin: 10px auto;
 		overflow-y: auto;
-		gap: 10px;
-		max-width: 700px;
+		gap: 12px;
+		max-width: 900px;
+		width: min(100%, 900px);
 	}
 
 	@media (max-width: 710px) {
@@ -53,30 +54,31 @@
 	}
 
 	.update {
-		padding: 10px;
-		border-radius: 5px;
-		font-size: 14px;
+		font-size: 0.9rem;
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
 		margin: 0;
+		gap: 1rem;
+		border-left: 3px solid transparent;
+	}
+
+	.update span:last-child {
+		color: var(--text-muted);
+		font-size: 0.8rem;
 	}
 
 	.success {
-		background-color: var(--green);
+		border-left-color: var(--green);
+		background: rgba(74, 222, 128, 0.12);
 	}
 
 	.error {
-		background-color: var(--red);
+		border-left-color: var(--red);
+		background: rgba(248, 113, 113, 0.12);
 	}
 
 	.exportButton {
-		padding: 10px 20px;
-		background-color: var(--brand);
-		color: white;
-		border: none;
-		border-radius: 5px;
-		cursor: pointer;
-		font-size: 16px;
-		transition: background-color 0.3s ease;
+		align-self: flex-start;
 	}
 </style>

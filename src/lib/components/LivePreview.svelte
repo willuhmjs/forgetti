@@ -107,18 +107,18 @@
 	};
 </script>
 <BoundingBox bind:coordinatesBoxes={coords} outerColor={$colorStore} innerColor="rgba(255,255,255,0.2)">
-	<div style="margin-bottom: -4px;">
-		<canvas bind:this={canvas} style="max-width: 640px; height: 100%;"></canvas>
+	<div class="preview">
+		<canvas bind:this={canvas} class="preview-canvas"></canvas>
 	</div>
 </BoundingBox>
 {#if !enabled && !hasContent}
-	<img src="./nosignal.jpg" alt="No signal" style="max-width: 640px; height: 100%;" />
+	<img src="./nosignal.jpg" alt="No signal" class="preview-image" />
 {/if}
 {#if !settingsSynced}
 <div class="buttonContainer">
 	<button
 		onclick={saveCoordinates}
-		class="saveButton"
+		class="button button--primary button--fab saveButton"
 		transition:fly={{ y: 100 }}
 	>
 		<Fa fw icon={faFloppyDisk} />
@@ -128,30 +128,33 @@
 {/if}
 
 <style>
-	.saveButtonDiv {
-		position: fixed;
-		left: 0;
-		bottom: 0;
-		overflow: hidden;
-	}
-
 	.saveButton {
-		background-color: var(--brand);
-		color: white;
-		bottom: none;
-		border-radius: 50%;
-		padding: 0.8rem;
-		font-size: 1.5rem;
-		margin-bottom: 1rem;
-		margin-left: 1rem;
+		font-size: 1.2rem;
 	}
 
 	.buttonContainer {
 		position: fixed;
-		left: 0;
-		bottom: 0;
+		right: 1.5rem;
+		bottom: 1.5rem;
 		overflow: hidden;
 		display: flex;
 		gap: 1rem;
+		z-index: 20;
+	}
+
+	.preview {
+		border-radius: var(--radius-md);
+		overflow: hidden;
+		border: 1px solid var(--border);
+		background: #0f172a;
+		box-shadow: var(--shadow-soft);
+	}
+
+	.preview-canvas,
+	.preview-image {
+		display: block;
+		width: 100%;
+		max-width: 640px;
+		height: auto;
 	}
 </style>

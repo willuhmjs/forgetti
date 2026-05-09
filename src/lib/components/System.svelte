@@ -111,10 +111,14 @@
 <style>
 	.spec {
 		font-size: 0.9rem;
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--text);
 	}
 
 	.spec .icon:first-of-type {
-		margin-right: 0.5rem;
+		margin-right: 0.2rem;
 	}
 
 	.spec .icon {
@@ -128,10 +132,11 @@
 
 	.systemContainer {
 		display: flex;
-		padding: 0 1rem;
+		padding: 0 0.5rem;
 		gap: 1.5rem;
 		justify-content: space-between;
-		align-items: middle;
+		align-items: center;
+		flex-wrap: wrap;
 	}
 
 	.circularBarSubContainer {
@@ -141,6 +146,7 @@
 
 	.circularBarContainer {
 		display: flex;
-		gap: 0.75rem;
+		gap: 1rem;
+		align-items: center;
 	}
 </style>
