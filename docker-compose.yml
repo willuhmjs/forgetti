@@ -1,0 +1,9 @@
+services:
+  forgetti:
+    build: .
+    ports:
+      - "3000:3000"
+      - "2221:2221"
+    volumes:
+      - ./config.json:/app/config.json
+    restart: unless-stopped

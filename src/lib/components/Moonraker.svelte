@@ -6,11 +6,12 @@
 		faSpinner,
 		faCube,
 		faIndustry,
-		faCheck
+		faCheck,
+		faTriangleExclamation
 	} from '@fortawesome/free-solid-svg-icons';
 
 	import type { MoonrakerResponsePacket, Printer } from '$lib/types';
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import LoadingBar from './LoadingBar.svelte';
 
 	interface Props {
@@ -18,22 +19,34 @@
 	}
 	let { printer }: Props = $props();
 	let latestStats: MoonrakerResponsePacket | null = $state(null);
+	let connectionError = $state(false);
+	let failCount = $state(0);
+	let interval: ReturnType<typeof setInterval> | undefined;
 
 	onMount(() => {
-		const interval = setInterval(async () => {
+		interval = setInterval(async () => {
 			if (!printer.MoonrakerEnabled) return;
 			try {
+				const controller = new AbortController();
+				const timeout = setTimeout(() => controller.abort(), 5000);
 				const response = await fetch(
-					new URL('/printer/objects/query?print_stats', printer.MoonrakerURL).href
+					new URL('/printer/objects/query?print_stats', printer.MoonrakerURL).href,
+					{ signal: controller.signal }
 				);
+				clearTimeout(timeout);
 				const r = await response.json();
 				latestStats = r.result.status.print_stats;
-			} catch (e) {
-				console.error(e);
+				connectionError = false;
+				failCount = 0;
+			} catch {
+				failCount++;
+				if (failCount >= 3) connectionError = true;
 			}
-		}, 1000);
+		}, 2000);
+	});
 
-		return () => clearInterval(interval);
+	onDestroy(() => {
+		if (interval) clearInterval(interval);
 	});
 
 	function getStateIcon(state: string) {
@@ -55,7 +68,13 @@
 	}
 </script>
 
-{#if latestStats}
+{#if connectionError}
+	<div class="error-state">
+		<Fa icon={faTriangleExclamation} />
+		<p>Cannot reach Moonraker</p>
+		<span>Check that {printer.MoonrakerURL} is accessible</span>
+	</div>
+{:else if latestStats}
 	<div class="moonraker-grid">
 		<div class="stat-card wide">
 			<div class="stat-icon"><Fa icon={faCube} /></div>
@@ -143,5 +162,28 @@
 		font-weight: 700;
 		font-size: 0.75rem;
 		letter-spacing: 0.03em;
+	}
+
+	.error-state {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 1.5rem;
+		color: var(--red);
+		text-align: center;
+		font-size: 1.25rem;
+	}
+
+	.error-state p {
+		font-size: 0.875rem;
+		font-weight: 600;
+		color: var(--text-secondary);
+	}
+
+	.error-state span {
+		font-size: 0.75rem;
+		color: var(--text-muted);
 	}
 </style>

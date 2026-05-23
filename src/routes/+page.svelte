@@ -73,26 +73,34 @@
 		});
 	});
 
+	let configSaving = $state(false);
+
 	const updateConfig = async (config: Partial<Config>) => {
-		return new Promise((resolve, reject) => {
-			fetch('/api/update_config', {
+		configSaving = true;
+		try {
+			const response = await fetch('/api/update_config', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ purpose: 'configUpdate', config } as ConfigUpdateRequestPacket)
-			}).then(async (response) => {
-				const data = (await response.json()) as ConfigUpdateResponsePacket;
-				if (data.type === 'success') {
-					liveData = { ...liveData, ...data.config };
-					liveDataUnsaved = { ...liveData };
-					resolve(data.message);
-				} else {
-					reject(data.message);
-				}
 			});
-		});
+			if (!response.ok) throw new Error(`Server error: ${response.status}`);
+			const result = (await response.json()) as ConfigUpdateResponsePacket;
+			if (result.type === 'success') {
+				liveData = { ...liveData, ...result.config };
+				liveDataUnsaved = { ...liveData };
+				return result.message;
+			} else {
+				throw new Error(result.message);
+			}
+		} catch (e) {
+			throw e instanceof Error ? e : new Error(String(e));
+		} finally {
+			configSaving = false;
+		}
 	};
 
 	const updateConfigToastable = async (config: Partial<Config>) => {
+		if (configSaving) return;
 		toast.promise(updateConfig(config), {
 			loading: 'Saving...',
 			success: (data) => `${data}`,
@@ -125,8 +133,11 @@
 					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ command })
 				}).then(async (response) => {
+					if (!response.ok) throw new Error(`Server error: ${response.status}`);
 					const json = await response.json();
 					toast.success(json.message, { duration: 5000, position: 'bottom-right', style: toastStyle });
+				}).catch((e) => {
+					toast.error(`${command} failed: ${e.message}`, { duration: 5000, position: 'bottom-right', style: toastStyle });
 				});
 				confirmDialog = null;
 				powerMenuOpen = false;
@@ -471,8 +482,8 @@
 
 			{#if hasUnsavedChanges}
 				<div class="fab-container" transition:fly={{ y: 20, duration: 200 }}>
-					<button class="fab" onclick={() => updateConfigToastable(liveDataUnsaved)}>
-						<Fa icon={faFloppyDisk} /> Save Changes
+					<button class="fab" onclick={() => updateConfigToastable(liveDataUnsaved)} disabled={configSaving}>
+						<Fa icon={faFloppyDisk} /> {configSaving ? 'Saving...' : 'Save Changes'}
 					</button>
 				</div>
 			{/if}
@@ -815,13 +826,14 @@
 
 	.dashboard-grid {
 		display: grid;
-		grid-template-columns: 1fr 340px;
+		grid-template-columns: auto 340px;
 		gap: 1rem;
 		align-items: start;
 	}
 
 	.grid-main {
 		min-width: 0;
+		max-width: fit-content;
 	}
 
 	.grid-side {
@@ -832,20 +844,25 @@
 
 	/* ========== Settings ========== */
 	.settings-page {
-		max-width: 720px;
+		max-width: 1200px;
 		margin: 0 auto;
 	}
 
 	.settings-grid {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
 		gap: 1.5rem;
+		align-items: start;
 	}
 
 	.settings-section {
 		display: flex;
 		flex-direction: column;
 		gap: 0.75rem;
+	}
+
+	.settings-section:first-child {
+		grid-column: 1 / -1;
 	}
 
 	.section-header {
@@ -1094,10 +1111,15 @@
 		transition: all var(--transition-fast);
 	}
 
-	.fab:hover {
+	.fab:hover:not(:disabled) {
 		filter: brightness(1.1);
 		transform: translateY(-2px);
 		box-shadow: 0 12px 32px rgba(249, 115, 22, 0.3);
+	}
+
+	.fab:disabled {
+		opacity: 0.6;
+		cursor: not-allowed;
 	}
 
 	/* ========== Detection History ========== */
@@ -1187,6 +1209,14 @@
 
 		.settings-page {
 			padding: 0.75rem;
+		}
+
+		.settings-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.settings-section:first-child {
+			grid-column: auto;
 		}
 	}
 

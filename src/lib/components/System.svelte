@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import { socketStore } from '$lib/wsClient';
 	import CircularBar from './CircularBar.svelte';
 	import type { SystemResponsePacket } from '$lib/types';
@@ -17,14 +17,17 @@
 	import LoadingBar from './LoadingBar.svelte';
 
 	let socketData: SystemResponsePacket | undefined = $state();
+	let unsub: (() => void) | undefined;
 
 	onMount(() => {
-		socketStore.subscribe((data) => {
+		unsub = socketStore.subscribe((data) => {
 			if (data?.purpose === 'system') {
 				socketData = data;
 			}
 		});
 	});
+
+	onDestroy(() => unsub?.());
 
 	function formatBytes(kilobytes: number) {
 		const units = ['KB', 'MB', 'GB', 'TB'];
@@ -120,8 +123,8 @@
 <style>
 	.system-grid {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 0.625rem;
+		grid-template-columns: 1fr;
+		gap: 0.5rem;
 		width: 100%;
 	}
 
@@ -170,7 +173,6 @@
 	}
 
 	.gauges {
-		grid-column: 1 / -1;
 		display: flex;
 		justify-content: center;
 		gap: 1.5rem;

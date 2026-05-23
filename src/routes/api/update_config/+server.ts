@@ -3,6 +3,7 @@ import type { RequestHandler } from './$types';
 import type { Config, ConfigUpdateRequestPacket, ConfigUpdateResponsePacket } from '$lib/types';
 import fs from 'fs';
 import configStore from '$lib/server/configStore';
+import ms from 'ms';
 
 const DISCORD_WEBHOOK_PATTERN = /^https:\/\/discord\.com\/api\/webhooks\/\d+\/[\w-]+$/;
 
@@ -31,6 +32,12 @@ function validateConfig(config: Partial<Config>): string | null {
 	if (config.Model !== undefined) {
 		if (!['nano', 'small'].includes(config.Model)) {
 			return 'Model must be "nano" or "small"';
+		}
+	}
+
+	if (config.ReportCooldown !== undefined) {
+		if (typeof config.ReportCooldown !== 'string' || !ms(config.ReportCooldown)) {
+			return 'ReportCooldown must be a valid duration (e.g. "5 minutes", "30s", "1h")';
 		}
 	}
 

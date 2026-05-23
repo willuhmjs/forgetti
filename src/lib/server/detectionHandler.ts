@@ -20,15 +20,20 @@ export default async (data: InferenceData) => {
 			box: data.box,
 			buffer: drawnBuffer
 		};
-		if (config.DiscordWebhookEnabled && config.DiscordWebhookURL) notifyDiscord(newData);
+		if (config.DiscordWebhookEnabled && config.DiscordWebhookURL) {
+			notifyDiscord(newData).catch((e) => console.error('Discord notification failed:', e));
+		}
 		if (
 			data.printer.MoonrakerEnabled &&
 			data.printer.MoonrakerURL &&
 			(data.box[0]?.prob || 0) >= data.printer.MoonrakerPauseThreshold
-		)
-			notifyMoonraker(data.printer.MoonrakerURL);
+		) {
+			notifyMoonraker(data.printer.MoonrakerURL).catch((e) =>
+				console.error('Moonraker pause failed:', e)
+			);
+		}
 	} catch (e) {
-		console.error(e);
+		console.error('Detection handler error:', e);
 	}
 };
 
@@ -55,9 +60,8 @@ const buildImage = async (data: InferenceData): Promise<Buffer> => {
 	return canvas.toBuffer('image/jpeg');
 };
 
-const notifyDiscord = (data: InferenceDataBuffer) => {
+const notifyDiscord = async (data: InferenceDataBuffer) => {
 	const webhookClient = new WebhookClient({ url: config.DiscordWebhookURL });
-
 	const boxes = data.box;
 
 	const notifyEmbed = new EmbedBuilder()
@@ -70,7 +74,8 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 		.setTimestamp()
 		.setImage('attachment://spaghetti.jpg')
 		.setColor((config.BrandColor as HexColorString) || '#f97316');
-	webhookClient.send({
+
+	await webhookClient.send({
 		embeds: [notifyEmbed],
 		files: [
 			{
@@ -86,7 +91,11 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 };
 
 const notifyMoonraker = async (url: string) => {
-	await fetch(new URL('/printer/print/pause', url), {
-		method: 'POST'
+	const response = await fetch(new URL('/printer/print/pause', url), {
+		method: 'POST',
+		signal: AbortSignal.timeout(5000)
 	});
+	if (!response.ok) {
+		throw new Error(`Moonraker pause returned ${response.status}`);
+	}
 };

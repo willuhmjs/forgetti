@@ -28,23 +28,32 @@ if (currentConfig.Enabled) {
 	}
 }
 
+const COMMAND_TIMEOUT_MS = 60000;
+
 function runCommand(bin: string, args: string[]): Promise<string> {
 	return new Promise((resolve, reject) => {
-		execFile(bin, args, (error, stdout, stderr) => {
+		const child = execFile(bin, args, { timeout: COMMAND_TIMEOUT_MS }, (error, stdout, stderr) => {
 			if (error) {
-				console.log(error.message);
 				reject(error.message);
 				return;
 			}
 			if (stderr) {
-				console.log(stderr);
 				reject(stderr);
 				return;
 			}
-			console.log(stdout);
 			resolve(stdout);
 		});
 	});
+}
+
+function safeSend(socket: import('ws').WebSocket, data: object) {
+	try {
+		if (socket.readyState === socket.OPEN) {
+			socket.send(JSON.stringify(data));
+		}
+	} catch {
+		// socket closed mid-send
+	}
 }
 
 let lastCPUReading = 0;
@@ -53,25 +62,30 @@ let lastUpdateRequest = 0;
 const UPDATE_COOLDOWN_MS = 60000;
 
 async function checkBatteryStatus() {
-	const batteryInfo = await battery();
-	lowPowerMode = batteryInfo.hasBattery && batteryInfo.percent < 20;
+	try {
+		const batteryInfo = await battery();
+		lowPowerMode = batteryInfo.hasBattery && batteryInfo.percent < 20;
+	} catch {
+		// battery info unavailable (e.g. desktop without battery)
+	}
 }
 
 server.on('connection', (socket) => {
-	latestDetection.subscribe((val) => {
-		socket.send(JSON.stringify({ purpose: 'inference', ...val }));
+	const detectionUnsub = latestDetection.subscribe((val) => {
+		safeSend(socket, { purpose: 'inference', ...val });
 	});
 
-	setInterval(async () => {
-		await checkBatteryStatus();
-		const osInfo = await si.osInfo();
-		const loadPercent = (await si.currentLoad()).currentLoad;
-		const mem = await si.mem();
-		const cpuTemp = await si.cpuTemperature();
-		const netStats = (await si.networkStats())[0];
-		lastCPUReading = loadPercent;
-		socket.send(
-			JSON.stringify({
+	const statsInterval = setInterval(async () => {
+		if (socket.readyState !== socket.OPEN) return;
+		try {
+			await checkBatteryStatus();
+			const osInfo = await si.osInfo();
+			const loadPercent = (await si.currentLoad()).currentLoad;
+			const mem = await si.mem();
+			const cpuTemp = await si.cpuTemperature();
+			const netStats = (await si.networkStats())[0];
+			lastCPUReading = loadPercent;
+			safeSend(socket, {
 				purpose: 'system',
 				distro: osInfo.distro,
 				platform: osInfo.platform,
@@ -85,8 +99,10 @@ server.on('connection', (socket) => {
 				netTX: netStats.tx_bytes / 1000,
 				loadPercent: Math.round(loadPercent),
 				lowPowerMode: lowPowerMode
-			})
-		);
+			});
+		} catch (e) {
+			console.error('System stats error:', e);
+		}
 	}, lowPowerMode ? 5000 : 1000);
 
 	const updateSteps: { bin: string; args: string[]; label: string }[] = [
@@ -97,48 +113,48 @@ server.on('connection', (socket) => {
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
 
 	socket.on('message', async (data) => {
-		const requestPacket: AppUpdateRequestPacket = JSON.parse(data.toString());
+		let requestPacket: AppUpdateRequestPacket;
+		try {
+			requestPacket = JSON.parse(data.toString());
+		} catch {
+			return;
+		}
+
 		if (requestPacket.purpose === 'appUpdate') {
 			if (dev) {
-				return socket.send(
-					JSON.stringify({
-						purpose: 'appUpdate',
-						message: 'Cannot update while in developer mode!',
-						command: 'meta',
-						type: 'error',
-						toastable: true,
-						time: new Date().toLocaleTimeString('en-US')
-					} as AppUpdateResponsePacket)
-				);
+				return safeSend(socket, {
+					purpose: 'appUpdate',
+					message: 'Cannot update while in developer mode!',
+					command: 'meta',
+					type: 'error',
+					toastable: true,
+					time: new Date().toLocaleTimeString('en-US')
+				} as AppUpdateResponsePacket);
 			}
 
 			if (Date.now() - lastUpdateRequest < UPDATE_COOLDOWN_MS) {
-				return socket.send(
-					JSON.stringify({
-						purpose: 'appUpdate',
-						message: 'Please wait before requesting another update.',
-						command: 'meta',
-						type: 'error',
-						toastable: true,
-						time: new Date().toLocaleTimeString('en-US')
-					} as AppUpdateResponsePacket)
-				);
+				return safeSend(socket, {
+					purpose: 'appUpdate',
+					message: 'Please wait before requesting another update.',
+					command: 'meta',
+					type: 'error',
+					toastable: true,
+					time: new Date().toLocaleTimeString('en-US')
+				} as AppUpdateResponsePacket);
 			}
 			lastUpdateRequest = Date.now();
 
 			let errored = false;
 			for (const step of updateSteps) {
 				try {
-					socket.send(
-						JSON.stringify({
-							purpose: 'appUpdate',
-							message: 'Executing...',
-							command: step.label,
-							type: 'success',
-							toastable: false,
-							time: new Date().toLocaleTimeString('en-US')
-						})
-					);
+					safeSend(socket, {
+						purpose: 'appUpdate',
+						message: 'Executing...',
+						command: step.label,
+						type: 'success',
+						toastable: false,
+						time: new Date().toLocaleTimeString('en-US')
+					});
 					const output = await runCommand(step.bin, step.args);
 					let matchesToastable = false;
 					if (step.label === 'git pull') {
@@ -149,70 +165,86 @@ server.on('connection', (socket) => {
 							}
 						}
 					}
-					socket.send(
-						JSON.stringify({
-							purpose: 'appUpdate',
-							message: output,
-							command: step.label,
-							type: 'success',
-							toastable: matchesToastable,
-							time: new Date().toLocaleTimeString('en-US')
-						} as AppUpdateResponsePacket)
-					);
+					safeSend(socket, {
+						purpose: 'appUpdate',
+						message: output,
+						command: step.label,
+						type: 'success',
+						toastable: matchesToastable,
+						time: new Date().toLocaleTimeString('en-US')
+					} as AppUpdateResponsePacket);
 					if (matchesToastable) break;
 				} catch (error) {
 					errored = true;
-					socket.send(
-						JSON.stringify({
-							purpose: 'appUpdate',
-							message: String(error),
-							command: step.label,
-							type: 'error',
-							toastable: false,
-							time: new Date().toLocaleTimeString('en-US')
-						} as AppUpdateResponsePacket)
-					);
+					safeSend(socket, {
+						purpose: 'appUpdate',
+						message: String(error),
+						command: step.label,
+						type: 'error',
+						toastable: false,
+						time: new Date().toLocaleTimeString('en-US')
+					} as AppUpdateResponsePacket);
 				}
 			}
 			if (errored) return;
-			socket.send(
-				JSON.stringify({
-					purpose: 'appUpdate',
-					message: 'Restarting app...',
-					command: 'meta',
-					type: 'success',
-					toastable: true,
-					time: new Date().toLocaleTimeString('en-US')
-				})
-			);
+			safeSend(socket, {
+				purpose: 'appUpdate',
+				message: 'Restarting app...',
+				command: 'meta',
+				type: 'success',
+				toastable: true,
+				time: new Date().toLocaleTimeString('en-US')
+			});
 			process.exit(1);
 		}
+	});
+
+	socket.on('close', () => {
+		clearInterval(statsInterval);
+		detectionUnsub();
+	});
+
+	socket.on('error', () => {
+		clearInterval(statsInterval);
+		detectionUnsub();
 	});
 });
 
 latestDetection.subscribe(async (data) => {
 	const boundingBoxes = currentConfig.Coordinates;
 	if (!data?.buffer) return;
-	const { width, height } = await getImageDimensions(data.buffer);
-	if (!width || !height) return;
-	const adjustedCoordinates =
-		currentConfig.Coordinates.length > 0
-			? translateCoordinatesArray(boundingBoxes, width, 640)
-			: [{ x1: 0, y1: 0, x2: width, y2: height }];
-	const dci = doCoordinatesIntersect(adjustedCoordinates, data?.box || []);
-	if (dci && Date.now() - lastReport > ms(currentConfig.ReportCooldown)) {
-		lastReport = Date.now();
-		detectionHandler(data);
+	try {
+		const { width, height } = await getImageDimensions(data.buffer);
+		if (!width || !height) return;
+		const adjustedCoordinates =
+			currentConfig.Coordinates.length > 0
+				? translateCoordinatesArray(boundingBoxes, width, 640)
+				: [{ x1: 0, y1: 0, x2: width, y2: height }];
+		const cooldownMs = ms(currentConfig.ReportCooldown) || 300000;
+		const dci = doCoordinatesIntersect(adjustedCoordinates, data?.box || []);
+		if (dci && Date.now() - lastReport > cooldownMs) {
+			lastReport = Date.now();
+			detectionHandler(data);
+		}
+	} catch (e) {
+		console.error('Detection processing error:', e);
 	}
 });
 
 async function startStream(printer: Printer) {
-	await initializeModel();
+	try {
+		await initializeModel();
+	} catch (e) {
+		console.error('Failed to initialize model:', e);
+		return;
+	}
+
 	const trackedSymbol = Symbol();
 	const mjpegConsumer = new MjpegConsumer();
 	const requestConfig: AxiosRequestConfig = {
 		url: printer.CameraURL,
 		responseType: 'stream',
+		timeout: 10000,
 		headers: {
 			Authorization: `Basic ${Buffer.from(
 				`${printer.CameraUsername}:${printer.CameraPassword}`
@@ -223,33 +255,35 @@ async function startStream(printer: Printer) {
 	let processing = false;
 	const processFrame = async (frameBuffer: Buffer) => {
 		processing = true;
-		await detectObjects(frameBuffer, printer);
-		processing = false;
+		try {
+			await detectObjects(frameBuffer, printer);
+		} catch (e) {
+			console.error('Frame processing error:', e);
+		} finally {
+			processing = false;
+		}
 	};
 
 	try {
 		const response = await axios(requestConfig);
 		const stream: Readable = response.data.pipe(mjpegConsumer);
 
-		stream.on('data', async (frame: Buffer) => {
-			if (frame && !processing) {
-				try {
-					if (lastCPUReading > (lowPowerMode ? 50 : currentConfig.MaxCPU)) return;
-					processFrame(frame);
-				} catch (e) {
-					console.error(e);
-				}
-			}
+		stream.on('data', (frame: Buffer) => {
+			if (!frame || processing) return;
+			if (lastCPUReading > (lowPowerMode ? 50 : currentConfig.MaxCPU)) return;
 
 			const currentStream = streams.get(printer.Name);
 			if (currentStream?.symbol !== trackedSymbol) {
 				stream.destroy();
 				return;
 			}
+
+			processFrame(frame);
 		});
+
 		streams.set(printer.Name, { symbol: trackedSymbol, stream });
 	} catch (e) {
-		console.error(e);
+		console.error(`Stream failed for printer "${printer.Name}":`, e instanceof Error ? e.message : e);
 	}
 }
 
@@ -295,7 +329,7 @@ configStore.subscribe((config) => {
 	}
 
 	if (currentConfig.Model !== config.Model) {
-		initializeModel();
+		initializeModel().catch((e) => console.error('Model reload failed:', e));
 	}
 
 	currentConfig = config;
