@@ -13,9 +13,10 @@ if (!fs.existsSync('./config.json')) {
 
 	const defaultConfig = JSON.parse(configExample);
 	let isConfigUpdated = false;
+	const configRecord = currentConfig as unknown as Record<string, unknown>;
 	for (const key in defaultConfig) {
-		if (currentConfig[key] === undefined) {
-			currentConfig[key] = defaultConfig[key];
+		if (configRecord[key] === undefined) {
+			configRecord[key] = defaultConfig[key];
 			isConfigUpdated = true;
 		}
 	}

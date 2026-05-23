@@ -35,8 +35,8 @@ export async function detectObjects(buf: Buffer, printer: Printer) {
 
 // Runs YOLOv8 model
 async function runModel(input: number[]) {
-	input = new ort.Tensor(Float32Array.from(input), [1, 3, 640, 640]);
-	const outputs = await model.run({ images: input });
+	const tensor = new ort.Tensor(Float32Array.from(input), [1, 3, 640, 640]);
+	const outputs = await model.run({ images: tensor });
 	return outputs['output0'].data;
 }
 

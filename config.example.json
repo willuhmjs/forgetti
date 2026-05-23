@@ -3,6 +3,7 @@
 	"ConfidenceThreshold": 50,
 	"Model": "nano",
 	"BrandColor": "#f97316",
+	"DetectionHistory": [],
 	"DiscordWebhookEnabled": false,
 	"DiscordWebhookURL": "",
 	"DiscordUserPingEnabled": false,

@@ -10,14 +10,13 @@
 		faServer,
 		faTemperatureLow,
 		faTemperatureHigh,
-		faWifi,
-		faUpload,
-		faDownload
+		faArrowUp,
+		faArrowDown
 	} from '@fortawesome/free-solid-svg-icons';
 	import { faWindows, faApple, faLinux } from '@fortawesome/free-brands-svg-icons';
 	import LoadingBar from './LoadingBar.svelte';
 
-	let socketData: SystemResponsePacket = $state();
+	let socketData: SystemResponsePacket | undefined = $state();
 
 	onMount(() => {
 		socketStore.subscribe((data) => {
@@ -27,120 +26,174 @@
 		});
 	});
 
-	function convertToLargestUnit(kilobytes: number) {
-		let units = ['KB', 'MB', 'GB', 'TB', 'PB'];
-		let index = 0;
-
-		while (kilobytes >= 1024 && index < units.length - 1) {
+	function formatBytes(kilobytes: number) {
+		const units = ['KB', 'MB', 'GB', 'TB'];
+		let i = 0;
+		while (kilobytes >= 1024 && i < units.length - 1) {
 			kilobytes /= 1024;
-			index++;
+			i++;
 		}
-
-		return `${kilobytes.toFixed(2)} ${units[index]}`;
+		return `${kilobytes.toFixed(1)} ${units[i]}`;
 	}
 
 	let platformIcon: IconDefinition = $state(faQuestionCircle);
 
 	$effect(() => {
 		if (socketData?.platform) {
-			if (socketData.platform.toLowerCase().includes('win')) {
-				platformIcon = faWindows;
-			} else if (socketData.platform.toLowerCase().includes('mac')) {
-				platformIcon = faApple;
-			} else if (socketData.platform.toLowerCase().includes('linux')) {
-				platformIcon = faLinux;
-			}
+			const p = socketData.platform.toLowerCase();
+			if (p.includes('win')) platformIcon = faWindows;
+			else if (p.includes('mac') || p.includes('darwin')) platformIcon = faApple;
+			else if (p.includes('linux')) platformIcon = faLinux;
 		}
 	});
 </script>
 
-<div class="systemContainer">
-	{#if socketData}
-		<div>
-			<p class="spec">
-				<span class="icon"><Fa icon={platformIcon} /></span>{socketData.distro}
-				{socketData.release} {socketData.codename ? `(${socketData.codename})` : ''}
-			</p>
-			<p class="spec">
-				<span class="icon"><Fa icon={faServer} /></span>{socketData.platform}
-				{socketData.kernel}
-			</p>
-			<p class="spec">
-				<span class="icon"
-					><Fa icon={socketData.cpuTemp > 60 ? faTemperatureHigh : faTemperatureLow} /></span
-				>{socketData.cpuTemp}°C
-			</p>
-			<p class="spec">
-				<span class="icon"><Fa icon={faWifi} /></span>{convertToLargestUnit(socketData.netTX)}
-				<span class="icon"> <Fa icon={faUpload} /></span> / {convertToLargestUnit(socketData.netRX)}
-				<span class="icon">
-					<Fa icon={faDownload} />
-				</span>
-			</p>
-		</div>
-		<div class="circularBarContainer">
-			<div class="circularBarWrapper">
-				<div class="circularBarSubContainer">
-					<CircularBar
-						bind:value={socketData.memPercent}
-						color="var(--brand)"
-						trackColor="var(--background)"
-						textColor="#fff"
-					/>
-				</div>
-				<p>MEM</p>
+{#if socketData}
+	<div class="system-grid">
+		<div class="stat-card">
+			<div class="stat-icon"><Fa icon={platformIcon} /></div>
+			<div class="stat-info">
+				<span class="stat-label">Platform</span>
+				<span class="stat-value">{socketData.distro} {socketData.release}</span>
 			</div>
-			<div class="circularBarWrapper">
-				<div class="circularBarSubContainer">
+		</div>
+		<div class="stat-card">
+			<div class="stat-icon"><Fa icon={faServer} /></div>
+			<div class="stat-info">
+				<span class="stat-label">Kernel</span>
+				<span class="stat-value">{socketData.kernel}</span>
+			</div>
+		</div>
+		<div class="stat-card">
+			<div class="stat-icon" class:hot={socketData.cpuTemp > 60}>
+				<Fa icon={socketData.cpuTemp > 60 ? faTemperatureHigh : faTemperatureLow} />
+			</div>
+			<div class="stat-info">
+				<span class="stat-label">Temperature</span>
+				<span class="stat-value">{socketData.cpuTemp}°C</span>
+			</div>
+		</div>
+		<div class="stat-card">
+			<div class="stat-icon"><Fa icon={faArrowUp} /></div>
+			<div class="stat-info">
+				<span class="stat-label">Upload</span>
+				<span class="stat-value">{formatBytes(socketData.netTX)}</span>
+			</div>
+		</div>
+		<div class="stat-card">
+			<div class="stat-icon"><Fa icon={faArrowDown} /></div>
+			<div class="stat-info">
+				<span class="stat-label">Download</span>
+				<span class="stat-value">{formatBytes(socketData.netRX)}</span>
+			</div>
+		</div>
+
+		<div class="gauges">
+			<div class="gauge">
+				<div class="gauge-ring">
 					<CircularBar
 						bind:value={socketData.loadPercent}
 						color="var(--brand)"
-						trackColor="var(--background)"
-						textColor="#fff"
+						trackColor="var(--bg-primary)"
+						textColor="var(--text-primary)"
 					/>
 				</div>
-				<p>CPU</p>
+				<span class="gauge-label">CPU</span>
+			</div>
+			<div class="gauge">
+				<div class="gauge-ring">
+					<CircularBar
+						bind:value={socketData.memPercent}
+						color="var(--brand)"
+						trackColor="var(--bg-primary)"
+						textColor="var(--text-primary)"
+					/>
+				</div>
+				<span class="gauge-label">MEM</span>
 			</div>
 		</div>
-	{:else}
-		<LoadingBar />
-		
-	{/if}
-</div>
+	</div>
+{:else}
+	<LoadingBar />
+{/if}
 
 <style>
-	.spec {
-		font-size: 0.9rem;
+	.system-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.625rem;
+		width: 100%;
 	}
 
-	.spec .icon:first-of-type {
-		margin-right: 0.5rem;
+	.stat-card {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: 0.625rem 0.75rem;
+		background-color: var(--bg-tertiary);
+		border-radius: var(--radius-md);
+		border: 1px solid var(--border-subtle);
 	}
 
-	.spec .icon {
+	.stat-icon {
 		color: var(--brand);
-	}
-
-	.circularBarWrapper {
+		font-size: 0.875rem;
+		width: 1.25rem;
 		text-align: center;
-		margin: auto;
+		flex-shrink: 0;
 	}
 
-	.systemContainer {
+	.stat-icon.hot {
+		color: var(--red);
+	}
+
+	.stat-info {
 		display: flex;
-		padding: 0 1rem;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.stat-label {
+		font-size: 0.625rem;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-weight: 500;
+	}
+
+	.stat-value {
+		font-size: 0.8125rem;
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.gauges {
+		grid-column: 1 / -1;
+		display: flex;
+		justify-content: center;
 		gap: 1.5rem;
-		justify-content: space-between;
-		align-items: middle;
+		padding: 0.5rem 0;
 	}
 
-	.circularBarSubContainer {
-		width: 75px;
-		height: 75px;
-	}
-
-	.circularBarContainer {
+	.gauge {
 		display: flex;
-		gap: 0.75rem;
+		flex-direction: column;
+		align-items: center;
+		gap: 0.25rem;
+	}
+
+	.gauge-ring {
+		width: 64px;
+		height: 64px;
+	}
+
+	.gauge-label {
+		font-size: 0.6875rem;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-weight: 600;
 	}
 </style>

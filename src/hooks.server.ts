@@ -9,10 +9,14 @@ import { detectObjects, latestDetection, initializeModel } from '$lib/server/mod
 import type { Readable } from 'stream';
 import type { Box, Printer } from '$lib/types';
 import { get } from 'svelte/store';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { dev } from '$app/environment';
 import type { AppUpdateRequestPacket, AppUpdateResponsePacket } from '$lib/types';
-import { doCoordinatesIntersect, getImageDimensions, translateCoordinatesArray } from '$lib/server/imageUtils';
+import {
+	doCoordinatesIntersect,
+	getImageDimensions,
+	translateCoordinatesArray
+} from '$lib/server/imageUtils';
 
 let lastReport = 0;
 let currentConfig = get(configStore);
@@ -24,9 +28,9 @@ if (currentConfig.Enabled) {
 	}
 }
 
-function execCommand(command: string): Promise<string> {
+function runCommand(bin: string, args: string[]): Promise<string> {
 	return new Promise((resolve, reject) => {
-		exec(command, (error, stdout, stderr) => {
+		execFile(bin, args, (error, stdout, stderr) => {
 			if (error) {
 				console.log(error.message);
 				reject(error.message);
@@ -45,14 +49,12 @@ function execCommand(command: string): Promise<string> {
 
 let lastCPUReading = 0;
 let lowPowerMode = false;
+let lastUpdateRequest = 0;
+const UPDATE_COOLDOWN_MS = 60000;
 
 async function checkBatteryStatus() {
 	const batteryInfo = await battery();
-	if (batteryInfo.hasBattery && batteryInfo.percent < 20) {
-		lowPowerMode = true;
-	} else {
-		lowPowerMode = false;
-	}
+	lowPowerMode = batteryInfo.hasBattery && batteryInfo.percent < 20;
 }
 
 server.on('connection', (socket) => {
@@ -60,16 +62,14 @@ server.on('connection', (socket) => {
 		socket.send(JSON.stringify({ purpose: 'inference', ...val }));
 	});
 
-	// send os data, moonraker data to client
-
 	setInterval(async () => {
 		await checkBatteryStatus();
 		const osInfo = await si.osInfo();
 		const loadPercent = (await si.currentLoad()).currentLoad;
-		const mem = await si.mem(); // .used / .total * 100
-		const cpuTemp = await si.cpuTemperature(); // .main + .max
+		const mem = await si.mem();
+		const cpuTemp = await si.cpuTemperature();
 		const netStats = (await si.networkStats())[0];
-		lastCPUReading = loadPercent
+		lastCPUReading = loadPercent;
 		socket.send(
 			JSON.stringify({
 				purpose: 'system',
@@ -89,13 +89,17 @@ server.on('connection', (socket) => {
 		);
 	}, lowPowerMode ? 5000 : 1000);
 
-
-	const commands = ['git pull', 'pnpm install --frozen-lockfile', 'pnpm build'];
+	const updateSteps: { bin: string; args: string[]; label: string }[] = [
+		{ bin: 'git', args: ['pull'], label: 'git pull' },
+		{ bin: 'pnpm', args: ['install', '--frozen-lockfile'], label: 'pnpm install --frozen-lockfile' },
+		{ bin: 'pnpm', args: ['build'], label: 'pnpm build' }
+	];
 	const toastableLogs = [/Current branch main is up to date/, /Already up to date/];
+
 	socket.on('message', async (data) => {
 		const requestPacket: AppUpdateRequestPacket = JSON.parse(data.toString());
 		if (requestPacket.purpose === 'appUpdate') {
-			if (dev)
+			if (dev) {
 				return socket.send(
 					JSON.stringify({
 						purpose: 'appUpdate',
@@ -106,22 +110,38 @@ server.on('connection', (socket) => {
 						time: new Date().toLocaleTimeString('en-US')
 					} as AppUpdateResponsePacket)
 				);
+			}
+
+			if (Date.now() - lastUpdateRequest < UPDATE_COOLDOWN_MS) {
+				return socket.send(
+					JSON.stringify({
+						purpose: 'appUpdate',
+						message: 'Please wait before requesting another update.',
+						command: 'meta',
+						type: 'error',
+						toastable: true,
+						time: new Date().toLocaleTimeString('en-US')
+					} as AppUpdateResponsePacket)
+				);
+			}
+			lastUpdateRequest = Date.now();
+
 			let errored = false;
-			for (const command of commands) {
+			for (const step of updateSteps) {
 				try {
 					socket.send(
 						JSON.stringify({
 							purpose: 'appUpdate',
 							message: 'Executing...',
-							command: command,
+							command: step.label,
 							type: 'success',
 							toastable: false,
 							time: new Date().toLocaleTimeString('en-US')
 						})
 					);
-					const output = await execCommand(command);
+					const output = await runCommand(step.bin, step.args);
 					let matchesToastable = false;
-					if (command === 'git pull') {
+					if (step.label === 'git pull') {
 						for (const toastable of toastableLogs) {
 							if (toastable.test(output)) {
 								matchesToastable = true;
@@ -133,7 +153,7 @@ server.on('connection', (socket) => {
 						JSON.stringify({
 							purpose: 'appUpdate',
 							message: output,
-							command: command,
+							command: step.label,
 							type: 'success',
 							toastable: matchesToastable,
 							time: new Date().toLocaleTimeString('en-US')
@@ -145,8 +165,8 @@ server.on('connection', (socket) => {
 					socket.send(
 						JSON.stringify({
 							purpose: 'appUpdate',
-							message: error,
-							command: command,
+							message: String(error),
+							command: step.label,
 							type: 'error',
 							toastable: false,
 							time: new Date().toLocaleTimeString('en-US')
@@ -175,18 +195,12 @@ latestDetection.subscribe(async (data) => {
 	if (!data?.buffer) return;
 	const { width, height } = await getImageDimensions(data.buffer);
 	if (!width || !height) return;
-	const adjustedCoordinates = currentConfig.Coordinates.length > 0 ? translateCoordinatesArray(boundingBoxes, width, 640) : [{
-		x1: 0,
-		y1: 0,
-		x2: width,
-		y2: height
-		}
-	];
-	const dci = doCoordinatesIntersect(adjustedCoordinates, data?.box || [])
-	if (
-		dci &&
-		Date.now() - lastReport > ms(currentConfig.ReportCooldown)
-	) {
+	const adjustedCoordinates =
+		currentConfig.Coordinates.length > 0
+			? translateCoordinatesArray(boundingBoxes, width, 640)
+			: [{ x1: 0, y1: 0, x2: width, y2: height }];
+	const dci = doCoordinatesIntersect(adjustedCoordinates, data?.box || []);
+	if (dci && Date.now() - lastReport > ms(currentConfig.ReportCooldown)) {
 		lastReport = Date.now();
 		detectionHandler(data);
 	}
@@ -207,7 +221,7 @@ async function startStream(printer: Printer) {
 	};
 
 	let processing = false;
-	const process = async (frameBuffer: Buffer) => {
+	const processFrame = async (frameBuffer: Buffer) => {
 		processing = true;
 		await detectObjects(frameBuffer, printer);
 		processing = false;
@@ -220,9 +234,8 @@ async function startStream(printer: Printer) {
 		stream.on('data', async (frame: Buffer) => {
 			if (frame && !processing) {
 				try {
-					
 					if (lastCPUReading > (lowPowerMode ? 50 : currentConfig.MaxCPU)) return;
-					process(frame);
+					processFrame(frame);
 				} catch (e) {
 					console.error(e);
 				}
@@ -250,8 +263,7 @@ configStore.subscribe((config) => {
 		const oldPrinters = new Map(currentConfig.Printers.map((p) => [p.Name, p]));
 		const newPrinters = new Map(config.Printers.map((p) => [p.Name, p]));
 
-		// stop old streams
-		for (const [name, printer] of oldPrinters) {
+		for (const [name] of oldPrinters) {
 			if (!newPrinters.has(name)) {
 				const stream = streams.get(name);
 				if (stream) {
@@ -261,7 +273,6 @@ configStore.subscribe((config) => {
 			}
 		}
 
-		// start new or updated streams
 		for (const [name, printer] of newPrinters) {
 			const oldPrinter = oldPrinters.get(name);
 			if (!oldPrinter) {

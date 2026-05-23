@@ -14,6 +14,13 @@ export interface InferenceData {
 	printer: Printer;
 }
 
+export interface DetectionHistoryEntry {
+	timestamp: string;
+	printerName: string;
+	confidence: number;
+	boxCount: number;
+}
+
 export interface Printer {
 	Name: string;
 	CameraURL: string;
@@ -38,6 +45,7 @@ export interface Config {
 	MaxCPU: number;
 	Coordinates: Coordinates[];
 	Printers: Printer[];
+	DetectionHistory: DetectionHistoryEntry[];
 }
 
 export interface Coordinates {
@@ -47,7 +55,6 @@ export interface Coordinates {
 	y2: number;
 }
 
-// response packets
 export interface SystemResponsePacket {
 	lowPowerMode: boolean;
 	purpose: 'system';
@@ -84,7 +91,7 @@ export interface ConfigUpdateResponsePacket {
 	config?: Config;
 }
 
-interface printStats {
+interface PrintStats {
 	filename: string;
 	total_duration: number;
 	print_duration: number;
@@ -93,12 +100,11 @@ interface printStats {
 	message: string;
 }
 
-export interface MoonrakerResponsePacket extends Partial<printStats> {
+export interface MoonrakerResponsePacket extends Partial<PrintStats> {
 	purpose: 'moonraker';
 	type: ResponseType;
 }
 
-// request packets
 export interface AppUpdateRequestPacket {
 	purpose: 'appUpdate';
 }
@@ -106,5 +112,5 @@ export interface AppUpdateRequestPacket {
 export interface ConfigUpdateRequestPacket {
 	purpose: 'configUpdate';
 	config: Partial<Config>;
-	coordinates?: Coordinates[]; // Add coordinates to the request packet
+	coordinates?: Coordinates[];
 }

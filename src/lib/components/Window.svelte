@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Fa from 'svelte-fa';
-	import { faCaretDown, faCaretLeft, type IconDefinition } from '@fortawesome/free-solid-svg-icons';
+	import { faChevronDown, faChevronRight, type IconDefinition } from '@fortawesome/free-solid-svg-icons';
+	import { slide } from 'svelte/transition';
 	interface Props {
 		title: string;
 		icon: IconDefinition;
@@ -10,93 +11,107 @@
 
 	let { title, icon, children, buttons }: Props = $props();
 	let minimized = $state(false);
-
-	function toggleMinimize() {
-		minimized = !minimized;
-	}
 </script>
 
-<div class="window">
-	<div class="title-bar">
-		<h2 class="title"><span class="title-icon"><Fa {icon} /></span>{title}</h2>
-		<div class="buttons">
-		{@render buttons?.()}
-		<button onclick={toggleMinimize} class="title-button">
-			{#if minimized}
-				<Fa icon={faCaretLeft} />
-			{:else}
-				<Fa icon={faCaretDown} />
-			{/if}
-		</button>
+<div class="window" class:minimized>
+	<button class="title-bar" onclick={() => (minimized = !minimized)}>
+		<div class="title-left">
+			<span class="title-icon"><Fa {icon} /></span>
+			<h3 class="title">{title}</h3>
 		</div>
-	</div>
-	<div class="content">
-		{#if !minimized}
+		<div class="title-right">
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<span class="title-actions" onclick={(e) => e.stopPropagation()}>
+				{@render buttons?.()}
+			</span>
+			<span class="chevron">
+				<Fa icon={minimized ? faChevronRight : faChevronDown} />
+			</span>
+		</div>
+	</button>
+	{#if !minimized}
+		<div class="content" transition:slide={{ duration: 200 }}>
 			{@render children?.()}
-		{/if}
-	</div>
+		</div>
+	{/if}
 </div>
 
 <style>
 	.window {
-		border: none;
-		border-radius: 15px;
-		background-color: #fff;
-		font-size: 12px;
-		background-color: var(--foreground);
-		box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+		background-color: var(--bg-secondary);
+		border-radius: var(--radius-lg);
+		border: 1px solid var(--border-subtle);
+		overflow: hidden;
+		transition: box-shadow var(--transition-normal);
+	}
+
+	.window:hover {
+		box-shadow: var(--shadow-md);
 	}
 
 	.title-bar {
-		background-color: var(--foreground);
-		display: flex;
-		justify-content: space-between;
-		border-top-left-radius: 15px;
-		border-top-right-radius: 15px;
-		overflow: hidden;
-	}
-	.content {
 		width: 100%;
 		display: flex;
-		justify-content: center;
-		overflow-y: hidden;
+		justify-content: space-between;
 		align-items: center;
-		flex-grow: 1;
+		padding: 0.875rem 1rem;
+		background-color: var(--bg-secondary);
+		transition: background-color var(--transition-fast);
 	}
 
-	.title {
-		margin-left: 15px;
+	.title-bar:hover {
+		background-color: var(--bg-tertiary);
 	}
 
-	.buttons {
+	.title-left {
 		display: flex;
 		align-items: center;
-		margin-left: 10px;
-		gap: 1px;
-	}
-
-	.title-button {
-		all: unset;
-		font-size: 1.4rem;
-		padding: 0.25rem 1rem;
-		background-color: var(--brand);
-		border-top-right-radius: 15px;
-		height: 100%;
-	}
-
-	.title-button:hover {
-		cursor: pointer;
-		filter: brightness(0.85);
+		gap: 0.625rem;
 	}
 
 	.title-icon {
-		margin-right: 13px;
 		color: var(--brand);
+		font-size: 0.875rem;
 	}
 
-	@media screen and (max-width: 576px) {
-		.window {
-			width: 100%;
-		}
+	.title {
+		font-size: 0.875rem;
+		font-weight: 600;
+		letter-spacing: 0.01em;
+	}
+
+	.title-right {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.chevron {
+		color: var(--text-muted);
+		font-size: 0.75rem;
+		transition: color var(--transition-fast);
+	}
+
+	.title-bar:hover .chevron {
+		color: var(--text-secondary);
+	}
+
+	.content {
+		padding: 1rem;
+		border-top: 1px solid var(--border-subtle);
+	}
+
+	.title-actions :global(button) {
+		padding: 0.25rem 0.5rem;
+		border-radius: var(--radius-sm);
+		color: var(--text-secondary);
+		font-size: 0.75rem;
+		transition: all var(--transition-fast);
+	}
+
+	.title-actions :global(button:hover) {
+		background-color: var(--bg-hover);
+		color: var(--text-primary);
 	}
 </style>

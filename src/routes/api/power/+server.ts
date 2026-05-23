@@ -1,55 +1,54 @@
 import { json } from '@sveltejs/kit';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import type { RequestHandler } from './$types';
 import os from 'os';
+
+const ALLOWED_COMMANDS = ['Shutdown', 'Restart'] as const;
+type PowerCommand = (typeof ALLOWED_COMMANDS)[number];
+
+function isValidCommand(command: unknown): command is PowerCommand {
+	return typeof command === 'string' && ALLOWED_COMMANDS.includes(command as PowerCommand);
+}
+
+function execPowerCommand(command: PowerCommand): Promise<string> {
+	return new Promise((resolve, reject) => {
+		const isWindows = os.platform() === 'win32';
+		let bin: string;
+		let args: string[];
+
+		if (command === 'Shutdown') {
+			bin = isWindows ? 'shutdown' : 'sudo';
+			args = isWindows ? ['/s', '/t', '0'] : ['shutdown', '-h', 'now'];
+		} else {
+			bin = isWindows ? 'shutdown' : 'sudo';
+			args = isWindows ? ['/r', '/t', '0'] : ['shutdown', '-r', 'now'];
+		}
+
+		execFile(bin, args, (error, stdout, stderr) => {
+			if (error) {
+				reject(error.message);
+				return;
+			}
+			resolve(stdout || 'Command executed');
+		});
+	});
+}
+
 export const POST: RequestHandler = async ({ request }) => {
-	const { command } = await request.json();
-	switch (command) {
-		case 'Shutdown':
-			if (os.platform() === 'win32') {
-				exec('shutdown /s /t 0', (error, stdout, stderr) => {
-					if (error) {
-						console.error(`exec error: ${error}`);
-						return;
-					}
-					console.log(`stdout: ${stdout}`);
-					console.error(`stderr: ${stderr}`);
-				});
-			} else {
-				exec('sudo shutdown -h now', (error, stdout, stderr) => {
-					if (error) {
-						console.error(`exec error: ${error}`);
-						return;
-					}
-					console.log(`stdout: ${stdout}`);
-					console.error(`stderr: ${stderr}`);
-				});
-			}
-			break;
-		case 'Restart':
-			if (os.platform() === 'win32') {
-				exec('shutdown /r /t 0', (error, stdout, stderr) => {
-					if (error) {
-						console.error(`exec error: ${error}`);
-						return;
-					}
-					console.log(`stdout: ${stdout}`);
-					console.error(`stderr: ${stderr}`);
-				});
-			} else {
-				exec('sudo shutdown -r now', (error, stdout, stderr) => {
-					if (error) {
-						console.error(`exec error: ${error}`);
-						return;
-					}
-					console.log(`stdout: ${stdout}`);
-					console.error(`stderr: ${stderr}`);
-				});
-			}
-			break;
+	const body = await request.json();
+
+	if (!isValidCommand(body?.command)) {
+		return json({ success: false, message: 'Invalid command' }, { status: 400 });
 	}
+
+	try {
+		await execPowerCommand(body.command);
+	} catch {
+		// Power commands may kill the process before responding
+	}
+
 	return json({
 		success: true,
-		message: `${command} signal recieved!`
+		message: `${body.command} signal received!`
 	});
 };

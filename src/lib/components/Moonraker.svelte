@@ -5,7 +5,8 @@
 		faRuler,
 		faSpinner,
 		faCube,
-		faIndustry
+		faIndustry,
+		faCheck
 	} from '@fortawesome/free-solid-svg-icons';
 
 	import type { MoonrakerResponsePacket, Printer } from '$lib/types';
@@ -17,12 +18,13 @@
 	}
 	let { printer }: Props = $props();
 	let latestStats: MoonrakerResponsePacket | null = $state(null);
+
 	onMount(() => {
 		const interval = setInterval(async () => {
 			if (!printer.MoonrakerEnabled) return;
 			try {
 				const response = await fetch(
-					new URL(`/printer/objects/query?print_stats`, printer.MoonrakerURL).href
+					new URL('/printer/objects/query?print_stats', printer.MoonrakerURL).href
 				);
 				const r = await response.json();
 				latestStats = r.result.status.print_stats;
@@ -33,69 +35,113 @@
 
 		return () => clearInterval(interval);
 	});
+
+	function getStateIcon(state: string) {
+		switch (state) {
+			case 'printing': return faSpinner;
+			case 'paused': return faHourglassHalf;
+			case 'complete': return faCheck;
+			default: return faIndustry;
+		}
+	}
+
+	function getStateColor(state: string) {
+		switch (state) {
+			case 'printing': return 'var(--green)';
+			case 'paused': return 'var(--yellow)';
+			case 'error': return 'var(--red)';
+			default: return 'var(--text-muted)';
+		}
+	}
 </script>
 
-<div class="moonrakerContainer">
-	<div>
-		{#if latestStats}
-			{#if latestStats.state !== 'standbys'}
-				<p class="spec">
-					<span class="icon">
-						<Fa icon={faCube} />
-					</span>
-					{latestStats.filename || "No file loaded"}
-				</p>
-				<p class="spec">
-					<span class="icon">
-						{#if latestStats.state == 'printing'}
-							<Fa icon={faSpinner} spin />
-						{:else if latestStats.state == 'paused'}
-							<Fa icon={faHourglassHalf} />
-						{:else}
-							<Fa icon={faIndustry} />
-						{/if}
-					</span>
-					{(latestStats.state || '').toUpperCase()}
-				</p>
-				<p class="spec">
-					<span class="icon">
-						<Fa icon={faRuler} />
-					</span>
-					{(latestStats.filament_used || 0 / 1000).toFixed(2)}m
-				</p>
-			{:else}
-				<p class="spec">
-					<span class="icon">
-						<Fa icon={faHourglassHalf} />
-					</span>
-					{(latestStats.state || '').toUpperCase()}
-				</p>
-			{/if}
-		{:else}
-			<LoadingBar />
-		{/if}
+{#if latestStats}
+	<div class="moonraker-grid">
+		<div class="stat-card wide">
+			<div class="stat-icon"><Fa icon={faCube} /></div>
+			<div class="stat-info">
+				<span class="stat-label">File</span>
+				<span class="stat-value">{latestStats.filename || 'No file loaded'}</span>
+			</div>
+		</div>
+		<div class="stat-card">
+			<div class="stat-icon" style="color: {getStateColor(latestStats.state || '')}">
+				<Fa icon={getStateIcon(latestStats.state || '')} spin={latestStats.state === 'printing'} />
+			</div>
+			<div class="stat-info">
+				<span class="stat-label">State</span>
+				<span class="stat-value state-badge" style="color: {getStateColor(latestStats.state || '')}">
+					{(latestStats.state || 'idle').toUpperCase()}
+				</span>
+			</div>
+		</div>
+		<div class="stat-card">
+			<div class="stat-icon"><Fa icon={faRuler} /></div>
+			<div class="stat-info">
+				<span class="stat-label">Filament</span>
+				<span class="stat-value">{((latestStats.filament_used || 0) / 1000).toFixed(2)}m</span>
+			</div>
+		</div>
 	</div>
-</div>
+{:else}
+	<LoadingBar />
+{/if}
 
 <style>
-	.spec {
-		font-size: 0.9rem;
-	}
-
-	.spec .icon:first-of-type {
-		margin-right: 0.5rem;
-	}
-
-	.spec .icon {
-		color: var(--brand);
-	}
-
-	.moonrakerContainer {
-		display: flex;
-		padding: 0 1rem;
-		gap: 1.5rem;
-		justify-content: space-between;
-		align-items: middle;
+	.moonraker-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.625rem;
 		width: 100%;
+	}
+
+	.stat-card {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		padding: 0.625rem 0.75rem;
+		background-color: var(--bg-tertiary);
+		border-radius: var(--radius-md);
+		border: 1px solid var(--border-subtle);
+	}
+
+	.stat-card.wide {
+		grid-column: 1 / -1;
+	}
+
+	.stat-icon {
+		color: var(--brand);
+		font-size: 0.875rem;
+		width: 1.25rem;
+		text-align: center;
+		flex-shrink: 0;
+	}
+
+	.stat-info {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.stat-label {
+		font-size: 0.625rem;
+		color: var(--text-muted);
+		text-transform: uppercase;
+		letter-spacing: 0.05em;
+		font-weight: 500;
+	}
+
+	.stat-value {
+		font-size: 0.8125rem;
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.state-badge {
+		font-weight: 700;
+		font-size: 0.75rem;
+		letter-spacing: 0.03em;
 	}
 </style>

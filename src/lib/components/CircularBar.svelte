@@ -71,7 +71,8 @@
 		}
 	}
 	run(() => {
-		calculate(value, rootWidth, rootHeight);
+		void value; void rootWidth; void rootHeight;
+		calculate();
 	});
 </script>
 

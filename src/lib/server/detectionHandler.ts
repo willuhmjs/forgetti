@@ -3,7 +3,6 @@ import { WebhookClient, EmbedBuilder, type HexColorString } from 'discord.js';
 import Canvas from '@napi-rs/canvas';
 import sharp from 'sharp';
 import { get } from 'svelte/store';
-import colorMap from '$lib/colorMap';
 import configStore from './configStore';
 
 interface InferenceDataBuffer {
@@ -36,16 +35,18 @@ export default async (data: InferenceData) => {
 const buildImage = async (data: InferenceData): Promise<Buffer> => {
 	const buffer: Buffer = Buffer.from(data.buffer, 'base64');
 	const { width, height } = await sharp(buffer).metadata();
+	if (!width || !height) throw new Error('Cannot read image dimensions');
 	const canvas = Canvas.createCanvas(width, height);
 	const ctx = canvas.getContext('2d');
 	const background = await Canvas.loadImage(buffer);
 	ctx.drawImage(background, 0, 0);
-	ctx.strokeStyle = colorMap.get(config.BrandColor) || '#ffffff';
+	const color = config.BrandColor || '#f97316';
+	ctx.strokeStyle = color;
 	ctx.lineWidth = 5;
 	ctx.font = '20px sans-serif';
 	data.box.forEach(({ x1, y1, x2, y2, prob }: Box) => {
 		ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
-		ctx.fillStyle = colorMap.get(config.BrandColor) || '#ffffff';
+		ctx.fillStyle = color;
 		const width = ctx.measureText(`failure ${prob || 0}%`).width;
 		ctx.fillRect(x1, y1, width + 10, 25);
 		ctx.fillStyle = '#000000';
@@ -68,7 +69,7 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 		)
 		.setTimestamp()
 		.setImage('attachment://spaghetti.jpg')
-		.setColor((colorMap.get(config.BrandColor) as HexColorString) || '#ffffff');
+		.setColor((config.BrandColor as HexColorString) || '#f97316');
 	webhookClient.send({
 		embeds: [notifyEmbed],
 		files: [
@@ -78,12 +79,13 @@ const notifyDiscord = (data: InferenceDataBuffer) => {
 			}
 		],
 		content:
-			config.DiscordUserPing && config.DiscordUserPing ? `<@${config.DiscordUserPing}>` : undefined
+			config.DiscordUserPingEnabled && config.DiscordUserPing
+				? `<@${config.DiscordUserPing}>`
+				: undefined
 	});
 };
 
 const notifyMoonraker = async (url: string) => {
-	// pause the print
 	await fetch(new URL('/printer/print/pause', url), {
 		method: 'POST'
 	});

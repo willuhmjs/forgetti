@@ -5,46 +5,15 @@
 	let { children } = $props();
 </script>
 
-<div class="desktop">
+<div class="app-shell">
 	{@render children?.()}
 </div>
-<Toaster></Toaster>
+<Toaster />
 
 <style>
-	:global(body) {
-		font-family: sans-serif;
-		background-color: var(--background);
-		color: #f9fafb;
-		margin: 0;
-		padding: 0;
-	}
-
-	:global(*) {
-		box-sizing: border-box;
-	}
-
-	:global(:root) {
-		--foreground: #18181b;
-		--background: #27272a;
-		--red: #ef4444;
-		--green: #22c55e;
-		--yellow: #eab308;
-		--orange: #f97316;
-		--blue: #3b82f6;
-	}
-
-	nav {
+	.app-shell {
 		display: flex;
-		gap: 1rem;
-		margin-bottom: 1rem;
-	}
-
-	nav a {
-		color: #f9fafb;
-		text-decoration: none;
-	}
-
-	nav a:hover {
-		text-decoration: underline;
+		min-height: 100vh;
+		width: 100%;
 	}
 </style>
